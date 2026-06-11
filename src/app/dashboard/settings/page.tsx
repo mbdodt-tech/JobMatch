@@ -1,22 +1,87 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Settings, Users, Bell, Shield, Database, Key, Globe, Moon, ChevronRight,
-  ToggleLeft, ToggleRight, Save, Building2, Mail
+  Settings, Bell, Shield, Database, Key, ChevronRight,
+  ToggleLeft, ToggleRight, Save, Building2, Mail, Loader2
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function DashboardSettings() {
+  const [loading, setLoading] = useState(true);
+  const [orgName, setOrgName] = useState('');
+  const [orgEmail, setOrgEmail] = useState('');
+  const [orgPhone, setOrgPhone] = useState('');
+  const [orgId, setOrgId] = useState<string | null>(null);
   const [autoReminders, setAutoReminders] = useState(true);
   const [weeklyReport, setWeeklyReport] = useState(true);
   const [anonymizeExport, setAnonymizeExport] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  const handleSave = () => {
+  useEffect(() => {
+    async function loadSettings() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('organization_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.organization_id) {
+        setOrgId(profile.organization_id);
+
+        const { data: org } = await supabase
+          .from('organizations')
+          .select('name, email, phone')
+          .eq('id', profile.organization_id)
+          .single();
+
+        if (org) {
+          setOrgName(org.name || '');
+          setOrgEmail(org.email || '');
+          setOrgPhone(org.phone || '');
+        }
+      }
+
+      setLoading(false);
+    }
+
+    loadSettings();
+  }, []);
+
+  const handleSave = async () => {
     setSaving(true);
-    setTimeout(() => setSaving(false), 1000);
+    setSaved(false);
+
+    if (orgId) {
+      const supabase = createClient();
+      await supabase
+        .from('organizations')
+        .update({
+          name: orgName,
+          email: orgEmail,
+          phone: orgPhone,
+        })
+        .eq('id', orgId);
+    }
+
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 max-w-3xl">
@@ -33,16 +98,16 @@ export default function DashboardSettings() {
         <div className="p-5 space-y-4">
           <div>
             <label className="text-xs text-[var(--text-muted)] block mb-1.5">Organisationsnavn</label>
-            <input type="text" defaultValue="Copenhagen Business Academy" className="w-full" />
+            <input type="text" value={orgName} onChange={e => setOrgName(e.target.value)} className="w-full" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-xs text-[var(--text-muted)] block mb-1.5">Kontakt-email</label>
-              <input type="email" defaultValue="admin@cphbusiness.dk" className="w-full" />
+              <input type="email" value={orgEmail} onChange={e => setOrgEmail(e.target.value)} className="w-full" />
             </div>
             <div>
               <label className="text-xs text-[var(--text-muted)] block mb-1.5">Telefon</label>
-              <input type="tel" defaultValue="+45 36 15 45 00" className="w-full" />
+              <input type="tel" value={orgPhone} onChange={e => setOrgPhone(e.target.value)} className="w-full" />
             </div>
           </div>
         </div>
@@ -107,7 +172,16 @@ export default function DashboardSettings() {
       </div>
 
       {/* Save */}
-      <div className="flex justify-end pt-2">
+      <div className="flex items-center justify-end gap-3 pt-2">
+        {saved && (
+          <motion.span
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-sm text-green-400 font-medium"
+          >
+            Gemt!
+          </motion.span>
+        )}
         <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-shadow disabled:opacity-60">
           <Save size={16} /> {saving ? 'Gemmer…' : 'Gem indstillinger'}
         </button>
