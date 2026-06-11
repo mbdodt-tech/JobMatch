@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Sparkles, Loader2, AlertCircle, Eye, EyeOff, Zap } from 'lucide-react';
+import { Sparkles, Loader2, AlertCircle, Eye, EyeOff, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -74,10 +74,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Background orbs — vibrant and colorful */}
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-6 relative overflow-hidden">
+      {/* Background orbs — fresh green vibes */}
       <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-fuchsia-600/25 to-purple-600/15 blur-3xl"
+        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-emerald-500/25 to-teal-500/15 blur-3xl"
         style={{ top: '5%', left: '5%' }}
         animate={{
           x: [0, 40, -25, 0],
@@ -87,7 +87,7 @@ export default function LoginPage() {
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute w-[350px] h-[350px] rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-400/15 blur-3xl"
+        className="absolute w-[350px] h-[350px] rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-400/15 blur-3xl"
         style={{ bottom: '5%', right: '5%' }}
         animate={{
           x: [0, -30, 20, 0],
@@ -97,7 +97,7 @@ export default function LoginPage() {
         transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
       <motion.div
-        className="absolute w-[250px] h-[250px] rounded-full bg-gradient-to-br from-orange-500/15 to-pink-500/10 blur-3xl"
+        className="absolute w-[250px] h-[250px] rounded-full bg-gradient-to-br from-lime-400/15 to-emerald-500/10 blur-3xl"
         style={{ top: '50%', left: '50%' }}
         animate={{
           x: [0, 25, -30, 0],
@@ -113,7 +113,7 @@ export default function LoginPage() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 w-full max-w-sm"
       >
-        <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-purple-500/20">
+        <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-emerald-500/20">
           {/* Logo */}
           <motion.div
             initial={{ scale: 0, rotate: -20 }}
@@ -121,7 +121,7 @@ export default function LoginPage() {
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
             className="flex justify-center mb-6"
           >
-            <div className="animate-float w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500 via-purple-500 to-blue-500 animate-gradient flex items-center justify-center shadow-lg shadow-purple-500/50">
+            <div className="animate-float w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient flex items-center justify-center shadow-lg shadow-emerald-500/50">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
           </motion.div>
@@ -146,17 +146,14 @@ export default function LoginPage() {
               transition={{ delay: 0.4 }}
             >
               <label className="block text-sm font-semibold text-text-secondary mb-1.5">Email</label>
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none transition-colors group-focus-within:text-fuchsia-400 z-10" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="din@email.dk"
-                  required
-                  className="w-full !pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
-                />
-              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="din@email.dk"
+                required
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
+              />
             </motion.div>
 
             {/* Password */}
@@ -166,15 +163,14 @@ export default function LoginPage() {
               transition={{ delay: 0.5 }}
             >
               <label className="block text-sm font-semibold text-text-secondary mb-1.5">Adgangskode</label>
-              <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400 pointer-events-none transition-colors group-focus-within:text-fuchsia-400 z-10" />
+              <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full !pl-11 !pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
+                  className="w-full px-4 !pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
                 />
                 <button
                   type="button"
@@ -212,7 +208,7 @@ export default function LoginPage() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.97 }}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-fuchsia-600 via-purple-600 to-blue-500 animate-gradient text-white font-bold shadow-lg shadow-purple-500/40 hover:shadow-purple-500/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-shadow"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 animate-gradient text-white font-bold shadow-lg shadow-emerald-500/40 hover:shadow-emerald-500/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-shadow"
               >
                 {loading ? (
                   <>
