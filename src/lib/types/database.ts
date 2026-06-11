@@ -104,6 +104,7 @@ export interface Profile {
   secondary_style: BehavioralStyle | null;
   video_pitch_url: string | null;
   video_thumbnail_url: string | null;
+  cv_url: string | null;
   gdpr_consent: boolean;
   location: unknown | null; // PostGIS geography point
   notify_push: boolean;

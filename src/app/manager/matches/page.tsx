@@ -11,6 +11,8 @@ import {
   Heart,
   GraduationCap,
   ChevronRight,
+  FileText,
+  ExternalLink,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
@@ -323,6 +325,25 @@ export default function ManagerMatchesPage() {
                         </div>
                       </div>
                     </motion.button>
+                  </div>
+                )}
+
+                {/* CV */}
+                {selectedMatch.student.cv_url && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                      CV
+                    </h3>
+                    <a
+                      href={selectedMatch.student.cv_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                    >
+                      <FileText className="w-5 h-5" />
+                      <span className="font-medium text-sm">Se elevens CV</span>
+                      <ExternalLink className="w-4 h-4 ml-auto" />
+                    </a>
                   </div>
                 )}
 

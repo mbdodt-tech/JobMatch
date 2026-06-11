@@ -67,6 +67,7 @@ interface FormData {
   primary_style: BehavioralStyle | null;
   secondary_style: BehavioralStyle | null;
   video_file: File | null;
+  cv_file: File | null;
   gdpr_consent: boolean;
 }
 
@@ -85,6 +86,7 @@ export default function StudentOnboarding() {
     primary_style: null,
     secondary_style: null,
     video_file: null,
+    cv_file: null,
     gdpr_consent: false,
   });
 
@@ -133,6 +135,22 @@ export default function StudentOnboarding() {
         }
       }
 
+      // Upload CV if present
+      let cv_url: string | null = null;
+      if (form.cv_file) {
+        const ext = form.cv_file.name.split('.').pop();
+        const path = `cvs/${user.id}/cv.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('student-media')
+          .upload(path, form.cv_file, { upsert: true });
+        if (!uploadError) {
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from('student-media').getPublicUrl(path);
+          cv_url = publicUrl;
+        }
+      }
+
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -145,6 +163,7 @@ export default function StudentOnboarding() {
           primary_style: form.primary_style,
           secondary_style: form.secondary_style,
           video_pitch_url,
+          cv_url,
           gdpr_consent: form.gdpr_consent,
           onboarding_completed: true,
         })
@@ -558,10 +577,17 @@ function StepVideoGdpr({
   update: <K extends keyof FormData>(key: K, value: FormData[K]) => void;
 }) {
   const [dragOver, setDragOver] = useState(false);
+  const [cvDragOver, setCvDragOver] = useState(false);
 
   const handleFile = (files: FileList | null) => {
     if (files?.[0]) {
       update('video_file', files[0]);
+    }
+  };
+
+  const handleCvFile = (files: FileList | null) => {
+    if (files?.[0]) {
+      update('cv_file', files[0]);
     }
   };
 
@@ -576,10 +602,10 @@ function StepVideoGdpr({
           🎬
         </motion.div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          Video & Samtykke
+          Video, CV & Samtykke
         </h1>
         <p className="text-[#94A3B8] mt-1 text-sm">
-          Upload en kort videopitch og accepter GDPR
+          Upload en kort videopitch, dit CV og accepter GDPR
         </p>
       </div>
 
@@ -631,6 +657,56 @@ function StepVideoGdpr({
             </p>
             <p className="text-xs text-[#64748B]">
               MP4, MOV — maks 2 minutter anbefalet
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* CV upload */}
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setCvDragOver(true);
+        }}
+        onDragLeave={() => setCvDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setCvDragOver(false);
+          handleCvFile(e.dataTransfer.files);
+        }}
+        className={`relative rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
+          cvDragOver
+            ? 'border-purple-500 bg-purple-500/10'
+            : form.cv_file
+            ? 'border-green-500/50 bg-green-500/5'
+            : 'border-white/15 bg-white/5 hover:border-white/25'
+        }`}
+      >
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          onChange={(e) => handleCvFile(e.target.files)}
+          className="absolute inset-0 opacity-0 cursor-pointer"
+        />
+
+        {form.cv_file ? (
+          <div className="space-y-2">
+            <div className="text-3xl">📄</div>
+            <p className="text-sm font-medium text-green-400">
+              {form.cv_file.name}
+            </p>
+            <p className="text-xs text-[#64748B]">
+              {(form.cv_file.size / 1024 / 1024).toFixed(1)} MB — Tryk for at ændre
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <Upload size={24} className="text-[#64748B] mx-auto" />
+            <p className="text-sm text-[#94A3B8] font-medium">
+              Upload dit CV (valgfrit)
+            </p>
+            <p className="text-xs text-[#64748B]">
+              PDF eller Word
             </p>
           </div>
         )}
