@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import {
   User, GraduationCap, Briefcase, Shield, Edit3, Save, X,
-  Heart, ArrowLeftRight, Eye, Sparkles, Camera, ToggleLeft, ToggleRight
+  Heart, ArrowLeftRight, Eye, Camera, ToggleLeft, ToggleRight,
+  FileText, Upload, Loader2, ExternalLink
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Profile } from '@/lib/types/database';
@@ -23,6 +24,11 @@ export default function StudentProfile() {
   const [saving, setSaving] = useState(false);
   const [stats, setStats] = useState({ swipes: 0, matches: 0 });
   const [formData, setFormData] = useState<Partial<Profile>>({});
+  const [uploading, setUploading] = useState<'avatar' | 'video' | 'cv' | null>(null);
+  const [uploadError, setUploadError] = useState('');
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const cvInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -62,6 +68,48 @@ export default function StudentProfile() {
     setProfile({ ...profile, ...formData } as Profile);
     setEditing(false);
     setSaving(false);
+  };
+
+  const handleUpload = async (
+    file: File,
+    kind: 'avatar' | 'video' | 'cv'
+  ) => {
+    if (!profile) return;
+    setUploadError('');
+    setUploading(kind);
+    try {
+      const folder = kind === 'avatar' ? 'avatars' : kind === 'video' ? 'videos' : 'cvs';
+      const baseName = kind === 'avatar' ? 'avatar' : kind === 'video' ? 'pitch' : 'cv';
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
+      const path = `${folder}/${profile.id}/${baseName}.${ext}`;
+
+      const { error } = await supabase.storage
+        .from('student-media')
+        .upload(path, file, { upsert: true });
+      if (error) {
+        setUploadError(`Upload fejlede: ${error.message}`);
+        return;
+      }
+
+      const { data } = supabase.storage.from('student-media').getPublicUrl(path);
+      // Cache-bust so a replaced file shows immediately
+      const url = `${data.publicUrl}?t=${Date.now()}`;
+
+      const column = kind === 'avatar' ? 'avatar_url' : kind === 'video' ? 'video_pitch_url' : 'cv_url';
+      const { error: dbError } = await supabase
+        .from('profiles')
+        .update({ [column]: url })
+        .eq('id', profile.id);
+      if (dbError) {
+        setUploadError(`Kunne ikke gemme: ${dbError.message}`);
+        return;
+      }
+
+      setProfile({ ...profile, [column]: url } as Profile);
+      setFormData({ ...formData, [column]: url });
+    } finally {
+      setUploading(null);
+    }
   };
 
   const toggleGdpr = async () => {
@@ -125,9 +173,29 @@ export default function StudentProfile() {
                 )}
               </div>
             </div>
-            <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-purple-500 border-2 border-[#0A0A0F] flex items-center justify-center">
-              <Camera size={14} className="text-white" />
+            <button
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={uploading !== null}
+              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-purple-500 border-2 border-[#0A0A0F] flex items-center justify-center disabled:opacity-50"
+              title="Skift profilbillede"
+            >
+              {uploading === 'avatar' ? (
+                <Loader2 size={14} className="text-white animate-spin" />
+              ) : (
+                <Camera size={14} className="text-white" />
+              )}
             </button>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleUpload(f, 'avatar');
+                e.target.value = '';
+              }}
+            />
           </div>
         </motion.div>
 
@@ -260,23 +328,117 @@ export default function StudentProfile() {
           </div>
         </div>
 
-        {/* Video Pitch */}
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-6">
+        {/* CV Upload */}
+        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <Camera size={14} className="text-[#64748B]" />
-            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Video-pitch</h3>
+            <FileText size={14} className="text-[#64748B]" />
+            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">CV</h3>
           </div>
+          <input
+            ref={cvInputRef}
+            type="file"
+            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleUpload(f, 'cv');
+              e.target.value = '';
+            }}
+          />
+          {profile.cv_url ? (
+            <div className="flex items-center gap-3">
+              <a
+                href={profile.cv_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center gap-2 py-2.5 px-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/20 transition-colors"
+              >
+                <FileText size={16} /> Se mit CV <ExternalLink size={12} className="ml-auto" />
+              </a>
+              <button
+                onClick={() => cvInputRef.current?.click()}
+                disabled={uploading !== null}
+                className="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 text-[#94A3B8] text-sm font-medium hover:bg-white/10 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {uploading === 'cv' ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                Skift
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => cvInputRef.current?.click()}
+              disabled={uploading !== null}
+              className="w-full py-6 rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 hover:border-purple-500/40 hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+            >
+              {uploading === 'cv' ? (
+                <Loader2 size={24} className="text-purple-400 animate-spin" />
+              ) : (
+                <Upload size={24} className="text-[#64748B]" />
+              )}
+              <p className="text-xs text-[#94A3B8] font-medium">
+                {uploading === 'cv' ? 'Uploader…' : 'Upload dit CV (PDF eller Word)'}
+              </p>
+            </button>
+          )}
+        </div>
+
+        {/* Video Pitch */}
+        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Camera size={14} className="text-[#64748B]" />
+              <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Video-pitch</h3>
+            </div>
+            {profile.video_pitch_url && (
+              <button
+                onClick={() => videoInputRef.current?.click()}
+                disabled={uploading !== null}
+                className="text-xs text-purple-400 hover:text-purple-300 transition-colors disabled:opacity-50 flex items-center gap-1"
+              >
+                {uploading === 'video' ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />}
+                Skift video
+              </button>
+            )}
+          </div>
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleUpload(f, 'video');
+              e.target.value = '';
+            }}
+          />
           {profile.video_pitch_url ? (
             <div className="relative aspect-video rounded-xl overflow-hidden bg-black/50">
               <video src={profile.video_pitch_url} className="w-full h-full object-cover" controls />
             </div>
           ) : (
-            <div className="aspect-video rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2">
-              <Camera size={24} className="text-[#64748B]" />
-              <p className="text-xs text-[#64748B]">Ingen video uploadet</p>
-            </div>
+            <button
+              onClick={() => videoInputRef.current?.click()}
+              disabled={uploading !== null}
+              className="w-full aspect-video rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 hover:border-purple-500/40 hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+            >
+              {uploading === 'video' ? (
+                <Loader2 size={24} className="text-purple-400 animate-spin" />
+              ) : (
+                <Camera size={24} className="text-[#64748B]" />
+              )}
+              <p className="text-xs text-[#94A3B8] font-medium">
+                {uploading === 'video' ? 'Uploader…' : 'Upload en video-pitch (MP4, MOV)'}
+              </p>
+            </button>
           )}
         </div>
+
+        {/* Upload error */}
+        {uploadError && (
+          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-4">
+            {uploadError}
+          </div>
+        )}
 
         {/* Edit / Save */}
         <div className="flex gap-3">

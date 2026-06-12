@@ -5,9 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   GraduationCap,
   Store,
-  Mail,
-  Lock,
-  User,
   ArrowRight,
   ArrowLeft,
   Loader2,
@@ -132,19 +129,25 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Background orbs */}
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-6 relative overflow-hidden">
+      {/* Background orbs — fresh green vibes */}
       <motion.div
-        className="absolute w-[300px] h-[300px] rounded-full bg-gradient-to-br from-purple-600/20 to-blue-600/10 blur-3xl"
-        style={{ top: '15%', right: '5%' }}
-        animate={{ x: [0, -20, 15, 0], y: [0, 15, -10, 0] }}
+        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-emerald-500/25 to-teal-500/15 blur-3xl"
+        style={{ top: '10%', right: '5%' }}
+        animate={{ x: [0, -30, 20, 0], y: [0, 20, -15, 0], scale: [1, 1.1, 0.95, 1] }}
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute w-[250px] h-[250px] rounded-full bg-gradient-to-br from-cyan-500/15 to-purple-500/10 blur-3xl"
-        style={{ bottom: '15%', left: '5%' }}
-        animate={{ x: [0, 20, -15, 0], y: [0, -20, 10, 0] }}
+        className="absolute w-[320px] h-[320px] rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-400/15 blur-3xl"
+        style={{ bottom: '10%', left: '5%' }}
+        animate={{ x: [0, 25, -20, 0], y: [0, -25, 15, 0], scale: [1, 0.95, 1.1, 1] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+      />
+      <motion.div
+        className="absolute w-[220px] h-[220px] rounded-full bg-gradient-to-br from-lime-400/15 to-emerald-500/10 blur-3xl"
+        style={{ top: '55%', left: '45%' }}
+        animate={{ x: [0, 20, -25, 0], y: [0, -20, 15, 0] }}
+        transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
       />
 
       <div className="relative z-10 w-full max-w-sm">
@@ -159,7 +162,7 @@ export default function SignupPage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
                   step >= s
-                    ? 'bg-gradient-to-br from-purple-500 to-blue-500 text-white'
+                    ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
                     : 'bg-white/5 border border-white/10 text-text-muted'
                 }`}
               >
@@ -168,7 +171,7 @@ export default function SignupPage() {
               {s < 2 && (
                 <div
                   className={`w-12 h-0.5 rounded-full transition-colors duration-300 ${
-                    step > 1 ? 'bg-purple-500' : 'bg-white/10'
+                    step > 1 ? 'bg-emerald-500' : 'bg-white/10'
                   }`}
                 />
               )}
@@ -177,7 +180,7 @@ export default function SignupPage() {
         </motion.div>
 
         {/* Card */}
-        <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-purple-500/10 overflow-hidden">
+        <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-emerald-500/10 overflow-hidden">
           {/* Logo */}
           <motion.div
             initial={{ scale: 0 }}
@@ -185,7 +188,7 @@ export default function SignupPage() {
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             className="flex justify-center mb-5"
           >
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <div className="animate-float w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient flex items-center justify-center shadow-lg shadow-emerald-500/50">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
           </motion.div>
@@ -202,8 +205,10 @@ export default function SignupPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-center mb-6">
-                  <h1 className="text-2xl font-bold text-white tracking-tight">Opret konto</h1>
-                  <p className="text-text-secondary text-sm mt-1">Hvem er du?</p>
+                  <h1 className="text-3xl font-extrabold tracking-tight">
+                    <span className="gradient-text">Kom i gang</span> 🎉
+                  </h1>
+                  <p className="text-text-secondary text-sm mt-2">Hvem er du?</p>
                 </div>
 
                 <div className="space-y-3">
@@ -212,19 +217,19 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => goToStep2('student')}
-                    className="w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/40 transition-all text-left group"
+                    className="w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500/5 hover:shadow-lg hover:shadow-emerald-500/10 transition-all text-left group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0 shadow-lg">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
                         <GraduationCap className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-white font-semibold text-lg">Elev</h3>
+                        <h3 className="text-white font-bold text-lg">Elev 🎓</h3>
                         <p className="text-text-secondary text-sm mt-0.5">
                           Jeg leder efter en praktikplads
                         </p>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-purple-400 group-hover:translate-x-1 transition-all mt-1" />
+                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-emerald-400 group-hover:translate-x-1 transition-all mt-1" />
                     </div>
                   </motion.button>
 
@@ -233,26 +238,26 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => goToStep2('store_manager')}
-                    className="w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-blue-500/40 transition-all text-left group"
+                    className="w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-cyan-500/5 hover:shadow-lg hover:shadow-cyan-500/10 transition-all text-left group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shrink-0 shadow-lg">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/30">
                         <Store className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-white font-semibold text-lg">Butikschef</h3>
+                        <h3 className="text-white font-bold text-lg">Butikschef 🏪</h3>
                         <p className="text-text-secondary text-sm mt-0.5">
                           Jeg leder efter en praktikant
                         </p>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-blue-400 group-hover:translate-x-1 transition-all mt-1" />
+                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-cyan-400 group-hover:translate-x-1 transition-all mt-1" />
                     </div>
                   </motion.button>
                 </div>
 
                 <p className="text-center text-sm text-text-secondary mt-6">
                   Har du allerede en konto?{' '}
-                  <Link href="/login" className="text-purple-400 font-medium hover:text-purple-300 transition-colors">
+                  <Link href="/login" className="font-semibold gradient-text hover:opacity-80 transition-opacity">
                     Log ind
                   </Link>
                 </p>
@@ -270,50 +275,44 @@ export default function SignupPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-center mb-6">
-                  <h1 className="text-2xl font-bold text-white tracking-tight">
-                    {role === 'student' ? 'Elevoplysninger' : 'Butikschef-oplysninger'}
+                  <h1 className="text-3xl font-extrabold tracking-tight">
+                    <span className="gradient-text">Næsten i mål</span>{' '}
+                    {role === 'student' ? '🎓' : '🏪'}
                   </h1>
-                  <p className="text-text-secondary text-sm mt-1">Udfyld dine oplysninger</p>
+                  <p className="text-text-secondary text-sm mt-2">Udfyld dine oplysninger</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Full Name */}
                   <div>
-                    <label className="block text-sm font-medium text-text-secondary mb-1.5">Fulde navn</label>
-                    <div className="relative">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                      <input
-                        type="text"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        placeholder="Dit fulde navn"
-                        required
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
-                      />
-                    </div>
+                    <label className="block text-sm font-semibold text-text-secondary mb-1.5">Fulde navn</label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Dit fulde navn"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
+                    />
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label className="block text-sm font-medium text-text-secondary mb-1.5">Email</label>
-                    <div className="relative">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="din@email.dk"
-                        required
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
-                      />
-                    </div>
+                    <label className="block text-sm font-semibold text-text-secondary mb-1.5">Email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="din@email.dk"
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
+                    />
                   </div>
 
                   {/* Password */}
                   <div>
-                    <label className="block text-sm font-medium text-text-secondary mb-1.5">Adgangskode</label>
+                    <label className="block text-sm font-semibold text-text-secondary mb-1.5">Adgangskode</label>
                     <div className="relative">
-                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
@@ -321,12 +320,12 @@ export default function SignupPage() {
                         placeholder="Mindst 6 tegn"
                         required
                         minLength={6}
-                        className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
+                        className="w-full px-4 !pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors z-10"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
@@ -336,7 +335,7 @@ export default function SignupPage() {
                   {/* Organization selector for students */}
                   {role === 'student' && (
                     <div>
-                      <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                      <label className="block text-sm font-semibold text-text-secondary mb-1.5">
                         Erhvervscenter / skole
                       </label>
                       <div className="relative">
@@ -344,13 +343,13 @@ export default function SignupPage() {
                         <select
                           value={organizationId}
                           onChange={(e) => setOrganizationId(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm appearance-none cursor-pointer"
+                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm appearance-none cursor-pointer"
                         >
-                          <option value="" className="bg-[#12121A]">
+                          <option value="" className="bg-[var(--bg-secondary)]">
                             Vælg din skole...
                           </option>
                           {organizations.map((org) => (
-                            <option key={org.id} value={org.id} className="bg-[#12121A]">
+                            <option key={org.id} value={org.id} className="bg-[var(--bg-secondary)]">
                               {org.name}
                             </option>
                           ))}
@@ -392,7 +391,7 @@ export default function SignupPage() {
                       disabled={loading}
                       whileHover={{ scale: loading ? 1 : 1.02 }}
                       whileTap={{ scale: loading ? 1 : 0.98 }}
-                      className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 animate-gradient text-white font-bold shadow-lg shadow-emerald-500/40 hover:shadow-emerald-500/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-shadow"
                     >
                       {loading ? (
                         <>

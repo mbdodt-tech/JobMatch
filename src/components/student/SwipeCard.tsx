@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
 import { MapPin, Users, Briefcase } from 'lucide-react';
-import type { Store, EDUCATION_LINE_LABELS } from '@/lib/types/database';
+import type { Store } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS as EDU_LABELS } from '@/lib/types/database';
 
 interface SwipeCardProps {

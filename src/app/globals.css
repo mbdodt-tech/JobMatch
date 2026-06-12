@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 :root {
-  --bg-primary: #0A0A0F;
-  --bg-secondary: #12121A;
-  --bg-elevated: #1A1A2E;
-  --accent-primary: #7C3AED;
-  --accent-secondary: #3B82F6;
+  --bg-primary: #0A0F0D;
+  --bg-secondary: #101816;
+  --bg-elevated: #15211D;
+  --accent-primary: #10B981;
+  --accent-secondary: #14B8A6;
   --accent-warm: #F97316;
   --accent-success: #10B981;
   --accent-danger: #EF4444;
@@ -32,19 +32,19 @@ body {
 .glass-strong { background: rgba(255,255,255,0.08); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.15); }
 
 /* Gradient text */
-.gradient-text { background: linear-gradient(135deg, #7C3AED, #3B82F6, #06B6D4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.gradient-text { background: linear-gradient(135deg, #34D399, #2DD4BF, #22D3EE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
 /* Gradient button */
-.btn-gradient { background: linear-gradient(135deg, #7C3AED, #3B82F6); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); transition: all 0.3s ease; }
-.btn-gradient:hover { box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6); transform: translateY(-1px); }
+.btn-gradient { background: linear-gradient(135deg, #10B981, #14B8A6); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.3s ease; }
+.btn-gradient:hover { box-shadow: 0 6px 25px rgba(16, 185, 129, 0.6); transform: translateY(-1px); }
 
 /* Glow effects */
-.glow-purple { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3), 0 0 60px rgba(124, 58, 237, 0.1); }
+.glow-purple { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 0 0 60px rgba(16, 185, 129, 0.1); }
 .glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
 .glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
 
 /* Pulse animation */
-@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.4); } 50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.7); } }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); } 50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.7); } }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
 /* Safe area padding for mobile */
@@ -55,21 +55,40 @@ body {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* Input styles */
-input, select, textarea {
-  background: rgba(255,255,255,0.05) !important;
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  color: var(--text-primary) !important;
-  border-radius: 12px !important;
-  padding: 12px 16px !important;
-  font-size: 16px !important; /* Prevents iOS zoom */
-  transition: all 0.2s ease !important;
+/* Input styles — kept in the base layer so Tailwind utilities (pl-10 etc.) can override */
+@layer base {
+  input, select, textarea {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-primary);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 16px; /* Prevents iOS zoom */
+    transition: all 0.2s ease;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    outline: none;
+  }
 }
-input:focus, select:focus, textarea:focus {
-  border-color: var(--accent-primary) !important;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2) !important;
-  outline: none !important;
+
+/* Animated gradient border for focused inputs */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
 
 /* Toggle switch */
 .toggle-switch { position: relative; width: 52px; height: 28px; border-radius: 14px; background: rgba(255,255,255,0.1); transition: background 0.3s; cursor: pointer; }

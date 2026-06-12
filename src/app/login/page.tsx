@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Sparkles, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Loader2, AlertCircle, Eye, EyeOff, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -74,25 +74,36 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center px-6 relative overflow-hidden">
-      {/* Background orbs */}
+    <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center px-6 relative overflow-hidden">
+      {/* Background orbs — fresh green vibes */}
       <motion.div
-        className="absolute w-[300px] h-[300px] rounded-full bg-gradient-to-br from-purple-600/20 to-blue-600/10 blur-3xl"
-        style={{ top: '10%', left: '10%' }}
+        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-emerald-500/25 to-teal-500/15 blur-3xl"
+        style={{ top: '5%', left: '5%' }}
         animate={{
-          x: [0, 30, -20, 0],
-          y: [0, -20, 15, 0],
+          x: [0, 40, -25, 0],
+          y: [0, -25, 20, 0],
+          scale: [1, 1.1, 0.95, 1],
         }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute w-[250px] h-[250px] rounded-full bg-gradient-to-br from-blue-500/15 to-cyan-400/10 blur-3xl"
-        style={{ bottom: '10%', right: '10%' }}
+        className="absolute w-[350px] h-[350px] rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-400/15 blur-3xl"
+        style={{ bottom: '5%', right: '5%' }}
         animate={{
-          x: [0, -25, 15, 0],
-          y: [0, 20, -15, 0],
+          x: [0, -30, 20, 0],
+          y: [0, 25, -20, 0],
+          scale: [1, 0.95, 1.1, 1],
         }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+      />
+      <motion.div
+        className="absolute w-[250px] h-[250px] rounded-full bg-gradient-to-br from-lime-400/15 to-emerald-500/10 blur-3xl"
+        style={{ top: '50%', left: '50%' }}
+        animate={{
+          x: [0, 25, -30, 0],
+          y: [0, -30, 15, 0],
+        }}
+        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
       />
 
       {/* Login Card */}
@@ -102,15 +113,15 @@ export default function LoginPage() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="relative z-10 w-full max-w-sm"
       >
-        <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-purple-500/10">
+        <div className="p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-emerald-500/20">
           {/* Logo */}
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            initial={{ scale: 0, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
             className="flex justify-center mb-6"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <div className="animate-float w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient flex items-center justify-center shadow-lg shadow-emerald-500/50">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
           </motion.div>
@@ -121,8 +132,10 @@ export default function LoginPage() {
             transition={{ delay: 0.3 }}
             className="text-center mb-8"
           >
-            <h1 className="text-2xl font-bold text-white tracking-tight">Velkommen tilbage</h1>
-            <p className="text-text-secondary text-sm mt-1">Log ind på din Jobmatch konto</p>
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              <span className="gradient-text">Velkommen tilbage</span> 👋
+            </h1>
+            <p className="text-text-secondary text-sm mt-2">Log ind og find dit næste match 🚀</p>
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -132,18 +145,15 @@ export default function LoginPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="din@email.dk"
-                  required
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
-                />
-              </div>
+              <label className="block text-sm font-semibold text-text-secondary mb-1.5">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="din@email.dk"
+                required
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
+              />
             </motion.div>
 
             {/* Password */}
@@ -152,21 +162,20 @@ export default function LoginPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">Adgangskode</label>
+              <label className="block text-sm font-semibold text-text-secondary mb-1.5">Adgangskode</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-10 pr-11 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-sm"
+                  className="w-full px-4 !pr-12 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors z-10"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -198,8 +207,8 @@ export default function LoginPage() {
                 type="submit"
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+                whileTap={{ scale: loading ? 1 : 0.97 }}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 animate-gradient text-white font-bold shadow-lg shadow-emerald-500/40 hover:shadow-emerald-500/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-shadow"
               >
                 {loading ? (
                   <>
@@ -207,7 +216,10 @@ export default function LoginPage() {
                     Logger ind...
                   </>
                 ) : (
-                  'Log ind'
+                  <>
+                    <Zap className="w-4 h-4" />
+                    Log ind
+                  </>
                 )}
               </motion.button>
             </motion.div>
@@ -223,9 +235,9 @@ export default function LoginPage() {
             Har du ikke en konto?{' '}
             <Link
               href="/signup"
-              className="text-purple-400 font-medium hover:text-purple-300 transition-colors"
+              className="font-semibold gradient-text hover:opacity-80 transition-opacity"
             >
-              Opret dig her
+              Opret dig her ✨
             </Link>
           </motion.p>
         </div>

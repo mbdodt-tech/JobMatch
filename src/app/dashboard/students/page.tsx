@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -12,9 +12,11 @@ import {
   EyeOff,
   ArrowUpDown,
   UserX,
+  Loader2,
 } from "lucide-react";
-
-// ─── Types ──────────────────────────────────────────────────────────────────
+import { createClient } from "@/lib/supabase/client";
+import { EDUCATION_LINE_LABELS } from "@/lib/types/database";
+import type { EducationLine } from "@/lib/types/database";
 
 interface Student {
   id: string;
@@ -30,37 +32,9 @@ type SortField = "swipes" | "matches" | "last_active" | "name";
 type SortDirection = "asc" | "desc";
 type StatusFilter = "all" | "at_risk" | "matched" | "inactive";
 
-// ─── Placeholder Data ───────────────────────────────────────────────────────
-
-const studentsData: Student[] = [
-  { id: "1", name: "Emil Andersen", education_line: "Detail", swipes: 45, matches: 3, last_active: "2026-06-11T09:30:00", gdpr_consent: true },
-  { id: "2", name: "Sofia Nielsen", education_line: "Kontor", swipes: 62, matches: 0, last_active: "2026-06-10T14:20:00", gdpr_consent: true },
-  { id: "3", name: "Oliver Petersen", education_line: "Event", swipes: 38, matches: 2, last_active: "2026-06-11T08:15:00", gdpr_consent: true },
-  { id: "4", name: "Ida Christensen", education_line: "Detail", swipes: 91, matches: 0, last_active: "2026-06-09T16:45:00", gdpr_consent: true },
-  { id: "5", name: "Noah Jensen", education_line: "Handel", swipes: 12, matches: 1, last_active: "2026-06-08T11:00:00", gdpr_consent: false },
-  { id: "6", name: "Freja Larsen", education_line: "Lager & Logistik", swipes: 55, matches: 0, last_active: "2026-06-10T09:30:00", gdpr_consent: true },
-  { id: "7", name: "William Rasmussen", education_line: "Detail", swipes: 28, matches: 4, last_active: "2026-06-11T10:00:00", gdpr_consent: true },
-  { id: "8", name: "Emma Thomsen", education_line: "Kontor", swipes: 73, matches: 0, last_active: "2026-06-07T13:15:00", gdpr_consent: true },
-  { id: "9", name: "Lucas Poulsen", education_line: "Event", swipes: 19, matches: 0, last_active: "2026-06-05T10:30:00", gdpr_consent: false },
-  { id: "10", name: "Alma Sørensen", education_line: "Handel", swipes: 34, matches: 2, last_active: "2026-06-11T07:45:00", gdpr_consent: true },
-  { id: "11", name: "Oscar Møller", education_line: "Detail", swipes: 87, matches: 0, last_active: "2026-06-10T15:00:00", gdpr_consent: true },
-  { id: "12", name: "Clara Frederiksen", education_line: "Lager & Logistik", swipes: 41, matches: 1, last_active: "2026-06-09T12:00:00", gdpr_consent: true },
-];
-
-const educationOptions = [
-  "Alle",
-  "Detail",
-  "Kontor",
-  "Event",
-  "Handel",
-  "Lager & Logistik",
-];
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
 function getStatus(student: Student): "at_risk" | "matched" | "inactive" {
   if (student.matches > 0) return "matched";
-  if (student.swipes >= 30) return "at_risk";
+  if (student.swipes >= 5) return "at_risk";
   return "inactive";
 }
 
@@ -88,18 +62,18 @@ function getStatusBadge(status: "at_risk" | "matched" | "inactive") {
 }
 
 function timeAgo(dateStr: string): string {
+  if (!dateStr) return "Aldrig";
   const now = new Date();
   const date = new Date(dateStr);
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return "Lige nu";
   if (diffMins < 60) return `${diffMins} min. siden`;
   const diffHours = Math.floor(diffMins / 60);
   if (diffHours < 24) return `${diffHours} time${diffHours > 1 ? "r" : ""} siden`;
   const diffDays = Math.floor(diffHours / 24);
   return `${diffDays} dag${diffDays > 1 ? "e" : ""} siden`;
 }
-
-// ─── Animation Variants ────────────────────────────────────────────────────
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -111,15 +85,68 @@ const rowVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
 };
 
-// ─── Page Component ─────────────────────────────────────────────────────────
-
 export default function StudentsPage() {
+  const [studentsData, setStudentsData] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [educationFilter, setEducationFilter] = useState("Alle");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortField, setSortField] = useState<SortField>("swipes");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [showFilterPanel, setShowFilterPanel] = useState(false);
+
+  useEffect(() => {
+    async function fetchStudents() {
+      const supabase = createClient();
+
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, education_line, gdpr_consent, last_active_at")
+        .eq("role", "student");
+
+      if (!profiles) {
+        setLoading(false);
+        return;
+      }
+
+      const enriched: Student[] = [];
+      for (const p of profiles) {
+        const { count: swipeCount } = await supabase
+          .from("swipes")
+          .select("*", { count: "exact", head: true })
+          .eq("profile_id", p.id);
+
+        const { count: matchCount } = await supabase
+          .from("matches")
+          .select("*", { count: "exact", head: true })
+          .eq("student_id", p.id);
+
+        const eduLabel = p.education_line
+          ? EDUCATION_LINE_LABELS[p.education_line as EducationLine] || p.education_line
+          : "Ikke angivet";
+
+        enriched.push({
+          id: p.id,
+          name: p.full_name || "Ukendt",
+          education_line: eduLabel,
+          swipes: swipeCount ?? 0,
+          matches: matchCount ?? 0,
+          last_active: p.last_active_at || "",
+          gdpr_consent: p.gdpr_consent ?? false,
+        });
+      }
+
+      setStudentsData(enriched);
+      setLoading(false);
+    }
+
+    fetchStudents();
+  }, []);
+
+  const educationOptions = useMemo(() => {
+    const lines = new Set(studentsData.map((s) => s.education_line));
+    return ["Alle", ...Array.from(lines).sort()];
+  }, [studentsData]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -133,7 +160,6 @@ export default function StudentsPage() {
   const filteredStudents = useMemo(() => {
     let result = [...studentsData];
 
-    // Search filter
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
@@ -143,17 +169,14 @@ export default function StudentsPage() {
       );
     }
 
-    // Education filter
     if (educationFilter !== "Alle") {
       result = result.filter((s) => s.education_line === educationFilter);
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       result = result.filter((s) => getStatus(s) === statusFilter);
     }
 
-    // Sort
     result.sort((a, b) => {
       let aVal: string | number;
       let bVal: string | number;
@@ -172,8 +195,8 @@ export default function StudentsPage() {
           bVal = b.matches;
           break;
         case "last_active":
-          aVal = new Date(a.last_active).getTime();
-          bVal = new Date(b.last_active).getTime();
+          aVal = a.last_active ? new Date(a.last_active).getTime() : 0;
+          bVal = b.last_active ? new Date(b.last_active).getTime() : 0;
           break;
         default:
           aVal = a.swipes;
@@ -191,9 +214,17 @@ export default function StudentsPage() {
     });
 
     return result;
-  }, [searchQuery, educationFilter, statusFilter, sortField, sortDirection]);
+  }, [searchQuery, educationFilter, statusFilter, sortField, sortDirection, studentsData]);
 
   const atRiskCount = studentsData.filter((s) => getStatus(s) === "at_risk").length;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -201,7 +232,6 @@ export default function StudentsPage() {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      {/* Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
           Elever
@@ -211,7 +241,6 @@ export default function StudentsPage() {
         </p>
       </div>
 
-      {/* Alert Banner */}
       {atRiskCount > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -226,9 +255,7 @@ export default function StudentsPage() {
         </motion.div>
       )}
 
-      {/* Filter Bar */}
       <div className="flex flex-col sm:flex-row gap-3">
-        {/* Search */}
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
           <input
@@ -240,7 +267,6 @@ export default function StudentsPage() {
           />
         </div>
 
-        {/* Education Filter */}
         <div className="relative">
           <select
             value={educationFilter}
@@ -256,7 +282,6 @@ export default function StudentsPage() {
           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)] pointer-events-none" />
         </div>
 
-        {/* Status Filter Toggle */}
         <button
           onClick={() => setShowFilterPanel(!showFilterPanel)}
           className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all text-sm font-medium ${
@@ -270,7 +295,6 @@ export default function StudentsPage() {
         </button>
       </div>
 
-      {/* Status Filter Panel */}
       <AnimatePresence>
         {showFilterPanel && (
           <motion.div
@@ -303,9 +327,7 @@ export default function StudentsPage() {
         )}
       </AnimatePresence>
 
-      {/* Table */}
       <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden">
-        {/* Table Header */}
         <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-4 px-6 py-4 border-b border-white/10 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
           <button
             onClick={() => handleSort("name")}
@@ -339,7 +361,6 @@ export default function StudentsPage() {
           <span>Status</span>
         </div>
 
-        {/* Table Body */}
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
           {filteredStudents.length === 0 ? (
             <div className="py-16 text-center">
@@ -363,7 +384,6 @@ export default function StudentsPage() {
                     i % 2 === 0 ? "bg-white/[0.01]" : ""
                   }`}
                 >
-                  {/* Name */}
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
@@ -404,14 +424,12 @@ export default function StudentsPage() {
                     )}
                   </div>
 
-                  {/* Education */}
                   <div className="hidden md:flex items-center">
                     <span className="text-sm text-[var(--text-secondary)]">
                       {student.education_line}
                     </span>
                   </div>
 
-                  {/* Swipes */}
                   <div className="hidden md:flex items-center">
                     <span
                       className={`text-sm font-semibold ${
@@ -424,7 +442,6 @@ export default function StudentsPage() {
                     </span>
                   </div>
 
-                  {/* Matches */}
                   <div className="hidden md:flex items-center">
                     <span
                       className={`text-sm font-semibold ${
@@ -437,14 +454,12 @@ export default function StudentsPage() {
                     </span>
                   </div>
 
-                  {/* Last Active */}
                   <div className="hidden md:flex items-center">
                     <span className="text-sm text-[var(--text-secondary)]">
                       {timeAgo(student.last_active)}
                     </span>
                   </div>
 
-                  {/* Status */}
                   <div className="flex items-center mt-2 md:mt-0">
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${badge.className}`}
@@ -454,7 +469,6 @@ export default function StudentsPage() {
                     </span>
                   </div>
 
-                  {/* Mobile Stats */}
                   <div className="flex items-center gap-4 md:hidden text-xs text-[var(--text-secondary)]">
                     <span>{student.swipes} swipes</span>
                     <span>{student.matches} matches</span>
@@ -467,7 +481,6 @@ export default function StudentsPage() {
         </motion.div>
       </div>
 
-      {/* Summary Footer */}
       <div className="flex flex-wrap gap-4 text-sm text-[var(--text-muted)]">
         <span>
           Viser{" "}

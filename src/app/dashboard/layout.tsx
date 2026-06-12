@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,6 +16,7 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { href: "/dashboard", label: "Overblik", icon: BarChart3 },
@@ -30,7 +32,71 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userInitials, setUserInitials] = useState("");
+  const [atRiskCount, setAtRiskCount] = useState(0);
+
+  useEffect(() => {
+    async function loadUserData() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      if (profile?.full_name) {
+        setUserName(profile.full_name);
+        setUserInitials(
+          profile.full_name
+            .split(" ")
+            .map((n: string) => n[0])
+            .join("")
+            .toUpperCase()
+        );
+      }
+
+      const { data: students } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("role", "student")
+        .eq("is_active", true);
+
+      if (students) {
+        let count = 0;
+        for (const s of students) {
+          const { count: swipeCount } = await supabase
+            .from("swipes")
+            .select("*", { count: "exact", head: true })
+            .eq("profile_id", s.id)
+            .eq("direction", "right");
+
+          const { count: matchCount } = await supabase
+            .from("matches")
+            .select("*", { count: "exact", head: true })
+            .eq("student_id", s.id);
+
+          if ((swipeCount ?? 0) >= 5 && (matchCount ?? 0) === 0) {
+            count++;
+          }
+        }
+        setAtRiskCount(count);
+      }
+    }
+
+    loadUserData();
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -85,9 +151,9 @@ export default function DashboardLayout({
                 }`}
               />
               <span>{item.label}</span>
-              {item.label === "Opfølgning" && (
+              {item.label === "Opfølgning" && atRiskCount > 0 && (
                 <span className="ml-auto w-5 h-5 rounded-full bg-red-500/20 text-red-400 text-xs flex items-center justify-center font-semibold">
-                  3
+                  {atRiskCount}
                 </span>
               )}
             </Link>
@@ -99,17 +165,18 @@ export default function DashboardLayout({
       <div className="p-4 mx-3 mb-4 rounded-xl bg-white/5 border border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">
-            MH
+            {userInitials || "??"}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-[var(--text-primary)] truncate">
-              Maria Hansen
+              {userName || "Indlæser..."}
             </p>
             <p className="text-xs text-[var(--text-muted)] truncate">
               Vejleder
             </p>
           </div>
           <button
+            onClick={handleLogout}
             className="p-1.5 rounded-lg hover:bg-white/10 text-[var(--text-muted)] hover:text-red-400 transition-colors"
             title="Log ud"
           >
@@ -145,7 +212,7 @@ export default function DashboardLayout({
             </span>
           </div>
         </div>
-        <div className="w-10" /> {/* Spacer for centering */}
+        <div className="w-10" />
       </div>
 
       {/* Mobile Sidebar Overlay */}
