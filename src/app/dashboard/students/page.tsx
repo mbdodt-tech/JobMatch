@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -85,15 +86,27 @@ const rowVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
 };
 
-export default function StudentsPage() {
+const VALID_STATUSES: StatusFilter[] = ["all", "at_risk", "matched", "inactive"];
+
+function StudentsContent() {
+  const searchParams = useSearchParams();
+  const statusParam = searchParams.get("status");
+  const initialStatus: StatusFilter = VALID_STATUSES.includes(
+    statusParam as StatusFilter
+  )
+    ? (statusParam as StatusFilter)
+    : "all";
+  const initialEducation = searchParams.get("education") || "Alle";
+  const initialSearch = searchParams.get("search") || "";
+
   const [studentsData, setStudentsData] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [educationFilter, setEducationFilter] = useState("Alle");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [educationFilter, setEducationFilter] = useState(initialEducation);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(initialStatus);
   const [sortField, setSortField] = useState<SortField>("swipes");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [showFilterPanel, setShowFilterPanel] = useState(initialStatus !== "all");
 
   useEffect(() => {
     async function fetchStudents() {
@@ -496,5 +509,19 @@ export default function StudentsPage() {
         </span>
       </div>
     </motion.div>
+  );
+}
+
+export default function StudentsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+        </div>
+      }
+    >
+      <StudentsContent />
+    </Suspense>
   );
 }

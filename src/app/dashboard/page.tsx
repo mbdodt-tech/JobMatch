@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Users,
@@ -62,6 +63,7 @@ function KpiCard({
   accentColor,
   glowClass,
   suffix,
+  href,
 }: {
   label: string;
   value: number;
@@ -69,11 +71,16 @@ function KpiCard({
   accentColor: string;
   glowClass?: string;
   suffix?: string;
+  href?: string;
 }) {
-  return (
+  const card = (
     <motion.div
       variants={itemVariants}
-      className={`relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 group hover:scale-[1.02] transition-transform duration-300 ${glowClass ?? ""}`}
+      className={`relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 group transition-all duration-300 ${
+        href
+          ? "cursor-pointer hover:scale-[1.02] hover:border-white/20"
+          : "hover:scale-[1.02]"
+      } ${glowClass ?? ""}`}
     >
       <div
         className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-20 ${accentColor}`}
@@ -96,8 +103,20 @@ function KpiCard({
           <Icon className={`w-5 h-5 ${accentColor.replace("bg-", "text-")}`} />
         </div>
       </div>
+      {href && (
+        <ArrowUpRight className="absolute bottom-4 right-4 w-4 h-4 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity z-10" />
+      )}
     </motion.div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        {card}
+      </Link>
+    );
+  }
+  return card;
 }
 
 function timeAgo(dateStr: string): string {
@@ -302,6 +321,7 @@ export default function DashboardPage() {
           value={kpiData.totalStudents}
           icon={Users}
           accentColor="bg-blue-500"
+          href="/dashboard/students"
         />
         <KpiCard
           label="Aktive denne uge"
@@ -309,6 +329,7 @@ export default function DashboardPage() {
           icon={Activity}
           accentColor="bg-green-500"
           glowClass="glow-green"
+          href="/dashboard/students"
         />
         <KpiCard
           label="Matches i alt"
@@ -316,6 +337,7 @@ export default function DashboardPage() {
           icon={Heart}
           accentColor="bg-purple-500"
           glowClass="glow-purple"
+          href="/dashboard/students?status=matched"
         />
         <KpiCard
           label="Match-rate"
@@ -323,6 +345,7 @@ export default function DashboardPage() {
           icon={TrendingUp}
           accentColor="bg-cyan-500"
           suffix="%"
+          href="/dashboard/students?status=matched"
         />
       </div>
 
@@ -336,9 +359,13 @@ export default function DashboardPage() {
           </h2>
           <div className="space-y-5">
             {educationLines.map((line, i) => (
-              <div key={line.name} className="space-y-2">
+              <Link
+                key={line.name}
+                href={`/dashboard/students?education=${encodeURIComponent(line.name)}`}
+                className="block space-y-2 rounded-xl -mx-2 px-2 py-1.5 hover:bg-white/5 transition-colors group"
+              >
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-[var(--text-primary)]">
+                  <span className="font-medium text-[var(--text-primary)] group-hover:text-white transition-colors">
                     {line.name}
                   </span>
                   <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
@@ -368,7 +395,7 @@ export default function DashboardPage() {
                     className="h-full rounded-full bg-gradient-to-r from-green-600 to-green-400"
                   />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </motion.div>
@@ -397,6 +424,9 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 + i * 0.1 }}
+                >
+                <Link
+                  href={`/dashboard/stores?search=${encodeURIComponent(store.name)}`}
                   className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group"
                 >
                   <div
@@ -432,6 +462,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
                 </motion.div>
               ))
             )}
@@ -460,13 +491,16 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 + i * 0.1 }}
-                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors"
+                >
+                <Link
+                  href={`/dashboard/students?search=${encodeURIComponent(match.student)}`}
+                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group"
                 >
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 border border-purple-500/20 flex items-center justify-center">
                     <Heart className="w-4 h-4 text-purple-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate group-hover:text-white transition-colors">
                       {match.student}
                     </p>
                     <p className="text-xs text-[var(--text-secondary)] truncate">
@@ -477,6 +511,7 @@ export default function DashboardPage() {
                     <Clock className="w-3.5 h-3.5" />
                     {timeAgo(match.matchedAt)}
                   </div>
+                </Link>
                 </motion.div>
               ))
             )}

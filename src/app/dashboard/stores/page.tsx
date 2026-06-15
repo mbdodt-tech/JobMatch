@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { MapPin, Users, Loader2 } from 'lucide-react';
+import { MapPin, Users, Loader2, Search } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 import type { EducationLine } from '@/lib/types/database';
@@ -31,9 +32,11 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
 };
 
-export default function DashboardStores() {
+function StoresContent() {
+  const searchParams = useSearchParams();
   const [storesData, setStoresData] = useState<StoreDisplay[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
 
   useEffect(() => {
     async function fetchStores() {
@@ -105,6 +108,16 @@ export default function DashboardStores() {
   const totalSlots = storesData.reduce((sum, s) => sum + s.internship_slots, 0);
   const totalMatches = storesData.reduce((sum, s) => sum + s.matches, 0);
 
+  const q = searchQuery.trim().toLowerCase();
+  const filteredStores = q
+    ? storesData.filter(
+        s =>
+          s.name.toLowerCase().includes(q) ||
+          s.city.toLowerCase().includes(q) ||
+          s.manager.toLowerCase().includes(q)
+      )
+    : storesData;
+
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       <motion.div variants={itemVariants}>
@@ -125,13 +138,28 @@ export default function DashboardStores() {
         ))}
       </div>
 
+      <motion.div variants={itemVariants} className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+        <input
+          type="text"
+          placeholder="Søg efter butik, by eller ansvarlig..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="w-full pl-11 !rounded-xl"
+        />
+      </motion.div>
+
       {storesData.length === 0 ? (
         <div className="py-16 text-center">
           <p className="text-[var(--text-muted)]">Ingen butikker endnu</p>
         </div>
+      ) : filteredStores.length === 0 ? (
+        <div className="py-16 text-center">
+          <p className="text-[var(--text-muted)]">Ingen butikker matcher din søgning</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {storesData.map(store => (
+          {filteredStores.map(store => (
             <motion.div key={store.id} variants={itemVariants} className={`group relative p-5 rounded-2xl bg-white/5 backdrop-blur-xl border hover:border-white/20 transition-all ${store.is_active ? 'border-white/10' : 'border-red-500/10 opacity-60'}`}>
               {store.is_active && <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 opacity-50 rounded-t-2xl" />}
               <div className="flex items-start justify-between mb-3">
@@ -172,5 +200,19 @@ export default function DashboardStores() {
         </div>
       )}
     </motion.div>
+  );
+}
+
+export default function DashboardStores() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+        </div>
+      }
+    >
+      <StoresContent />
+    </Suspense>
   );
 }
