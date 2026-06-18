@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, Heart, Loader2, Sparkles } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -9,6 +10,7 @@ import SwipeCard from '@/components/student/SwipeCard';
 import MatchCelebration from '@/components/student/MatchCelebration';
 
 export default function StudentFeed() {
+  const router = useRouter();
   const [stores, setStores] = useState<Store[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -25,6 +27,18 @@ export default function StudentFeed() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) return;
+
+      // Send students who haven't completed onboarding to the onboarding flow
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .single();
+
+      if (profile && !profile.onboarding_completed) {
+        router.replace('/student/onboarding');
+        return;
+      }
 
       // Get already swiped store IDs
       const { data: swipes } = await supabase
@@ -52,7 +66,7 @@ export default function StudentFeed() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     fetchStores();

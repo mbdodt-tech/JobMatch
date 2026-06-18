@@ -3,9 +3,10 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, GraduationCap, Brain, Video,
-  ChevronLeft, ChevronRight, Rocket,
+  User, GraduationCap,
+  ChevronLeft, ChevronRight,
   Calendar, Phone, Upload, Camera, Shield,
+  MapPin, Briefcase, Check, RotateCcw,
 } from 'lucide-react';
 import {
   type EducationLine,
@@ -25,13 +26,6 @@ const STEPS = [
   { icon: '🎓', label: 'Uddannelse' },
   { icon: '🧠', label: 'Adfærdsstil' },
   { icon: '🎬', label: 'Video & GDPR' },
-];
-
-const BEHAVIORAL_STYLES: BehavioralStyle[] = [
-  'analytical',
-  'action_oriented',
-  'social',
-  'stabilizing',
 ];
 
 const STYLE_DESCRIPTIONS: Record<BehavioralStyle, string> = {
@@ -61,9 +55,13 @@ interface FormData {
   full_name: string;
   date_of_birth: string;
   phone: string;
+  address: string;
+  postal_code: string;
+  city: string;
   youth_education: YouthEducationType | '';
   youth_education_school: string;
   education_line: EducationLine | '';
+  work_experience: string;
   primary_style: BehavioralStyle | null;
   secondary_style: BehavioralStyle | null;
   video_file: File | null;
@@ -80,9 +78,13 @@ export default function StudentOnboarding() {
     full_name: '',
     date_of_birth: '',
     phone: '',
+    address: '',
+    postal_code: '',
+    city: '',
     youth_education: '',
     youth_education_school: '',
     education_line: '',
+    work_experience: '',
     primary_style: null,
     secondary_style: null,
     video_file: null,
@@ -157,9 +159,13 @@ export default function StudentOnboarding() {
           full_name: form.full_name,
           date_of_birth: form.date_of_birth || null,
           phone: form.phone || null,
+          address: form.address || null,
+          postal_code: form.postal_code || null,
+          city: form.city || null,
           youth_education: form.youth_education || null,
           youth_education_school: form.youth_education_school || null,
           education_line: form.education_line || null,
+          work_experience: form.work_experience || null,
           primary_style: form.primary_style,
           secondary_style: form.secondary_style,
           video_pitch_url,
@@ -223,7 +229,7 @@ export default function StudentOnboarding() {
           >
             {step === 0 && <StepPersonalInfo form={form} update={update} />}
             {step === 1 && <StepEducation form={form} update={update} />}
-            {step === 2 && <StepBehavioralStyle form={form} update={update} />}
+            {step === 2 && <StepDiscQuiz form={form} update={update} />}
             {step === 3 && <StepVideoGdpr form={form} update={update} />}
           </motion.div>
         </AnimatePresence>
@@ -244,8 +250,8 @@ export default function StudentOnboarding() {
 
           <button
             onClick={step === 3 ? handleSubmit : goNext}
-            disabled={loading}
-            className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-shadow active:scale-[0.98] disabled:opacity-50"
+            disabled={loading || (step === 2 && (!form.primary_style || !form.secondary_style))}
+            className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-shadow active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <motion.div
@@ -338,6 +344,45 @@ function StepPersonalInfo({
             placeholder="+45 12 34 56 78"
             className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
           />
+        </div>
+
+        {/* Address */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+            <MapPin size={14} /> Adresse
+          </label>
+          <input
+            type="text"
+            value={form.address}
+            onChange={(e) => update('address', e.target.value)}
+            placeholder="Fx Vesterbrogade 12, 2. th"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+          />
+        </div>
+
+        {/* Postal code + city */}
+        <div className="grid grid-cols-[1fr_1.6fr] gap-3">
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-[#94A3B8]">Postnr.</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={form.postal_code}
+              onChange={(e) => update('postal_code', e.target.value)}
+              placeholder="1620"
+              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-[#94A3B8]">By</label>
+            <input
+              type="text"
+              value={form.city}
+              onChange={(e) => update('city', e.target.value)}
+              placeholder="København V"
+              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -434,134 +479,333 @@ function StepEducation({
             )}
           </div>
         </div>
+
+        {/* Work experience */}
+        <div className="space-y-1.5">
+          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+            <Briefcase size={14} /> Erhvervserfaring
+          </label>
+          <textarea
+            value={form.work_experience}
+            onChange={(e) => update('work_experience', e.target.value)}
+            placeholder="Fortæl kort om dine job, praktik eller frivilligt arbejde — fx 'Deltidsjob i Netto i 1 år, kundeservice og varepåfyldning.'"
+            rows={4}
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base resize-none"
+          />
+          <p className="text-xs text-[#64748B]">
+            Ingen erfaring endnu? Det er helt fint — skriv blot hvad du brænder for.
+          </p>
+        </div>
       </div>
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-//  Step 3 — Behavioral Style
+//  Step 3 — DiSC-style questionnaire
 // ═══════════════════════════════════════════════════════════════════
-function StepBehavioralStyle({
+interface DiscQuestion {
+  prompt: string;
+  options: { style: BehavioralStyle; label: string }[];
+}
+
+// Each option maps to one of the four styles (DiSC: D=handling, i=social,
+// S=stabiliserende, C=analytisk). The order of options is varied between
+// questions to reduce position bias.
+const DISC_QUESTIONS: DiscQuestion[] = [
+  {
+    prompt: 'I en gruppeopgave er jeg typisk den, der …',
+    options: [
+      { style: 'action_oriented', label: 'tager føringen og sætter retningen' },
+      { style: 'social', label: 'sørger for, at alle trives og bidrager' },
+      { style: 'analytical', label: 'styr på detaljerne og research’er' },
+      { style: 'stabilizing', label: 'holder os til planen og får tingene færdige' },
+    ],
+  },
+  {
+    prompt: 'Når jeg får en ny opgave, går jeg mest op i …',
+    options: [
+      { style: 'analytical', label: 'at forstå hvordan og hvorfor det hænger sammen' },
+      { style: 'action_oriented', label: 'at komme hurtigt i gang og se resultater' },
+      { style: 'stabilizing', label: 'at have en klar og rolig plan' },
+      { style: 'social', label: 'hvem jeg skal samarbejde med' },
+    ],
+  },
+  {
+    prompt: 'Mine venner ville beskrive mig som …',
+    options: [
+      { style: 'social', label: 'udadvendt og hjælpsom' },
+      { style: 'stabilizing', label: 'rolig og pålidelig' },
+      { style: 'action_oriented', label: 'energisk og målrettet' },
+      { style: 'analytical', label: 'grundig og eftertænksom' },
+    ],
+  },
+  {
+    prompt: 'I en praktik glæder jeg mig mest til at …',
+    options: [
+      { style: 'stabilizing', label: 'blive en fast og tryg del af teamet' },
+      { style: 'action_oriented', label: 'få ansvar og prøve nye ting' },
+      { style: 'social', label: 'møde nye mennesker og kunder' },
+      { style: 'analytical', label: 'lære faget og systemerne grundigt' },
+    ],
+  },
+  {
+    prompt: 'Når noget går galt, er min første reaktion at …',
+    options: [
+      { style: 'action_oriented', label: 'handle med det samme og finde en løsning' },
+      { style: 'stabilizing', label: 'bevare roen og holde overblikket' },
+      { style: 'analytical', label: 'undersøge hvad der gik galt' },
+      { style: 'social', label: 'tale med andre om det' },
+    ],
+  },
+  {
+    prompt: 'Jeg arbejder bedst, når jeg …',
+    options: [
+      { style: 'analytical', label: 'kan fordybe mig i opgaven' },
+      { style: 'social', label: 'er sammen med andre' },
+      { style: 'stabilizing', label: 'ved præcis hvad der forventes' },
+      { style: 'action_oriented', label: 'har frihed til at bestemme selv' },
+    ],
+  },
+  {
+    prompt: 'En god dag på arbejdet er, når jeg …',
+    options: [
+      { style: 'social', label: 'har haft gode snakke med kolleger og kunder' },
+      { style: 'action_oriented', label: 'har nået mine mål' },
+      { style: 'analytical', label: 'har løst en svær opgave korrekt' },
+      { style: 'stabilizing', label: 'har hjulpet teamet, og alt kørte glat' },
+    ],
+  },
+  {
+    prompt: 'Jeg bliver mest motiveret af …',
+    options: [
+      { style: 'stabilizing', label: 'stabilitet og et godt fællesskab' },
+      { style: 'analytical', label: 'at gøre tingene rigtigt' },
+      { style: 'action_oriented', label: 'udfordringer og lidt konkurrence' },
+      { style: 'social', label: 'anerkendelse og samvær med andre' },
+    ],
+  },
+];
+
+function StepDiscQuiz({
   form,
   update,
 }: {
   form: FormData;
   update: <K extends keyof FormData>(key: K, value: FormData[K]) => void;
 }) {
+  const total = DISC_QUESTIONS.length;
+  const [answers, setAnswers] = useState<Record<number, BehavioralStyle>>({});
+  const [current, setCurrent] = useState(0);
+  const [showResult, setShowResult] = useState(
+    form.primary_style !== null && form.secondary_style !== null,
+  );
+
+  const computeResult = (final: Record<number, BehavioralStyle>) => {
+    const scores: Record<BehavioralStyle, number> = {
+      analytical: 0,
+      action_oriented: 0,
+      social: 0,
+      stabilizing: 0,
+    };
+    Object.values(final).forEach((s) => {
+      scores[s] += 1;
+    });
+    const ranked = (Object.keys(scores) as BehavioralStyle[]).sort(
+      (a, b) => scores[b] - scores[a],
+    );
+    update('primary_style', ranked[0]);
+    update('secondary_style', ranked[1]);
+  };
+
   const handleSelect = (style: BehavioralStyle) => {
-    if (form.primary_style === style) {
-      // Deselect primary
-      update('primary_style', form.secondary_style);
-      update('secondary_style', null);
-    } else if (form.secondary_style === style) {
-      // Deselect secondary
-      update('secondary_style', null);
-    } else if (!form.primary_style) {
-      update('primary_style', style);
-    } else if (!form.secondary_style) {
-      update('secondary_style', style);
+    const next = { ...answers, [current]: style };
+    setAnswers(next);
+    if (current < total - 1) {
+      setTimeout(() => setCurrent((c) => c + 1), 200);
     } else {
-      // Replace secondary
-      update('secondary_style', style);
+      computeResult(next);
+      setTimeout(() => setShowResult(true), 200);
     }
   };
 
+  const retake = () => {
+    setAnswers({});
+    setCurrent(0);
+    setShowResult(false);
+    update('primary_style', null);
+    update('secondary_style', null);
+  };
+
+  // ─── Result view ───────────────────────────────────────────────
+  if (showResult && form.primary_style && form.secondary_style) {
+    const styles: { style: BehavioralStyle; tag: string }[] = [
+      { style: form.primary_style, tag: 'Primær' },
+      { style: form.secondary_style, tag: 'Sekundær' },
+    ];
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <motion.div
+            className="text-5xl mb-3"
+            initial={{ scale: 0, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 14 }}
+          >
+            🎯
+          </motion.div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
+            Din profil er klar!
+          </h1>
+          <p className="text-[#94A3B8] mt-1 text-sm">
+            Baseret på dine svar er dette din adfærdsstil
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {styles.map(({ style, tag }, i) => {
+            const color = BEHAVIORAL_STYLE_COLORS[style];
+            return (
+              <motion.div
+                key={tag}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.12 }}
+                className="relative p-5 rounded-2xl border-2 bg-white/[0.07]"
+                style={{ borderColor: color }}
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className="text-4xl flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center"
+                    style={{ backgroundColor: `${color}20` }}
+                  >
+                    {BEHAVIORAL_STYLE_ICONS[style]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-[#F8FAFC]">
+                        {BEHAVIORAL_STYLE_LABELS[style]}
+                      </h3>
+                      <span
+                        className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
+                        style={{ backgroundColor: `${color}30`, color }}
+                      >
+                        {tag}
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#94A3B8] mt-1 leading-relaxed">
+                      {STYLE_DESCRIPTIONS[style]}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={retake}
+          className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-[#94A3B8] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+        >
+          <RotateCcw size={16} />
+          Tag testen igen
+        </button>
+      </div>
+    );
+  }
+
+  // ─── Question view ─────────────────────────────────────────────
+  const q = DISC_QUESTIONS[current];
   return (
     <div className="space-y-6">
       <div className="text-center">
         <motion.div
           className="text-5xl mb-3"
-          animate={{ scale: [1, 1.15, 1] }}
+          animate={{ scale: [1, 1.12, 1] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
           🧠
         </motion.div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          Din adfærdsstil
+          Lær din stil at kende
         </h1>
         <p className="text-[#94A3B8] mt-1 text-sm">
-          Vælg en primær og en sekundær stil
+          Vælg det svar, der passer bedst på dig
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
-        {BEHAVIORAL_STYLES.map((style) => {
-          const isPrimary = form.primary_style === style;
-          const isSecondary = form.secondary_style === style;
-          const isSelected = isPrimary || isSecondary;
-          const color = BEHAVIORAL_STYLE_COLORS[style];
+      {/* Quiz progress */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-xs font-medium text-[#64748B]">
+          <span>
+            Spørgsmål {current + 1} af {total}
+          </span>
+          <span>{Object.keys(answers).length} / {total} besvaret</span>
+        </div>
+        <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+          <motion.div
+            className="h-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500"
+            animate={{ width: `${((current + 1) / total) * 100}%` }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          />
+        </div>
+      </div>
 
-          return (
-            <motion.button
-              key={style}
-              onClick={() => handleSelect(style)}
-              whileTap={{ scale: 0.97 }}
-              className={`relative p-5 rounded-2xl text-left transition-all ${
-                isSelected
-                  ? 'border-2 bg-white/[0.07]'
-                  : 'border border-white/10 bg-white/5 hover:bg-white/[0.07]'
-              }`}
-              style={{
-                borderColor: isSelected ? color : undefined,
-                boxShadow: isPrimary ? `0 0 30px ${color}33, 0 0 60px ${color}15` : undefined,
-              }}
-              animate={
-                isPrimary
-                  ? { boxShadow: [`0 0 20px ${color}33`, `0 0 40px ${color}44`, `0 0 20px ${color}33`] }
-                  : {}
-              }
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <div className="flex items-start gap-4">
-                <div
-                  className="text-4xl flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: `${color}20` }}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, x: 60 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -60 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="space-y-4"
+        >
+          <h2 className="text-lg font-bold text-[#F8FAFC] leading-snug">
+            {q.prompt}
+          </h2>
+
+          <div className="space-y-2.5">
+            {q.options.map((opt) => {
+              const selected = answers[current] === opt.style;
+              return (
+                <motion.button
+                  key={opt.label}
+                  onClick={() => handleSelect(opt.style)}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full flex items-center gap-3 p-4 rounded-2xl text-left transition-all ${
+                    selected
+                      ? 'border-2 border-purple-500/60 bg-purple-500/15'
+                      : 'border border-white/10 bg-white/5 hover:bg-white/[0.08]'
+                  }`}
                 >
-                  {BEHAVIORAL_STYLE_ICONS[style]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-[#F8FAFC]">
-                      {BEHAVIORAL_STYLE_LABELS[style]}
-                    </h3>
-                    {isPrimary && (
-                      <span
-                        className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
-                        style={{
-                          backgroundColor: `${color}30`,
-                          color,
-                        }}
-                      >
-                        Primær
-                      </span>
-                    )}
-                    {isSecondary && (
-                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-white/10 text-[#94A3B8]">
-                        Sekundær
-                      </span>
-                    )}
+                  <div
+                    className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-colors ${
+                      selected
+                        ? 'border-purple-400 bg-purple-500'
+                        : 'border-white/20'
+                    }`}
+                  >
+                    {selected && <Check size={14} className="text-white" />}
                   </div>
-                  <p className="text-sm text-[#94A3B8] mt-1 leading-relaxed">
-                    {STYLE_DESCRIPTIONS[style]}
-                  </p>
-                </div>
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
+                  <span className="text-sm text-[#F8FAFC] leading-snug">
+                    {opt.label}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
 
-      {!form.primary_style && (
-        <p className="text-center text-xs text-[#64748B]">
-          Tryk på et kort for at vælge din primære stil
-        </p>
-      )}
-      {form.primary_style && !form.secondary_style && (
-        <p className="text-center text-xs text-[#64748B]">
-          Vælg nu din sekundære stil
-        </p>
-      )}
+          {current > 0 && (
+            <button
+              onClick={() => setCurrent((c) => c - 1)}
+              className="text-xs font-medium text-[#64748B] hover:text-[#94A3B8] flex items-center gap-1 transition-colors"
+            >
+              <ChevronLeft size={14} />
+              Forrige spørgsmål
+            </button>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

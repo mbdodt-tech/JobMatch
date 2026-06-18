@@ -47,7 +47,7 @@ export default function LoginPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, onboarding_completed')
         .eq('id', user.id)
         .single();
 
@@ -55,7 +55,9 @@ export default function LoginPage() {
 
       switch (role) {
         case 'student':
-          router.push('/student/feed');
+          router.push(
+            profile?.onboarding_completed ? '/student/feed' : '/student/onboarding'
+          );
           break;
         case 'store_manager':
           router.push('/manager/feed');

@@ -94,6 +94,9 @@ export interface Profile {
   full_name: string;
   email: string;
   phone: string | null;
+  address: string | null;
+  postal_code: string | null;
+  city: string | null;
   avatar_url: string | null;
   date_of_birth: string | null;
   education_line: EducationLine | null;
