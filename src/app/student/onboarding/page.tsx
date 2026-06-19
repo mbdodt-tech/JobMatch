@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, GraduationCap,
   ChevronLeft, ChevronRight,
   Calendar, Phone, Upload, Camera, Shield,
-  MapPin, Briefcase, Check, RotateCcw,
+  MapPin, Briefcase, Check, RotateCcw, X, Search, AlertCircle,
 } from 'lucide-react';
 import {
   type EducationLine,
@@ -19,6 +19,8 @@ import {
   BEHAVIORAL_STYLE_COLORS,
 } from '@/lib/types/database';
 import { createClient } from '@/lib/supabase/client';
+import DANISH_POSTAL_CODES from '@/lib/data/danish-postal-codes';
+import DANISH_SCHOOLS from '@/lib/data/danish-schools';
 
 // ─── Constants ───────────────────────────────────────────────────────
 const STEPS = [
@@ -73,6 +75,7 @@ export default function StudentOnboarding() {
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const [form, setForm] = useState<FormData>({
     full_name: '',
@@ -113,15 +116,24 @@ export default function StudentOnboarding() {
   };
 
   const handleSubmit = async () => {
+    setSubmitError('');
+
+    if (!form.gdpr_consent) {
+      setSubmitError('Du skal acceptere GDPR-samtykket for at fortsætte.');
+      return;
+    }
+
     setLoading(true);
     try {
       const supabase = createClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setSubmitError('Du er ikke logget ind. Prøv at logge ind igen.');
+        return;
+      }
 
-      // Upload video if present
       let video_pitch_url: string | null = null;
       if (form.video_file) {
         const ext = form.video_file.name.split('.').pop();
@@ -129,15 +141,16 @@ export default function StudentOnboarding() {
         const { error: uploadError } = await supabase.storage
           .from('student-media')
           .upload(path, form.video_file, { upsert: true });
-        if (!uploadError) {
-          const {
-            data: { publicUrl },
-          } = supabase.storage.from('student-media').getPublicUrl(path);
-          video_pitch_url = publicUrl;
+        if (uploadError) {
+          setSubmitError(`Kunne ikke uploade video: ${uploadError.message}`);
+          return;
         }
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from('student-media').getPublicUrl(path);
+        video_pitch_url = publicUrl;
       }
 
-      // Upload CV if present
       let cv_url: string | null = null;
       if (form.cv_file) {
         const ext = form.cv_file.name.split('.').pop();
@@ -145,12 +158,14 @@ export default function StudentOnboarding() {
         const { error: uploadError } = await supabase.storage
           .from('student-media')
           .upload(path, form.cv_file, { upsert: true });
-        if (!uploadError) {
-          const {
-            data: { publicUrl },
-          } = supabase.storage.from('student-media').getPublicUrl(path);
-          cv_url = publicUrl;
+        if (uploadError) {
+          setSubmitError(`Kunne ikke uploade CV: ${uploadError.message}`);
+          return;
         }
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from('student-media').getPublicUrl(path);
+        cv_url = publicUrl;
       }
 
       const { error } = await supabase
@@ -175,9 +190,14 @@ export default function StudentOnboarding() {
         })
         .eq('id', user.id);
 
-      if (!error) {
-        window.location.href = '/student/feed';
+      if (error) {
+        setSubmitError(`Kunne ikke gemme profil: ${error.message}`);
+        return;
       }
+
+      window.location.href = '/student/feed';
+    } catch (err) {
+      setSubmitError('Der opstod en uventet fejl. Prøv igen.');
     } finally {
       setLoading(false);
     }
@@ -230,7 +250,7 @@ export default function StudentOnboarding() {
             {step === 0 && <StepPersonalInfo form={form} update={update} />}
             {step === 1 && <StepEducation form={form} update={update} />}
             {step === 2 && <StepDiscQuiz form={form} update={update} />}
-            {step === 3 && <StepVideoGdpr form={form} update={update} />}
+            {step === 3 && <StepVideoGdpr form={form} update={update} error={submitError} />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -286,6 +306,16 @@ function StepPersonalInfo({
   form: FormData;
   update: <K extends keyof FormData>(key: K, value: FormData[K]) => void;
 }) {
+  const handlePostalCode = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+    update('postal_code', digits);
+    if (digits.length === 4 && DANISH_POSTAL_CODES[digits]) {
+      update('city', DANISH_POSTAL_CODES[digits]);
+    } else if (digits.length < 4) {
+      update('city', '');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -367,8 +397,9 @@ function StepPersonalInfo({
             <input
               type="text"
               inputMode="numeric"
+              maxLength={4}
               value={form.postal_code}
-              onChange={(e) => update('postal_code', e.target.value)}
+              onChange={(e) => handlePostalCode(e.target.value)}
               placeholder="1620"
               className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
             />
@@ -378,9 +409,14 @@ function StepPersonalInfo({
             <input
               type="text"
               value={form.city}
+              readOnly={form.postal_code.length === 4 && !!DANISH_POSTAL_CODES[form.postal_code]}
               onChange={(e) => update('city', e.target.value)}
-              placeholder="København V"
-              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+              placeholder="Udfyldes automatisk"
+              className={`w-full px-4 py-3.5 rounded-2xl border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base ${
+                form.postal_code.length === 4 && DANISH_POSTAL_CODES[form.postal_code]
+                  ? 'bg-purple-500/10 border-purple-500/20'
+                  : 'bg-white/5'
+              }`}
             />
           </div>
         </div>
@@ -399,6 +435,35 @@ function StepEducation({
   form: FormData;
   update: <K extends keyof FormData>(key: K, value: FormData[K]) => void;
 }) {
+  const [schoolSearch, setSchoolSearch] = useState(form.youth_education_school);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const q = schoolSearch.toLowerCase();
+  const filteredSchools = q
+    ? DANISH_SCHOOLS.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.city.toLowerCase().includes(q),
+      ).slice(0, 8)
+    : DANISH_SCHOOLS.slice(0, 8);
+
+  const handleSchoolSelect = (name: string) => {
+    setSchoolSearch(name);
+    update('youth_education_school', name);
+    setShowDropdown(false);
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -442,18 +507,69 @@ function StepEducation({
           </div>
         </div>
 
-        {/* School name */}
-        <div className="space-y-1.5">
+        {/* School name — searchable dropdown */}
+        <div className="space-y-1.5 relative" ref={dropdownRef}>
           <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
-            <GraduationCap size={14} /> Skolens navn
+            <GraduationCap size={14} /> Skole
           </label>
-          <input
-            type="text"
-            value={form.youth_education_school}
-            onChange={(e) => update('youth_education_school', e.target.value)}
-            placeholder="Fx Niels Brock"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
-          />
+          <div className="relative">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
+            <input
+              type="text"
+              value={schoolSearch}
+              onChange={(e) => {
+                setSchoolSearch(e.target.value);
+                update('youth_education_school', e.target.value);
+                setShowDropdown(true);
+              }}
+              onFocus={() => setShowDropdown(true)}
+              placeholder="Søg efter din skole..."
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+            />
+            {schoolSearch && (
+              <button
+                onClick={() => {
+                  setSchoolSearch('');
+                  update('youth_education_school', '');
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-white transition-colors"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+          <AnimatePresence>
+            {showDropdown && filteredSchools.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                className="absolute z-50 left-0 right-0 mt-1 rounded-xl bg-[#1A1A2E] border border-white/10 shadow-xl overflow-hidden max-h-60 overflow-y-auto"
+              >
+                {filteredSchools.map((school) => (
+                  <button
+                    key={school.name}
+                    onClick={() => handleSchoolSelect(school.name)}
+                    className={`w-full px-4 py-3 text-left hover:bg-white/10 transition-colors flex items-center justify-between ${
+                      form.youth_education_school === school.name ? 'bg-purple-500/15' : ''
+                    }`}
+                  >
+                    <div>
+                      <p className="text-sm text-[#F8FAFC]">{school.name}</p>
+                      <p className="text-xs text-[#64748B]">{school.city}</p>
+                    </div>
+                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                      school.type === 'erhvervsskole'
+                        ? 'bg-blue-500/15 text-blue-400'
+                        : 'bg-purple-500/15 text-purple-400'
+                    }`}>
+                      {school.type === 'erhvervsskole' ? 'Erhvervsskole' : 'Gymnasium'}
+                    </span>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Education line */}
@@ -816,12 +932,16 @@ function StepDiscQuiz({
 function StepVideoGdpr({
   form,
   update,
+  error,
 }: {
   form: FormData;
   update: <K extends keyof FormData>(key: K, value: FormData[K]) => void;
+  error: string;
 }) {
   const [dragOver, setDragOver] = useState(false);
   const [cvDragOver, setCvDragOver] = useState(false);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const cvInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (files: FileList | null) => {
     if (files?.[0]) {
@@ -833,6 +953,18 @@ function StepVideoGdpr({
     if (files?.[0]) {
       update('cv_file', files[0]);
     }
+  };
+
+  const removeVideo = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    update('video_file', null);
+    if (videoInputRef.current) videoInputRef.current.value = '';
+  };
+
+  const removeCv = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    update('cv_file', null);
+    if (cvInputRef.current) cvInputRef.current.value = '';
   };
 
   return (
@@ -874,6 +1006,7 @@ function StepVideoGdpr({
         }`}
       >
         <input
+          ref={videoInputRef}
           type="file"
           accept="video/*"
           onChange={(e) => handleFile(e.target.files)}
@@ -887,8 +1020,15 @@ function StepVideoGdpr({
               {form.video_file.name}
             </p>
             <p className="text-xs text-[#64748B]">
-              {(form.video_file.size / 1024 / 1024).toFixed(1)} MB — Tryk for at ændre
+              {(form.video_file.size / 1024 / 1024).toFixed(1)} MB
             </p>
+            <button
+              onClick={removeVideo}
+              className="relative z-10 mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/25 transition-colors"
+            >
+              <X size={12} />
+              Fjern video
+            </button>
           </div>
         ) : (
           <div className="space-y-3">
@@ -927,6 +1067,7 @@ function StepVideoGdpr({
         }`}
       >
         <input
+          ref={cvInputRef}
           type="file"
           accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={(e) => handleCvFile(e.target.files)}
@@ -940,8 +1081,15 @@ function StepVideoGdpr({
               {form.cv_file.name}
             </p>
             <p className="text-xs text-[#64748B]">
-              {(form.cv_file.size / 1024 / 1024).toFixed(1)} MB — Tryk for at ændre
+              {(form.cv_file.size / 1024 / 1024).toFixed(1)} MB
             </p>
+            <button
+              onClick={removeCv}
+              className="relative z-10 mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/25 transition-colors"
+            >
+              <X size={12} />
+              Fjern CV
+            </button>
           </div>
         ) : (
           <div className="space-y-2">
@@ -994,6 +1142,21 @@ function StepVideoGdpr({
           </div>
         </button>
       </div>
+
+      {/* Error message */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -10, height: 0 }}
+            className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+          >
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
