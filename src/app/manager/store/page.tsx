@@ -18,6 +18,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import type { Store, EducationLine } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
+import DANISH_POSTAL_CODES from '@/lib/data/danish-postal-codes';
 
 const ALL_EDUCATION_LINES: EducationLine[] = [
   'detail',
@@ -228,7 +229,28 @@ export default function ManagerStorePage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-[1fr_1.6fr] gap-3">
+              <div>
+                <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                  Postnummer *
+                </label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={4}
+                  value={store.postal_code || ''}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    const city = digits.length === 4 && DANISH_POSTAL_CODES[digits]
+                      ? DANISH_POSTAL_CODES[digits]
+                      : digits.length < 4 ? '' : (store.city || '');
+                    setStore({ ...store, postal_code: digits, city });
+                  }}
+                  placeholder="2100"
+                  required
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1.5">
                   By *
@@ -236,27 +258,17 @@ export default function ManagerStorePage() {
                 <input
                   type="text"
                   value={store.city || ''}
+                  readOnly={!!store.postal_code && store.postal_code.length === 4 && !!DANISH_POSTAL_CODES[store.postal_code]}
                   onChange={(e) =>
                     setStore({ ...store, city: e.target.value })
                   }
-                  placeholder="F.eks. København"
+                  placeholder="Udfyldes automatisk"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1.5">
-                  Postnummer *
-                </label>
-                <input
-                  type="text"
-                  value={store.postal_code || ''}
-                  onChange={(e) =>
-                    setStore({ ...store, postal_code: e.target.value })
-                  }
-                  placeholder="2100"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                  className={`w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm ${
+                    store.postal_code && store.postal_code.length === 4 && DANISH_POSTAL_CODES[store.postal_code]
+                      ? 'bg-purple-500/10 border-purple-500/20'
+                      : 'bg-white/5'
+                  }`}
                 />
               </div>
             </div>
