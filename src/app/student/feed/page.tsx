@@ -162,7 +162,7 @@ export default function StudentFeed() {
 
       {/* Card stack */}
       <div className="relative z-10 max-w-md mx-auto px-4">
-        <div className="relative" style={{ height: 'calc(100vh - 240px)', minHeight: 420 }}>
+        <div className="relative" style={{ height: 'calc(100dvh - 320px)', minHeight: 340 }}>
           {loading ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
               <Loader2 size={36} className="text-purple-400 animate-spin" />

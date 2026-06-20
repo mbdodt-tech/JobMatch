@@ -143,7 +143,7 @@ export default function StudentProfile() {
   const age = calculateAge(profile.date_of_birth);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] pb-24">
+    <div className="min-h-screen bg-[#0A0A0F] pb-32">
       {/* Gradient Header */}
       <div className="relative h-40 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/40 via-blue-600/30 to-cyan-500/20" />

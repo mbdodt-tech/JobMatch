@@ -48,6 +48,7 @@ const DANISH_SCHOOLS: School[] = [
   { name: 'Tradium', city: 'Randers', type: 'erhvervsskole' },
   { name: 'UCL Erhvervsakademi og Professionshøjskole', city: 'Odense', type: 'erhvervsskole' },
   { name: 'ZBC (Zealand Business College) Ringsted', city: 'Ringsted', type: 'erhvervsskole' },
+  { name: 'Viden Djurs', city: 'Grenaa', type: 'erhvervsskole' },
   { name: 'Zealand Business College', city: 'Næstved', type: 'erhvervsskole' },
 
   // ── Gymnasier (STX, HHX, HTX, HF) ─────────────────────────────────────

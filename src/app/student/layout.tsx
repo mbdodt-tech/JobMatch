@@ -25,7 +25,7 @@ export default function StudentLayout({
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-[#F8FAFC] font-[Inter]">
       {/* Main content area */}
-      <main className={isOnboarding ? '' : 'pb-24'}>
+      <main className={isOnboarding ? '' : 'pb-28'}>
         {children}
       </main>
 
