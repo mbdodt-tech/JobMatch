@@ -13,6 +13,7 @@ import {
   ChevronRight,
   FileText,
   ExternalLink,
+  MapPin,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
@@ -283,6 +284,24 @@ export default function ManagerMatchesPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Address */}
+                {(selectedMatch.student.address || selectedMatch.student.city) && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                      Adresse
+                    </h3>
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
+                      <MapPin className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                      <span>
+                        {selectedMatch.student.address}
+                        {(selectedMatch.student.postal_code || selectedMatch.student.city) && ', '}
+                        {selectedMatch.student.postal_code && `${selectedMatch.student.postal_code} `}
+                        {selectedMatch.student.city}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Work experience */}
                 {selectedMatch.student.work_experience && (

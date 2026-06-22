@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import {
   User, GraduationCap, Briefcase, Shield, Edit3, Save, X,
   Heart, ArrowLeftRight, Eye, Camera, ToggleLeft, ToggleRight,
-  FileText, Upload, Loader2, ExternalLink
+  FileText, Upload, Loader2, ExternalLink, MapPin
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Profile } from '@/lib/types/database';
@@ -62,6 +62,9 @@ export default function StudentProfile() {
     await supabase.from('profiles').update({
       full_name: formData.full_name,
       phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      postal_code: formData.postal_code,
       work_experience: formData.work_experience,
       gdpr_consent: formData.gdpr_consent,
     }).eq('id', profile.id);
@@ -285,6 +288,47 @@ export default function StudentProfile() {
           </div>
         )}
 
+        {/* Address */}
+        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <MapPin size={14} className="text-[#64748B]" />
+            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Adresse</h3>
+          </div>
+          {editing ? (
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={formData.address || ''}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                placeholder="Gadenavn og nummer"
+              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={formData.postal_code || ''}
+                  onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
+                  className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                  placeholder="Postnr."
+                />
+                <input
+                  type="text"
+                  value={formData.city || ''}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                  placeholder="By"
+                />
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-[#94A3B8] leading-relaxed">
+              {profile.address
+                ? `${profile.address}${profile.postal_code || profile.city ? ', ' : ''}${profile.postal_code ? profile.postal_code + ' ' : ''}${profile.city || ''}`
+                : 'Ingen adresse tilføjet endnu'}
+            </p>
+          )}
+        </div>
+
         {/* Work Experience */}
         <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
           <div className="flex items-center gap-2 mb-2">
@@ -296,7 +340,7 @@ export default function StudentProfile() {
               value={formData.work_experience || ''}
               onChange={(e) => setFormData({ ...formData, work_experience: e.target.value })}
               rows={3}
-              className="w-full text-sm"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
               placeholder="Beskriv din joberfaring..."
             />
           ) : (
