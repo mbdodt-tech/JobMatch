@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Store as StoreIcon,
@@ -14,6 +14,9 @@ import {
   CheckCircle2,
   ImagePlus,
   FileText,
+  Upload,
+  X,
+  ExternalLink,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Store, EducationLine } from '@/lib/types/database';
@@ -48,6 +51,9 @@ export default function ManagerStorePage() {
     cover_image_url: '',
   });
   const [isNew, setIsNew] = useState(true);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const jobDescInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadStore();
@@ -82,6 +88,45 @@ export default function ManagerStorePage() {
     }
   }
 
+  async function handleJobDescUpload(file: File) {
+    setUploadError('');
+    setUploadingPdf(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'pdf';
+      const path = `store-docs/${user.id}/job-description.${ext}`;
+      const { error } = await supabase.storage
+        .from('student-media')
+        .upload(path, file, { upsert: true });
+
+      if (error) {
+        setUploadError(`Upload fejlede: ${error.message}`);
+        return;
+      }
+
+      const { data } = supabase.storage.from('student-media').getPublicUrl(path);
+      const url = `${data.publicUrl}?t=${Date.now()}`;
+      setStore((prev) => ({ ...prev, job_description_url: url }));
+
+      if (store.id) {
+        await supabase.from('stores').update({ job_description_url: url }).eq('id', store.id);
+      }
+    } finally {
+      setUploadingPdf(false);
+    }
+  }
+
+  async function removeJobDesc() {
+    setStore((prev) => ({ ...prev, job_description_url: null }));
+    if (store.id) {
+      const supabase = createClient();
+      await supabase.from('stores').update({ job_description_url: null }).eq('id', store.id);
+    }
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -110,6 +155,7 @@ export default function ManagerStorePage() {
       website: store.website || null,
       logo_url: store.logo_url || null,
       cover_image_url: store.cover_image_url || null,
+      job_description_url: store.job_description_url || null,
     };
 
     if (isNew) {
@@ -203,6 +249,71 @@ export default function ManagerStorePage() {
                 rows={3}
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm resize-none"
               />
+            </div>
+
+            {/* Job description PDF upload */}
+            <div>
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                Jobbeskrivelse (PDF) — valgfrit alternativ
+              </label>
+              <input
+                ref={jobDescInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleJobDescUpload(f);
+                  e.target.value = '';
+                }}
+              />
+              {store.job_description_url ? (
+                <div className="flex items-center gap-2">
+                  <a
+                    href={store.job_description_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center gap-2 py-2.5 px-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/20 transition-colors"
+                  >
+                    <FileText size={16} /> Se jobbeskrivelse <ExternalLink size={12} className="ml-auto" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => jobDescInputRef.current?.click()}
+                    disabled={uploadingPdf}
+                    className="py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 text-[#94A3B8] text-sm font-medium hover:bg-white/10 transition-colors disabled:opacity-50 flex items-center gap-1"
+                  >
+                    {uploadingPdf ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                    Skift
+                  </button>
+                  <button
+                    type="button"
+                    onClick={removeJobDesc}
+                    className="py-2.5 px-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/20 transition-colors flex items-center gap-1"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => jobDescInputRef.current?.click()}
+                  disabled={uploadingPdf}
+                  className="w-full py-4 rounded-xl bg-white/5 border border-dashed border-white/10 flex items-center justify-center gap-2 hover:border-purple-500/40 hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+                >
+                  {uploadingPdf ? (
+                    <Loader2 size={18} className="text-purple-400 animate-spin" />
+                  ) : (
+                    <Upload size={18} className="text-[#64748B]" />
+                  )}
+                  <span className="text-sm text-[#94A3B8] font-medium">
+                    {uploadingPdf ? 'Uploader...' : 'Upload jobbeskrivelse (PDF)'}
+                  </span>
+                </button>
+              )}
+              {uploadError && (
+                <p className="text-xs text-red-400 mt-1.5">{uploadError}</p>
+              )}
             </div>
           </div>
 

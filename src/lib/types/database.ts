@@ -138,6 +138,7 @@ export interface Store {
   phone: string | null;
   email: string | null;
   website: string | null;
+  job_description_url: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
