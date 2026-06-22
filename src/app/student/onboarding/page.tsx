@@ -798,12 +798,12 @@ function StepDiscQuiz({
                     {BEHAVIORAL_STYLE_ICONS[style]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold text-[#F8FAFC]">
                         {BEHAVIORAL_STYLE_LABELS[style]}
                       </h3>
                       <span
-                        className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
+                        className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full shrink-0"
                         style={{ backgroundColor: `${color}30`, color }}
                       >
                         {tag}
