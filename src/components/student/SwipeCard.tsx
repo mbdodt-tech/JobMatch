@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
-import { MapPin, Users, Briefcase } from 'lucide-react';
+import { MapPin, Users, Briefcase, FileText, ExternalLink } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS as EDU_LABELS } from '@/lib/types/database';
 
@@ -129,6 +129,21 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
               </span>
             ))}
           </div>
+
+          {/* Job description PDF link */}
+          {store.job_description_url && (
+            <a
+              href={store.job_description_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-2 py-2 px-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium hover:bg-blue-500/20 transition-colors w-full"
+            >
+              <FileText size={14} />
+              Se jobbeskrivelse (PDF)
+              <ExternalLink size={11} className="ml-auto" />
+            </a>
+          )}
 
           {/* Internship slots */}
           <div className="flex items-center gap-2">
