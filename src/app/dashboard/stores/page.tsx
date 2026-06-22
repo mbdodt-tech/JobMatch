@@ -125,15 +125,15 @@ function StoresContent() {
         <p className="text-[var(--text-secondary)] mt-1">Oversigt over alle tilknyttede butikker</p>
       </motion.div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         {[
           { label: 'Aktive butikker', value: activeCount, color: 'text-green-400' },
-          { label: 'Praktikpladser', value: totalSlots, color: 'text-blue-400' },
+          { label: 'Praktik­pladser', value: totalSlots, color: 'text-blue-400' },
           { label: 'Matches', value: totalMatches, color: 'text-purple-400' },
         ].map(stat => (
-          <motion.div key={stat.label} variants={itemVariants} className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center">
+          <motion.div key={stat.label} variants={itemVariants} className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 text-center min-w-0 overflow-hidden">
             <p className={`text-2xl font-extrabold ${stat.color}`}>{stat.value}</p>
-            <p className="text-xs text-[var(--text-muted)] mt-1">{stat.label}</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1 break-words">{stat.label}</p>
           </motion.div>
         ))}
       </div>
@@ -181,18 +181,18 @@ function StoresContent() {
                   <span key={line} className="px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-[10px] font-medium text-purple-300">{line}</span>
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/5">
-                <div className="text-center">
+              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5">
+                <div className="text-center min-w-0">
                   <p className="text-sm font-bold text-[var(--text-primary)]">{store.internship_slots}</p>
-                  <p className="text-[10px] text-[var(--text-muted)]">Pladser</p>
+                  <p className="text-[10px] text-[var(--text-muted)] truncate">Pladser</p>
                 </div>
-                <div className="text-center">
+                <div className="text-center min-w-0">
                   <p className="text-sm font-bold text-blue-400">{store.swipes_received}</p>
-                  <p className="text-[10px] text-[var(--text-muted)]">Swipes</p>
+                  <p className="text-[10px] text-[var(--text-muted)] truncate">Swipes</p>
                 </div>
-                <div className="text-center">
+                <div className="text-center min-w-0">
                   <p className="text-sm font-bold text-green-400">{store.matches}</p>
-                  <p className="text-[10px] text-[var(--text-muted)]">Matches</p>
+                  <p className="text-[10px] text-[var(--text-muted)] truncate">Matches</p>
                 </div>
               </div>
             </motion.div>
