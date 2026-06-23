@@ -95,6 +95,31 @@ export default function StudentOnboarding() {
     gdpr_consent: false,
   });
 
+  useEffect(() => {
+    async function prefill() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, phone, address, postal_code, city, date_of_birth')
+        .eq('id', user.id)
+        .single();
+
+      setForm((prev) => ({
+        ...prev,
+        full_name: profile?.full_name || user.user_metadata?.full_name || prev.full_name,
+        phone: profile?.phone || prev.phone,
+        address: profile?.address || prev.address,
+        postal_code: profile?.postal_code || prev.postal_code,
+        city: profile?.city || prev.city,
+        date_of_birth: profile?.date_of_birth || prev.date_of_birth,
+      }));
+    }
+    prefill();
+  }, []);
+
   const update = useCallback(
     <K extends keyof FormData>(key: K, value: FormData[K]) => {
       setForm((prev) => ({ ...prev, [key]: value }));
