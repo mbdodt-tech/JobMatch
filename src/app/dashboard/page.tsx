@@ -364,18 +364,18 @@ export default function DashboardPage() {
                 href={`/dashboard/students?education=${encodeURIComponent(line.name)}`}
                 className="block space-y-2 rounded-xl -mx-2 px-2 py-1.5 hover:bg-white/5 transition-colors group"
               >
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-[var(--text-primary)] group-hover:text-white transition-colors">
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="font-medium text-[var(--text-primary)] group-hover:text-white transition-colors min-w-0 truncate">
                     {line.name}
                   </span>
-                  <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                      {line.swipes} swipes
+                  <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] shrink-0">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+                      {line.swipes}
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                      {line.matches} matches
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+                      {line.matches}
                     </span>
                   </div>
                 </div>
