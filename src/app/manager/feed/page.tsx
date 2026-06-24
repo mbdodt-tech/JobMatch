@@ -386,7 +386,7 @@ export default function ManagerFeedPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedStudent(null)}
           >
             <motion.div
@@ -620,7 +620,7 @@ export default function ManagerFeedPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4"
             onClick={() => setShowVideoPlayer(false)}
           >
             <button
