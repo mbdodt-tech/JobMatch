@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   motion,
   useMotionValue,
@@ -74,7 +74,7 @@ export default function ManagerFeedPage() {
   const [selectedStudent, setSelectedStudent] = useState<Profile | null>(null);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-  const [isDragging, setIsDragging] = useState(false);
+  const pointerStart = useRef<{ x: number; y: number } | null>(null);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
@@ -210,23 +210,27 @@ export default function ManagerFeedPage() {
     [currentIndex, students, store, swiping, x]
   );
 
-  function handleDragStart() {
-    setIsDragging(true);
+  function handlePointerDown(e: React.PointerEvent) {
+    pointerStart.current = { x: e.clientX, y: e.clientY };
+  }
+
+  function handlePointerUp(e: React.PointerEvent) {
+    if (!pointerStart.current || !currentStudent) return;
+    const dx = Math.abs(e.clientX - pointerStart.current.x);
+    const dy = Math.abs(e.clientY - pointerStart.current.y);
+    pointerStart.current = null;
+    if (dx < 10 && dy < 10) {
+      setSelectedStudent(currentStudent);
+    }
   }
 
   function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
+    pointerStart.current = null;
     const threshold = 100;
     if (info.offset.x > threshold) {
       handleSwipe('right');
     } else if (info.offset.x < -threshold) {
       handleSwipe('left');
-    }
-    setTimeout(() => setIsDragging(false), 50);
-  }
-
-  function handleCardTap() {
-    if (!isDragging && currentStudent) {
-      setSelectedStudent(currentStudent);
     }
   }
 
@@ -314,9 +318,9 @@ export default function ManagerFeedPage() {
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.7}
-                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
-                onClick={handleCardTap}
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
               >
                 {/* Swipe overlays */}
                 <motion.div

@@ -14,6 +14,8 @@ import {
   FileText,
   ExternalLink,
   MapPin,
+  Briefcase,
+  Calendar,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
@@ -21,7 +23,10 @@ import {
   BEHAVIORAL_STYLE_LABELS,
   BEHAVIORAL_STYLE_COLORS,
   BEHAVIORAL_STYLE_ICONS,
+  EDUCATION_LINE_LABELS,
+  YOUTH_EDUCATION_LABELS,
 } from '@/lib/types/database';
+import type { EducationLine, YouthEducationType } from '@/lib/types/database';
 
 function StyleBadge({ style }: { style: BehavioralStyle }) {
   return (
@@ -36,6 +41,18 @@ function StyleBadge({ style }: { style: BehavioralStyle }) {
       {BEHAVIORAL_STYLE_ICONS[style]} {BEHAVIORAL_STYLE_LABELS[style]}
     </span>
   );
+}
+
+function calculateAge(dateOfBirth: string | null): number | null {
+  if (!dateOfBirth) return null;
+  const dob = new Date(dateOfBirth);
+  const now = new Date();
+  let age = now.getFullYear() - dob.getFullYear();
+  const monthDiff = now.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age;
 }
 
 interface MatchWithStudent extends Match {
@@ -250,7 +267,7 @@ export default function ManagerMatchesPage() {
                   </button>
                 </div>
 
-                {/* Student info */}
+                {/* Avatar + name */}
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0">
                     {selectedMatch.student.avatar_url ? (
@@ -265,13 +282,18 @@ export default function ManagerMatchesPage() {
                       </span>
                     )}
                   </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">
+                  <div className="min-w-0">
+                    <h2 className="text-xl font-bold text-white truncate">
                       {selectedMatch.student.full_name}
+                      {(() => {
+                        const age = calculateAge(selectedMatch.student.date_of_birth);
+                        return age ? <span className="text-base font-normal text-white/60 ml-2">{age} år</span> : null;
+                      })()}
                     </h2>
                     {selectedMatch.student.education_line && (
-                      <p className="text-text-secondary text-sm capitalize">
-                        {selectedMatch.student.education_line.replace(/_/g, ' ')}
+                      <p className="text-text-secondary text-sm">
+                        {EDUCATION_LINE_LABELS[selectedMatch.student.education_line as EducationLine] ||
+                          selectedMatch.student.education_line.replace(/_/g, ' ')}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-1.5 mt-2">
@@ -285,12 +307,28 @@ export default function ManagerMatchesPage() {
                   </div>
                 </div>
 
+                {/* Youth education */}
+                {(selectedMatch.student.youth_education || selectedMatch.student.youth_education_school) && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelse</h3>
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
+                      <GraduationCap className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                      <div>
+                        {selectedMatch.student.youth_education && (
+                          <p>{YOUTH_EDUCATION_LABELS[selectedMatch.student.youth_education as YouthEducationType] || selectedMatch.student.youth_education}</p>
+                        )}
+                        {selectedMatch.student.youth_education_school && (
+                          <p className="text-text-secondary mt-0.5">{selectedMatch.student.youth_education_school}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Address */}
                 {(selectedMatch.student.address || selectedMatch.student.city) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      Adresse
-                    </h3>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
                     <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
                       <MapPin className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                       <span>
@@ -303,38 +341,46 @@ export default function ManagerMatchesPage() {
                   </div>
                 )}
 
+                {/* Date of birth */}
+                {selectedMatch.student.date_of_birth && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Fødselsdato</h3>
+                    <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
+                      <Calendar className="w-4 h-4 text-purple-400 shrink-0" />
+                      <span>
+                        {new Date(selectedMatch.student.date_of_birth).toLocaleDateString('da-DK', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Work experience */}
                 {selectedMatch.student.work_experience && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      Erhvervserfaring
-                    </h3>
-                    <p className="text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                      {selectedMatch.student.work_experience}
-                    </p>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Erhvervserfaring</h3>
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
+                      <Briefcase className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                      <p>{selectedMatch.student.work_experience}</p>
+                    </div>
                   </div>
                 )}
 
                 {/* Video pitch */}
                 {selectedMatch.student.video_pitch_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      Video-pitch
-                    </h3>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Video-pitch</h3>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() =>
-                        openVideo(selectedMatch.student.video_pitch_url!)
-                      }
+                      onClick={() => openVideo(selectedMatch.student.video_pitch_url!)}
                       className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
                     >
                       {selectedMatch.student.video_thumbnail_url ? (
-                        <img
-                          src={selectedMatch.student.video_thumbnail_url}
-                          alt="Video thumbnail"
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={selectedMatch.student.video_thumbnail_url} alt="Video thumbnail" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
                       )}
@@ -350,9 +396,7 @@ export default function ManagerMatchesPage() {
                 {/* CV */}
                 {selectedMatch.student.cv_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      CV
-                    </h3>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">CV</h3>
                     <a
                       href={selectedMatch.student.cv_url}
                       target="_blank"
@@ -366,20 +410,16 @@ export default function ManagerMatchesPage() {
                   </div>
                 )}
 
-                {/* Contact buttons */}
+                {/* Contact */}
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-text-secondary mb-2">
-                    Kontaktoplysninger
-                  </h3>
+                  <h3 className="text-sm font-medium text-text-secondary mb-2">Kontaktoplysninger</h3>
                   {selectedMatch.student.phone && (
                     <a
                       href={`tel:${selectedMatch.student.phone}`}
                       className="flex items-center gap-3 p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors"
                     >
                       <Phone className="w-5 h-5" />
-                      <span className="font-medium text-sm">
-                        Ring: {selectedMatch.student.phone}
-                      </span>
+                      <span className="font-medium text-sm">Ring: {selectedMatch.student.phone}</span>
                     </a>
                   )}
                   {selectedMatch.student.email && (
@@ -388,9 +428,7 @@ export default function ManagerMatchesPage() {
                       className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
                     >
                       <Mail className="w-5 h-5" />
-                      <span className="font-medium text-sm">
-                        Email: {selectedMatch.student.email}
-                      </span>
+                      <span className="font-medium text-sm">Email: {selectedMatch.student.email}</span>
                     </a>
                   )}
                   {!selectedMatch.student.phone && !selectedMatch.student.email && (
