@@ -387,21 +387,20 @@ export default function ManagerFeedPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={(e) => { if (e.target === e.currentTarget) setSelectedStudent(null); }}
+            onClick={() => setSelectedStudent(null)}
           >
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 flex flex-col"
+              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Drag handle */}
-              <div className="flex justify-center py-3 shrink-0">
+              <div className="sticky top-0 z-10 bg-[#12121A] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
-              <div className="overflow-y-auto flex-1 overscroll-contain touch-pan-y">
               <div className="px-6 pb-10">
                 {/* Close button */}
                 <div className="flex justify-end mb-2">
@@ -608,7 +607,6 @@ export default function ManagerFeedPage() {
                     </p>
                   )}
                 </div>
-              </div>
               </div>
             </motion.div>
           </motion.div>
