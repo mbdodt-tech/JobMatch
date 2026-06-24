@@ -115,6 +115,15 @@ export default function ManagerMatchesPage() {
     setShowVideoPlayer(true);
   }
 
+  useEffect(() => {
+    if (selectedMatch) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedMatch]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -241,21 +250,21 @@ export default function ManagerMatchesPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedMatch(null)}
+            onClick={(e) => { if (e.target === e.currentTarget) setSelectedMatch(null); }}
           >
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 flex flex-col"
             >
               {/* Drag handle */}
-              <div className="flex justify-center py-3">
+              <div className="flex justify-center py-3 shrink-0">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
+              <div className="overflow-y-auto flex-1 overscroll-contain touch-pan-y">
               <div className="px-6 pb-8">
                 {/* Close button */}
                 <div className="flex justify-end mb-2">
@@ -437,6 +446,7 @@ export default function ManagerMatchesPage() {
                     </p>
                   )}
                 </div>
+              </div>
               </div>
             </motion.div>
           </motion.div>

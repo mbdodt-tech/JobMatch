@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   motion,
   useMotionValue,
@@ -23,6 +23,7 @@ import {
   GraduationCap,
   Briefcase,
   Calendar,
+  Info,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Profile, Store, BehavioralStyle } from '@/lib/types/database';
@@ -74,7 +75,6 @@ export default function ManagerFeedPage() {
   const [selectedStudent, setSelectedStudent] = useState<Profile | null>(null);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
-  const pointerStart = useRef<{ x: number; y: number } | null>(null);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
@@ -210,22 +210,7 @@ export default function ManagerFeedPage() {
     [currentIndex, students, store, swiping, x]
   );
 
-  function handlePointerDown(e: React.PointerEvent) {
-    pointerStart.current = { x: e.clientX, y: e.clientY };
-  }
-
-  function handlePointerUp(e: React.PointerEvent) {
-    if (!pointerStart.current || !currentStudent) return;
-    const dx = Math.abs(e.clientX - pointerStart.current.x);
-    const dy = Math.abs(e.clientY - pointerStart.current.y);
-    pointerStart.current = null;
-    if (dx < 10 && dy < 10) {
-      setSelectedStudent(currentStudent);
-    }
-  }
-
   function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
-    pointerStart.current = null;
     const threshold = 100;
     if (info.offset.x > threshold) {
       handleSwipe('right');
@@ -233,6 +218,15 @@ export default function ManagerFeedPage() {
       handleSwipe('left');
     }
   }
+
+  useEffect(() => {
+    if (selectedStudent) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedStudent]);
 
   function openVideo(url: string) {
     setVideoUrl(url);
@@ -319,8 +313,6 @@ export default function ManagerFeedPage() {
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.7}
                 onDragEnd={handleDragEnd}
-                onPointerDown={handlePointerDown}
-                onPointerUp={handlePointerUp}
               >
                 {/* Swipe overlays */}
                 <motion.div
@@ -341,6 +333,16 @@ export default function ManagerFeedPage() {
                 </motion.div>
 
                 <StudentCard student={currentStudent} />
+
+                {/* Profile button — stops drag propagation so tap always works */}
+                <button
+                  className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/50 backdrop-blur-lg border border-white/20 text-white text-xs font-medium"
+                  onPointerDownCapture={(e) => e.stopPropagation()}
+                  onClick={() => setSelectedStudent(currentStudent)}
+                >
+                  <Info className="w-3.5 h-3.5" />
+                  Se profil
+                </button>
               </motion.div>
             </AnimatePresence>
           </>
@@ -385,21 +387,21 @@ export default function ManagerFeedPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedStudent(null)}
+            onClick={(e) => { if (e.target === e.currentTarget) setSelectedStudent(null); }}
           >
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 flex flex-col"
             >
               {/* Drag handle */}
-              <div className="sticky top-0 z-10 bg-[#12121A] flex justify-center py-3 rounded-t-3xl">
+              <div className="flex justify-center py-3 shrink-0">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
+              <div className="overflow-y-auto flex-1 overscroll-contain touch-pan-y">
               <div className="px-6 pb-10">
                 {/* Close button */}
                 <div className="flex justify-end mb-2">
@@ -606,6 +608,7 @@ export default function ManagerFeedPage() {
                     </p>
                   )}
                 </div>
+              </div>
               </div>
             </motion.div>
           </motion.div>
