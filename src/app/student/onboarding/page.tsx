@@ -230,9 +230,9 @@ export default function StudentOnboarding() {
 
   // ─── Render ──────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#0A0A0F] flex flex-col">
+    <div className="min-h-dvh aurora-bg aurora-bg-subtle flex flex-col">
       {/* Progress bar */}
-      <div className="sticky top-0 z-40 backdrop-blur-xl bg-[#0A0A0F]/80 px-4 pt-4 pb-2">
+      <div className="sticky top-0 z-40 backdrop-blur-xl bg-[#05050A]/80 border-b border-white/5 px-4 pt-4 pb-2 safe-top">
         <div className="max-w-md mx-auto">
           <div className="flex items-center gap-2">
             {STEPS.map((s, i) => (
@@ -240,7 +240,7 @@ export default function StudentOnboarding() {
                 <motion.div
                   className={`h-1.5 w-full rounded-full transition-colors duration-300 ${
                     i <= step
-                      ? 'bg-gradient-to-r from-violet-500 to-blue-500'
+                      ? 'bg-gradient-to-r from-violet-500 to-blue-500 animate-gradient'
                       : 'bg-white/10'
                   }`}
                   animate={
@@ -281,12 +281,12 @@ export default function StudentOnboarding() {
       </div>
 
       {/* Bottom action bar */}
-      <div className="sticky bottom-0 z-40 backdrop-blur-xl bg-[#0A0A0F]/80 border-t border-white/5 px-4 py-4">
+      <div className="sticky bottom-0 z-40 backdrop-blur-xl bg-[#05050A]/80 border-t border-white/5 px-4 py-4 safe-bottom">
         <div className="max-w-md mx-auto flex gap-3">
           {step > 0 && (
             <button
               onClick={goBack}
-              className="flex-1 py-4 rounded-2xl bg-white/5 border border-white/10 text-[#94A3B8] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+              className="flex-1 py-4 rounded-2xl glass text-[#94A3B8] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
             >
               <ChevronLeft size={18} />
               Tilbage
@@ -296,7 +296,7 @@ export default function StudentOnboarding() {
           <button
             onClick={step === 3 ? handleSubmit : goNext}
             disabled={loading || (step === 2 && (!form.primary_style || !form.secondary_style))}
-            className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-shadow active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-4 rounded-2xl btn-gradient text-white font-semibold flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <motion.div
@@ -352,7 +352,7 @@ function StepPersonalInfo({
           👤
         </motion.div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          Fortæl os om dig selv
+          Fortæl os om <span className="gradient-text">dig selv</span>
         </h1>
         <p className="text-[#94A3B8] mt-1 text-sm">
           Grundlæggende oplysninger til din profil
@@ -500,7 +500,7 @@ function StepEducation({
           🎓
         </motion.div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          Din uddannelse
+          Din <span className="gradient-text">uddannelse</span>
         </h1>
         <p className="text-[#94A3B8] mt-1 text-sm">
           Hvilken uddannelse tager du?
@@ -569,7 +569,7 @@ function StepEducation({
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                className="absolute z-50 left-0 right-0 mt-1 rounded-xl bg-[#1A1A2E] border border-white/10 shadow-xl overflow-hidden max-h-60 overflow-y-auto"
+                className="absolute z-50 left-0 right-0 mt-1 rounded-xl bg-[#12121E] border border-white/10 shadow-xl overflow-hidden max-h-60 overflow-y-auto"
               >
                 {filteredSchools.map((school) => (
                   <button
@@ -796,7 +796,7 @@ function StepDiscQuiz({
             🎯
           </motion.div>
           <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-            Din profil er klar!
+            Din profil er <span className="gradient-text">klar!</span>
           </h1>
           <p className="text-[#94A3B8] mt-1 text-sm">
             Baseret på dine svar er dette din adfærdsstil
@@ -812,7 +812,7 @@ function StepDiscQuiz({
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.12 }}
-                className="relative p-5 rounded-2xl border-2 bg-white/[0.07]"
+                className="relative p-5 rounded-2xl border-2 glass-card"
                 style={{ borderColor: color }}
               >
                 <div className="flex items-start gap-4">
@@ -846,7 +846,7 @@ function StepDiscQuiz({
 
         <button
           onClick={retake}
-          className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-[#94A3B8] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+          className="w-full py-3 rounded-2xl glass text-[#94A3B8] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
         >
           <RotateCcw size={16} />
           Tag testen igen
@@ -868,7 +868,7 @@ function StepDiscQuiz({
           🧠
         </motion.div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          Lær din stil at kende
+          Lær din <span className="gradient-text">stil</span> at kende
         </h1>
         <p className="text-[#94A3B8] mt-1 text-sm">
           Vælg det svar, der passer bedst på dig
@@ -1003,7 +1003,7 @@ function StepVideoGdpr({
           🎬
         </motion.div>
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          Video, CV & Samtykke
+          Video, CV & <span className="gradient-text">Samtykke</span>
         </h1>
         <p className="text-[#94A3B8] mt-1 text-sm">
           Upload en kort videopitch, dit CV og accepter GDPR
@@ -1130,7 +1130,7 @@ function StepVideoGdpr({
       </div>
 
       {/* GDPR */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-4">
+      <div className="rounded-2xl glass-card p-5 space-y-4">
         <div className="flex items-start gap-3">
           <Shield size={20} className="text-violet-400 mt-0.5 flex-shrink-0" />
           <div>

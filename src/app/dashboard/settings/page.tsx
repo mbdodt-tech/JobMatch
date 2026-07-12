@@ -77,7 +77,7 @@ export default function DashboardSettings() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60dvh]">
         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
       </div>
     );
@@ -86,12 +86,12 @@ export default function DashboardSettings() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">Indstillinger</h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]"><span className="gradient-text">Indstillinger</span></h1>
         <p className="text-[var(--text-secondary)] mt-1">Konfigurer dashboard og organisation</p>
       </div>
 
       {/* Organization */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="rounded-2xl glass-card overflow-hidden">
         <div className="px-5 py-3 border-b border-white/5">
           <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2"><Building2 size={14} /> Organisation</h2>
         </div>
@@ -114,14 +114,14 @@ export default function DashboardSettings() {
       </div>
 
       {/* Notifications */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="rounded-2xl glass-card overflow-hidden">
         <div className="px-5 py-3 border-b border-white/5">
           <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2"><Bell size={14} /> Notifikationer & Rapporter</h2>
         </div>
         {[
           { label: 'Automatiske påmindelser', desc: 'Send påmindelser til inaktive elever efter 7 dage', value: autoReminders, set: setAutoReminders, color: 'text-purple-400', icon: Bell },
           { label: 'Ugentlig rapport', desc: 'Modtag en email-rapport hver mandag med KPI-oversigt', value: weeklyReport, set: setWeeklyReport, color: 'text-blue-400', icon: Mail },
-          { label: 'Anonymiser i eksport', desc: 'Skjul navne ved data-eksport til eksterne parter', value: anonymizeExport, set: setAnonymizeExport, color: 'text-green-400', icon: Shield },
+          { label: 'Anonymiser i eksport', desc: 'Skjul navne ved data-eksport til eksterne parter', value: anonymizeExport, set: setAnonymizeExport, color: 'text-emerald-400', icon: Shield },
         ].map((t, i) => (
           <div key={t.label} className={`flex items-center justify-between px-5 py-4 ${i < 2 ? 'border-b border-white/5' : ''}`}>
             <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -129,14 +129,14 @@ export default function DashboardSettings() {
               <div><p className="text-sm font-medium text-[var(--text-primary)]">{t.label}</p><p className="text-xs text-[var(--text-muted)]">{t.desc}</p></div>
             </div>
             <button onClick={() => t.set(!t.value)} className="ml-3 shrink-0">
-              {t.value ? <ToggleRight size={32} className="text-green-400" /> : <ToggleLeft size={32} className="text-[var(--text-muted)]" />}
+              {t.value ? <ToggleRight size={32} className="text-emerald-400" /> : <ToggleLeft size={32} className="text-[var(--text-muted)]" />}
             </button>
           </div>
         ))}
       </div>
 
       {/* At-Risk Thresholds */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="rounded-2xl glass-card overflow-hidden">
         <div className="px-5 py-3 border-b border-white/5">
           <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2"><Settings size={14} /> At-risk tærskelværdier</h2>
         </div>
@@ -157,12 +157,12 @@ export default function DashboardSettings() {
       </div>
 
       {/* Data & Privacy */}
-      <div className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+      <div className="rounded-2xl glass-card overflow-hidden">
         <div className="px-5 py-3 border-b border-white/5">
           <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2"><Database size={14} /> Data & GDPR</h2>
         </div>
         <button className="w-full flex items-center justify-between px-5 py-4 border-b border-white/5 hover:bg-white/5 transition-colors">
-          <div className="flex items-center gap-3"><Key size={18} className="text-yellow-400" /><span className="text-sm text-[var(--text-primary)]">API-nøgler</span></div>
+          <div className="flex items-center gap-3"><Key size={18} className="text-amber-400" /><span className="text-sm text-[var(--text-primary)]">API-nøgler</span></div>
           <ChevronRight size={16} className="text-[var(--text-muted)]" />
         </button>
         <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors">
@@ -177,12 +177,12 @@ export default function DashboardSettings() {
           <motion.span
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-sm text-green-400 font-medium"
+            className="text-sm text-emerald-400 font-medium"
           >
             Gemt!
           </motion.span>
         )}
-        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-shadow disabled:opacity-60">
+        <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-3 rounded-xl btn-gradient text-white font-semibold text-sm disabled:opacity-60">
           <Save size={16} /> {saving ? 'Gemmer…' : 'Gem indstillinger'}
         </button>
       </div>

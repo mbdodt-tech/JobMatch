@@ -476,7 +476,7 @@ function StoresContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60dvh]">
         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
       </div>
     );
@@ -942,9 +942,9 @@ function StoresContent() {
                         Vælg butikschef for de importerede butikker
                       </label>
                       {managers.length === 0 ? (
-                        <div className="p-6 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-center">
-                          <AlertCircle className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                          <p className="text-sm text-yellow-300">Ingen butikschefer fundet</p>
+                        <div className="p-6 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
+                          <AlertCircle className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+                          <p className="text-sm text-amber-300">Ingen butikschefer fundet</p>
                           <p className="text-xs text-text-muted mt-1">Der skal oprettes mindst én butikschefkonto først</p>
                         </div>
                       ) : (
@@ -1021,9 +1021,9 @@ function StoresContent() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <p className="text-sm text-text-secondary">
-                            {importRows.length} rækker fundet · <span className="text-green-400">{validImportCount} gyldige</span>
+                            {importRows.length} rækker fundet · <span className="text-emerald-400">{validImportCount} gyldige</span>
                             {importRows.length - validImportCount > 0 && (
-                              <> · <span className="text-red-400">{importRows.length - validImportCount} fejl</span></>
+                              <> · <span className="text-rose-400">{importRows.length - validImportCount} fejl</span></>
                             )}
                           </p>
                         </div>
@@ -1039,15 +1039,15 @@ function StoresContent() {
                             </thead>
                             <tbody>
                               {importRows.map((row, i) => (
-                                <tr key={i} className={`border-t border-white/5 ${row.valid ? '' : 'bg-red-500/5'}`}>
+                                <tr key={i} className={`border-t border-white/5 ${row.valid ? '' : 'bg-rose-500/5'}`}>
                                   <td className="px-3 py-2 text-white truncate max-w-[120px]">{row.name || '—'}</td>
                                   <td className="px-3 py-2 text-text-secondary truncate max-w-[140px]">{row.address || '—'}</td>
                                   <td className="px-3 py-2 text-text-secondary">{row.postal_code || '—'}</td>
                                   <td className="px-3 py-2">
                                     {row.valid ? (
-                                      <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                                     ) : (
-                                      <span className="text-red-400" title={row.error}>
+                                      <span className="text-rose-400" title={row.error}>
                                         <AlertCircle className="w-3.5 h-3.5 inline" /> {row.error}
                                       </span>
                                     )}
@@ -1096,12 +1096,12 @@ function StoresContent() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-text-secondary">Butikker der oprettes</span>
-                        <span className="text-sm text-green-400 font-bold">{validImportCount}</span>
+                        <span className="text-sm text-emerald-400 font-bold">{validImportCount}</span>
                       </div>
                       {importRows.length - validImportCount > 0 && (
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-text-secondary">Springes over (fejl)</span>
-                          <span className="text-sm text-red-400 font-medium">{importRows.length - validImportCount}</span>
+                          <span className="text-sm text-rose-400 font-medium">{importRows.length - validImportCount}</span>
                         </div>
                       )}
                     </div>
@@ -1117,7 +1117,7 @@ function StoresContent() {
                       <button
                         onClick={executeImport}
                         disabled={importing}
-                        className="flex-1 py-3.5 rounded-xl bg-green-500 text-white font-medium text-sm hover:bg-green-600 transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
+                        className="flex-1 py-3.5 rounded-xl btn-gradient-emerald text-white font-medium text-sm disabled:opacity-40 flex items-center justify-center gap-2"
                       >
                         {importing ? (
                           <>
@@ -1138,19 +1138,19 @@ function StoresContent() {
                 {/* Import result */}
                 {importResult && (
                   <div className="space-y-4 text-center py-4">
-                    <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto" />
+                    <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
                     <div>
                       <h3 className="text-lg font-bold text-white">Import fuldført</h3>
                       <p className="text-sm text-text-secondary mt-1">
-                        <span className="text-green-400 font-semibold">{importResult.success}</span> butikker oprettet
+                        <span className="text-emerald-400 font-semibold">{importResult.success}</span> butikker oprettet
                         {importResult.failed > 0 && (
-                          <> · <span className="text-red-400 font-semibold">{importResult.failed}</span> fejlede</>
+                          <> · <span className="text-rose-400 font-semibold">{importResult.failed}</span> fejlede</>
                         )}
                       </p>
                     </div>
                     <button
                       onClick={() => setShowImportModal(false)}
-                      className="w-full py-3.5 rounded-xl bg-purple-500 text-white font-medium text-sm hover:bg-purple-600 transition-colors"
+                      className="w-full py-3.5 rounded-xl btn-gradient text-white font-medium text-sm"
                     >
                       Luk
                     </button>
@@ -1214,7 +1214,7 @@ export default function DashboardStores() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex items-center justify-center min-h-[60dvh]">
           <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
         </div>
       }

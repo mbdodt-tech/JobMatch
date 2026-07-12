@@ -154,8 +154,8 @@ export default function ManagerMatchesPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mb-4">
-            <Heart className="w-8 h-8 text-green-400" />
+          <div className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center mb-4">
+            <Heart className="w-8 h-8 text-emerald-400" />
           </div>
           <h2 className="text-lg font-bold text-white mb-2">
             Ingen matches endnu
