@@ -9,7 +9,6 @@ import {
   ArrowLeft,
   Loader2,
   AlertCircle,
-  Sparkles,
   Eye,
   EyeOff,
   ChevronDown,
@@ -18,6 +17,7 @@ import {
   Lock,
 } from 'lucide-react';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 import { createClient } from '@/lib/supabase/client';
 import type { Organization } from '@/lib/types/database';
 
@@ -168,9 +168,7 @@ export default function SignupPage() {
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             className="flex justify-center mb-6"
           >
-            <div className="animate-float w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient glow-green flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
+            <Logo variant="icon" className="animate-float w-16 h-16 rounded-2xl glow-green" />
           </motion.div>
 
           <AnimatePresence mode="wait" custom={direction}>

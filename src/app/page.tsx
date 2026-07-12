@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { GraduationCap, Store, Building2, ArrowRight, UserPlus, Repeat2, Heart, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 const roles = [
   {
@@ -64,9 +65,7 @@ export default function LandingPage() {
           className="flex items-center justify-between px-6 py-5"
         >
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 glow-violet flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
+            <Logo variant="icon" className="w-8 h-8 rounded-xl glow-violet" />
             <span className="text-lg font-bold text-white tracking-tight">Jobmatch</span>
           </div>
           <Link

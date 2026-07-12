@@ -14,8 +14,8 @@ import {
   LogOut,
   Menu,
   X,
-  Sparkles,
 } from "lucide-react";
+import Logo from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
@@ -108,9 +108,7 @@ export default function DashboardLayout({
       {/* Logo */}
       <div className="p-6 pb-8">
         <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center glow-violet">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
+          <Logo variant="icon" className="w-10 h-10 rounded-xl glow-violet" />
           <div>
             <h1 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
               Jobmatch
@@ -204,9 +202,7 @@ export default function DashboardLayout({
         </button>
         <div className="flex-1 flex justify-center">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
+            <Logo variant="icon" className="w-7 h-7 rounded-lg" />
             <span className="font-bold text-[var(--text-primary)]">
               Jobmatch
             </span>

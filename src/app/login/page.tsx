@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2, AlertCircle, Eye, EyeOff, Zap, Mail, Lock } from 'lucide-react';
+import { Loader2, AlertCircle, Eye, EyeOff, Zap, Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 import { createClient } from '@/lib/supabase/client';
 
 export default function LoginPage() {
@@ -88,9 +89,7 @@ export default function LoginPage() {
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
             className="flex justify-center mb-8"
           >
-            <div className="animate-float w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient glow-green flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
+            <Logo variant="icon" className="animate-float w-16 h-16 rounded-2xl glow-green" />
           </motion.div>
 
           <motion.div
