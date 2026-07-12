@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
-import { MapPin, Users, Briefcase, FileText, ExternalLink } from 'lucide-react';
+import { MapPin, Users, Briefcase, FileText, ExternalLink, Heart, X } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS as EDU_LABELS } from '@/lib/types/database';
 
@@ -66,68 +66,79 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
       {/* Card */}
-      <div className="relative h-full rounded-3xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-purple-500/10">
-        {/* Cover image area */}
-        <div className="relative h-48 bg-gradient-to-br from-purple-600/30 via-blue-500/20 to-cyan-400/10 flex items-center justify-center">
+      <div className="relative h-full rounded-[28px] overflow-hidden bg-[#12121E] border border-white/10 shadow-2xl shadow-violet-500/10">
+        {/* Full-bleed cover */}
+        <div className="absolute inset-0">
           {store.cover_image_url ? (
             <img
               src={store.cover_image_url}
               alt={store.name}
               className="w-full h-full object-cover"
             />
-          ) : store.logo_url ? (
-            <img
-              src={store.logo_url}
-              alt={store.name}
-              className="w-20 h-20 rounded-2xl object-contain"
-            />
           ) : (
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-              <Briefcase size={36} className="text-white" />
-            </div>
-          )}
-
-          {/* Distance badge */}
-          {store.distance_km !== undefined && (
-            <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-1">
-              <MapPin size={12} className="text-purple-400" />
-              <span className="text-xs font-medium text-white">
-                {store.distance_km.toFixed(1)} km
-              </span>
+            <div className="w-full h-full bg-gradient-to-br from-violet-600/40 via-blue-600/25 to-[#0B0B14] flex items-center justify-center">
+              {store.logo_url ? (
+                <img
+                  src={store.logo_url}
+                  alt={store.name}
+                  className="w-28 h-28 rounded-3xl object-contain bg-white/5 p-3 -translate-y-10"
+                />
+              ) : (
+                <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center glow-violet -translate-y-10">
+                  <Briefcase size={48} className="text-white" />
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* Info section */}
-        <div className="p-6 space-y-4">
-          <div>
-            <h2 className="text-2xl font-bold text-[#F8FAFC] tracking-tight">
+        {/* Scrim for readable text */}
+        <div className="absolute inset-0 card-scrim" />
+
+        {/* Distance chip */}
+        {store.distance_km !== undefined && (
+          <div className="absolute top-4 right-4 backdrop-blur-md bg-white/15 border border-white/20 rounded-full px-3 py-1 flex items-center gap-1">
+            <MapPin size={12} className="text-white" />
+            <span className="text-xs font-medium text-white">
+              {store.distance_km.toFixed(1)} km
+            </span>
+          </div>
+        )}
+
+        {/* Info on scrim */}
+        <div className="absolute inset-x-0 bottom-0 p-5 space-y-3">
+          <div className="min-w-0">
+            <h2 className="text-3xl font-extrabold text-white tracking-tight break-words">
               {store.name}
             </h2>
             <div className="flex items-center gap-1 mt-1">
-              <MapPin size={14} className="text-[#94A3B8]" />
-              <span className="text-sm text-[#94A3B8]">
+              <MapPin size={14} className="text-white/70 shrink-0" />
+              <span className="text-sm text-white/70 truncate">
                 {store.city} {store.postal_code}
               </span>
             </div>
           </div>
 
           {store.description && (
-            <p className="text-sm text-[#94A3B8] leading-relaxed line-clamp-3">
+            <p className="text-sm text-white/70 leading-relaxed line-clamp-2 break-words">
               {store.description}
             </p>
           )}
 
-          {/* Education lines */}
+          {/* Chips: education lines + slots */}
           <div className="flex flex-wrap gap-2">
             {store.education_lines?.map((line) => (
               <span
                 key={line}
-                className="text-xs px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/20 font-medium"
+                className="text-xs px-3 py-1 rounded-full backdrop-blur-md bg-white/15 border border-white/20 text-white font-medium"
               >
                 {EDU_LABELS[line] || line}
               </span>
             ))}
+            <span className="text-xs px-3 py-1 rounded-full backdrop-blur-md bg-white/15 border border-white/20 text-white font-medium flex items-center gap-1.5">
+              <Users size={12} />
+              {store.internship_slots} praktikpladser
+            </span>
           </div>
 
           {/* Job description PDF link */}
@@ -137,21 +148,13 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 py-2 px-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium hover:bg-blue-500/20 transition-colors w-full"
+              className="flex items-center gap-2 py-2 px-3 rounded-full backdrop-blur-md bg-white/15 border border-white/20 text-white text-xs font-medium hover:bg-white/25 transition-colors w-full min-w-0"
             >
-              <FileText size={14} />
-              Se jobbeskrivelse (PDF)
-              <ExternalLink size={11} className="ml-auto" />
+              <FileText size={14} className="shrink-0" />
+              <span className="truncate">Se jobbeskrivelse (PDF)</span>
+              <ExternalLink size={11} className="ml-auto shrink-0" />
             </a>
           )}
-
-          {/* Internship slots */}
-          <div className="flex items-center gap-2">
-            <Users size={16} className="text-blue-400" />
-            <span className="text-sm text-[#94A3B8]">
-              {store.internship_slots} praktikpladser
-            </span>
-          </div>
         </div>
 
         {/* Swipe overlays */}
@@ -159,21 +162,21 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
           <>
             {/* Reject overlay (red) */}
             <motion.div
-              className="absolute inset-0 rounded-3xl bg-red-500/30 flex items-center justify-center pointer-events-none"
+              className="absolute inset-0 rounded-[28px] bg-rose-500/25 flex items-center justify-center pointer-events-none"
               style={{ opacity: rejectOpacity }}
             >
-              <div className="text-6xl font-extrabold text-red-400 rotate-[-20deg] border-4 border-red-400 rounded-2xl px-6 py-2">
-                NEJ
+              <div className="rotate-[-20deg] border-4 border-rose-400 rounded-3xl p-5 bg-rose-500/20 backdrop-blur-sm glow-red">
+                <X size={56} strokeWidth={3} className="text-rose-300" />
               </div>
             </motion.div>
 
             {/* Accept overlay (green) */}
             <motion.div
-              className="absolute inset-0 rounded-3xl bg-green-500/30 flex items-center justify-center pointer-events-none"
+              className="absolute inset-0 rounded-[28px] bg-emerald-500/25 flex items-center justify-center pointer-events-none"
               style={{ opacity: acceptOpacity }}
             >
-              <div className="text-6xl font-extrabold text-green-400 rotate-[20deg] border-4 border-green-400 rounded-2xl px-6 py-2">
-                JA!
+              <div className="rotate-[20deg] border-4 border-emerald-400 rounded-3xl p-5 bg-emerald-500/20 backdrop-blur-sm glow-green">
+                <Heart size={56} strokeWidth={3} className="text-emerald-300 fill-emerald-300/40" />
               </div>
             </motion.div>
           </>

@@ -506,19 +506,19 @@ function StoresContent() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       <motion.div variants={itemVariants}>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">Butikker</h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]"><span className="gradient-text">Butikker</span></h1>
         <p className="text-[var(--text-secondary)] mt-1">Oversigt over alle tilknyttede butikker og kæder</p>
       </motion.div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Aktive butikker', value: activeCount, color: 'text-green-400' },
+          { label: 'Aktive butikker', value: activeCount, color: 'text-emerald-400' },
           { label: 'Praktik­pladser', value: totalSlots, color: 'text-blue-400' },
           { label: 'Matches', value: totalMatches, color: 'text-purple-400' },
         ].map(stat => (
-          <motion.div key={stat.label} variants={itemVariants} className="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 text-center min-w-0 overflow-hidden">
-            <p className={`text-2xl font-extrabold ${stat.color}`}>{stat.value}</p>
+          <motion.div key={stat.label} variants={itemVariants} className="p-3 sm:p-4 rounded-2xl glass-card glass-card-hover text-center min-w-0 overflow-hidden">
+            <p className={`text-2xl font-extrabold tabular-nums ${stat.color}`}>{stat.value}</p>
             <p className="text-xs text-[var(--text-muted)] mt-1 break-words">{stat.label}</p>
           </motion.div>
         ))}
@@ -538,7 +538,7 @@ function StoresContent() {
         </div>
         <button
           onClick={openImportModal}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 transition-colors text-sm font-medium shrink-0"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl btn-gradient text-white text-sm font-medium shrink-0"
         >
           <Upload className="w-4 h-4" />
           Importér butikker
@@ -555,10 +555,10 @@ function StoresContent() {
         <>
           {/* Chain sections */}
           {filteredChains.map(chain => (
-            <motion.div key={chain.id} variants={itemVariants} className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden">
+            <motion.div key={chain.id} variants={itemVariants} className="rounded-2xl glass-card overflow-hidden">
               <button
                 onClick={() => toggleChain(chain.id)}
-                className="w-full flex items-center gap-4 p-5 hover:bg-white/[0.03] transition-colors text-left"
+                className="w-full flex items-center gap-4 p-5 hover:bg-white/[0.04] transition-colors text-left"
               >
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
                   {chain.logo_url ? (
@@ -603,7 +603,7 @@ function StoresContent() {
             <>
               {filteredChains.length > 0 && (
                 <motion.div variants={itemVariants}>
-                  <h2 className="text-lg font-bold text-[var(--text-primary)] mb-3">Øvrige butikker</h2>
+                  <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)] mb-3">Øvrige butikker</h2>
                 </motion.div>
               )}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -639,10 +639,10 @@ function StoresContent() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
+              className="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-[#12121A] flex justify-center py-3 rounded-t-3xl">
+              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
@@ -670,7 +670,7 @@ function StoresContent() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h2 className="text-xl font-bold text-white truncate">{selectedStore.name}</h2>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${selectedStore.is_active ? 'bg-green-500/15 text-green-400 border border-green-500/20' : 'bg-red-500/15 text-red-400 border border-red-500/20'}`}>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${selectedStore.is_active ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'}`}>
                             {selectedStore.is_active ? 'Aktiv' : 'Inaktiv'}
                           </span>
                         </div>
@@ -696,7 +696,7 @@ function StoresContent() {
                         <p className="text-[10px] text-[var(--text-muted)]">Swipes</p>
                       </div>
                       <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-                        <p className="text-lg font-bold text-green-400">{selectedStore.matches}</p>
+                        <p className="text-lg font-bold text-emerald-400">{selectedStore.matches}</p>
                         <p className="text-[10px] text-[var(--text-muted)]">Matches</p>
                       </div>
                     </div>
@@ -772,7 +772,7 @@ function StoresContent() {
                         {(selectedStore.phone || selectedStore.manager_phone) && (
                           <a
                             href={`tel:${selectedStore.phone || selectedStore.manager_phone}`}
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
                           >
                             <Phone className="w-5 h-5" />
                             <span className="font-medium text-sm">Ring: {selectedStore.phone || selectedStore.manager_phone}</span>
@@ -824,10 +824,10 @@ function StoresContent() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="w-full sm:max-w-lg bg-[#12121A] rounded-t-3xl sm:rounded-3xl border border-white/10 max-h-[90vh] overflow-y-auto"
+              className="w-full sm:max-w-lg bg-[#0E0E18] rounded-t-3xl sm:rounded-3xl border border-white/10 max-h-[90dvh] overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-[#12121A] rounded-t-3xl sm:rounded-t-3xl">
+              <div className="sticky top-0 z-10 bg-[#0E0E18] rounded-t-3xl sm:rounded-t-3xl">
                 <div className="flex justify-center py-3 sm:hidden">
                   <div className="w-10 h-1 rounded-full bg-white/20" />
                 </div>
@@ -852,9 +852,22 @@ function StoresContent() {
                 </div>
 
                 {/* Step indicator */}
-                <div className="flex gap-1 px-6 pb-4">
+                <div className="flex items-center px-6 pb-4">
                   {[1, 2, 3, 4].map(step => (
-                    <div key={step} className={`h-1 flex-1 rounded-full transition-colors ${step <= importStep ? 'bg-purple-500' : 'bg-white/10'}`} />
+                    <div key={step} className={`flex items-center ${step > 1 ? 'flex-1' : ''}`}>
+                      {step > 1 && (
+                        <div className={`h-px flex-1 mx-2 transition-colors ${step <= importStep ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-white/10'}`} />
+                      )}
+                      <div
+                        className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
+                          step <= importStep
+                            ? `bg-gradient-to-br from-purple-500 to-blue-500 text-white ${step === importStep ? 'glow-violet' : ''}`
+                            : 'bg-white/10 text-[var(--text-muted)]'
+                        }`}
+                      >
+                        {step}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -914,7 +927,7 @@ function StoresContent() {
                     <button
                       onClick={() => setImportStep(2)}
                       disabled={!importChainId}
-                      className="w-full py-3.5 rounded-xl bg-purple-500 text-white font-medium text-sm hover:bg-purple-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed mt-4"
+                      className="w-full py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed mt-4"
                     >
                       Næste
                     </button>
@@ -969,7 +982,7 @@ function StoresContent() {
                       <button
                         onClick={() => setImportStep(3)}
                         disabled={!selectedManagerId}
-                        className="flex-1 py-3.5 rounded-xl bg-purple-500 text-white font-medium text-sm hover:bg-purple-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         Næste
                       </button>
@@ -1057,7 +1070,7 @@ function StoresContent() {
                       <button
                         onClick={() => setImportStep(4)}
                         disabled={validImportCount === 0}
-                        className="flex-1 py-3.5 rounded-xl bg-purple-500 text-white font-medium text-sm hover:bg-purple-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         Næste
                       </button>
@@ -1156,7 +1169,7 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
   return (
     <div
       onClick={onClick}
-      className={`group relative p-5 rounded-2xl bg-white/5 backdrop-blur-xl border hover:border-white/20 transition-all cursor-pointer ${store.is_active ? 'border-white/10' : 'border-red-500/10 opacity-60'}`}
+      className={`group relative p-5 rounded-2xl glass-card glass-card-hover cursor-pointer ${store.is_active ? '' : '!border-rose-500/10 opacity-60'}`}
     >
       {store.is_active && <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 opacity-50 rounded-t-2xl" />}
       <div className="flex items-start justify-between mb-3">
@@ -1167,7 +1180,7 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
             <span className="truncate">{store.address}, {store.postal_code} {store.city}</span>
           </div>
         </div>
-        <div className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${store.is_active ? 'bg-green-500/15 text-green-400 border border-green-500/20' : 'bg-red-500/15 text-red-400 border border-red-500/20'}`}>
+        <div className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${store.is_active ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'}`}>
           {store.is_active ? 'Aktiv' : 'Inaktiv'}
         </div>
       </div>
@@ -1189,7 +1202,7 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
           <p className="text-[10px] text-[var(--text-muted)] truncate">Swipes</p>
         </div>
         <div className="text-center min-w-0">
-          <p className="text-sm font-bold text-green-400">{store.matches}</p>
+          <p className="text-sm font-bold text-emerald-400">{store.matches}</p>
           <p className="text-[10px] text-[var(--text-muted)] truncate">Matches</p>
         </div>
       </div>

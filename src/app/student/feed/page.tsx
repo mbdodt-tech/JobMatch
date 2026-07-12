@@ -126,33 +126,20 @@ export default function StudentFeed() {
   const isEmpty = currentIndex >= stores.length && !loading;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
-      {/* Subtle background gradient */}
-      <motion.div
-        className="fixed inset-0 pointer-events-none"
-        animate={{
-          background: [
-            'radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.08) 0%, transparent 60%)',
-            'radial-gradient(ellipse at 80% 50%, rgba(59,130,246,0.08) 0%, transparent 60%)',
-            'radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.08) 0%, transparent 60%)',
-          ],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
+    <div className="min-h-dvh aurora-bg aurora-bg-subtle aurora-animated">
       {/* Header */}
       <div className="relative z-10 px-4 pt-6 pb-3 max-w-md mx-auto">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-              Udforsk 🔍
+              <span className="gradient-text">Udforsk</span> 🔍
             </h1>
-            <p className="text-sm text-[#64748B]">
+            <p className="text-sm text-[#64748B] truncate">
               Swipe for at finde din praktikplads
             </p>
           </div>
-          <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full px-3 py-1.5">
-            <Sparkles size={14} className="text-purple-400" />
+          <div className="flex items-center gap-1 glass rounded-full px-3 py-1.5 shrink-0">
+            <Sparkles size={14} className="text-violet-400" />
             <span className="text-xs font-medium text-[#94A3B8]">
               {stores.length - currentIndex} tilbage
             </span>
@@ -162,10 +149,10 @@ export default function StudentFeed() {
 
       {/* Card stack */}
       <div className="relative z-10 max-w-md mx-auto px-4">
-        <div className="relative" style={{ height: 'calc(100dvh - 320px)', minHeight: 340 }}>
+        <div className="relative" style={{ height: 'calc(100dvh - 340px)', minHeight: 340 }}>
           {loading ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
-              <Loader2 size={36} className="text-purple-400 animate-spin" />
+              <Loader2 size={36} className="text-violet-400 animate-spin" />
               <p className="text-[#94A3B8] text-sm">Henter virksomheder…</p>
             </div>
           ) : isEmpty ? (
@@ -183,7 +170,7 @@ export default function StudentFeed() {
               </p>
               <button
                 onClick={fetchStores}
-                className="mt-4 px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold text-sm shadow-lg shadow-purple-500/30 active:scale-[0.98] transition-transform"
+                className="mt-4 px-6 py-3 rounded-2xl btn-gradient text-white font-semibold text-sm active:scale-[0.98]"
               >
                 Opdater listen
               </button>
@@ -210,22 +197,22 @@ export default function StudentFeed() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('left')}
-            className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-lg hover:bg-red-500/10 hover:border-red-500/30 transition-colors group"
+            className="w-16 h-16 rounded-full glass ring-1 ring-rose-500/30 flex items-center justify-center shadow-lg hover:bg-rose-500/10 hover:ring-rose-500/50 transition-colors group"
           >
             <X
               size={28}
-              className="text-red-400 group-hover:text-red-300 transition-colors"
+              className="text-rose-400 group-hover:text-rose-300 transition-colors"
             />
           </motion.button>
 
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('right')}
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 flex items-center justify-center shadow-lg shadow-green-500/10 hover:shadow-green-500/30 transition-shadow group"
+            className="w-18 h-18 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 ring-1 ring-white/10 flex items-center justify-center glow-green hover:brightness-110 transition-all group"
           >
             <Heart
-              size={28}
-              className="text-green-400 group-hover:text-green-300 transition-colors"
+              size={32}
+              className="text-white fill-white/30 transition-colors"
             />
           </motion.button>
         </div>

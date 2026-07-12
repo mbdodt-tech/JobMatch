@@ -108,7 +108,7 @@ export default function DashboardLayout({
       {/* Logo */}
       <div className="p-6 pb-8">
         <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/50 transition-shadow">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center glow-violet">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -132,7 +132,7 @@ export default function DashboardLayout({
               onClick={() => setSidebarOpen(false)}
               className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
                 active
-                  ? "bg-purple-500/20 text-white"
+                  ? "bg-gradient-to-r from-purple-500/20 to-blue-500/10 text-white"
                   : "text-[var(--text-secondary)] hover:text-white hover:bg-white/5"
               }`}
             >
@@ -152,7 +152,7 @@ export default function DashboardLayout({
               />
               <span>{item.label}</span>
               {item.label === "Opfølgning" && atRiskCount > 0 && (
-                <span className="ml-auto w-5 h-5 rounded-full bg-red-500/20 text-red-400 text-xs flex items-center justify-center font-semibold">
+                <span className="ml-auto w-5 h-5 rounded-full bg-rose-500/20 text-rose-400 text-xs flex items-center justify-center font-semibold">
                   {atRiskCount}
                 </span>
               )}
@@ -162,7 +162,7 @@ export default function DashboardLayout({
       </nav>
 
       {/* User Section */}
-      <div className="p-4 mx-3 mb-4 rounded-xl bg-white/5 border border-white/10">
+      <div className="p-4 mx-3 mb-4 rounded-xl glass-card">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">
             {userInitials || "??"}
@@ -177,7 +177,7 @@ export default function DashboardLayout({
           </div>
           <button
             onClick={handleLogout}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-[var(--text-muted)] hover:text-red-400 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/10 text-[var(--text-muted)] hover:text-rose-400 transition-colors"
             title="Log ud"
           >
             <LogOut className="w-4 h-4" />
@@ -188,7 +188,7 @@ export default function DashboardLayout({
   );
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)]">
+    <div className="min-h-dvh bg-[var(--bg-primary)]">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:fixed lg:inset-y-0 lg:left-0 lg:w-[280px] lg:flex-col bg-white/[0.03] backdrop-blur-xl border-r border-white/10 z-40">
         <SidebarContent />
@@ -248,7 +248,7 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="lg:pl-[280px] pt-16 lg:pt-0 min-h-screen">
+      <main className="lg:pl-[280px] pt-16 lg:pt-0 min-h-dvh aurora-bg aurora-bg-subtle">
         <div className="p-4 md:p-6 lg:p-8">{children}</div>
       </main>
     </div>

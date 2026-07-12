@@ -55,7 +55,7 @@ export default function StudentSettings() {
   };
 
   const toggles: SettingToggle[] = [
-    { key: 'notify_push', label: 'Push-notifikationer', description: 'Modtag push-beskeder ved nyt match', icon: Smartphone, value: notifyPush, color: 'text-purple-400' },
+    { key: 'notify_push', label: 'Push-notifikationer', description: 'Modtag push-beskeder ved nyt match', icon: Smartphone, value: notifyPush, color: 'text-violet-400' },
     { key: 'notify_email', label: 'Email-notifikationer', description: 'Modtag en email når du matcher', icon: Mail, value: notifyEmail, color: 'text-blue-400' },
     { key: 'notify_in_app', label: 'In-app notifikationer', description: 'Vis bannere inde i appen', icon: Bell, value: notifyInApp, color: 'text-green-400' },
   ];
@@ -69,15 +69,17 @@ export default function StudentSettings() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] pb-24">
+    <div className="min-h-dvh aurora-bg aurora-bg-subtle pb-32">
       <div className="px-4 pt-6 pb-4 max-w-md mx-auto">
-        <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">Indstillinger ⚙️</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
+          <span className="gradient-text">Indstillinger</span> ⚙️
+        </h1>
         <p className="text-sm text-[#64748B] mt-0.5">Tilpas din oplevelse</p>
       </div>
 
       <div className="max-w-md mx-auto px-4 space-y-4">
         {/* Notification Section */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl glass-card overflow-hidden">
           <div className="px-4 py-3 border-b border-white/5">
             <h2 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider flex items-center gap-2">
               <Bell size={14} /> Notifikationer
@@ -100,7 +102,7 @@ export default function StudentSettings() {
         </motion.div>
 
         {/* Privacy */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl glass-card overflow-hidden">
           <div className="px-4 py-3 border-b border-white/5">
             <h2 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider flex items-center gap-2">
               <Shield size={14} /> Privatliv & Data
@@ -108,7 +110,7 @@ export default function StudentSettings() {
           </div>
           <button onClick={() => router.push('/student/profile')} className="w-full flex items-center justify-between px-4 py-4 border-b border-white/5 hover:bg-white/5 transition-colors">
             <div className="flex items-center gap-3">
-              <Shield size={18} className="text-purple-400" />
+              <Shield size={18} className="text-violet-400" />
               <span className="text-sm text-[#F8FAFC]">GDPR-samtykke</span>
             </div>
             <ChevronRight size={16} className="text-[#64748B]" />
@@ -123,7 +125,7 @@ export default function StudentSettings() {
         </motion.div>
 
         {/* App Info */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-2xl glass-card overflow-hidden">
           <div className="px-4 py-3 border-b border-white/5">
             <h2 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider flex items-center gap-2">
               <MonitorSmartphone size={14} /> App
@@ -147,7 +149,7 @@ export default function StudentSettings() {
 
         {/* Danger Zone */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="space-y-3 pt-4">
-          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] font-medium text-sm hover:bg-white/10 transition-colors">
+          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl glass text-[#F8FAFC] font-medium text-sm hover:bg-white/10 transition-colors">
             <LogOut size={16} /> Log ud
           </button>
           <button className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-red-500/5 border border-red-500/10 text-red-400 font-medium text-sm hover:bg-red-500/10 transition-colors">

@@ -76,19 +76,19 @@ function getStatusBadge(status: "at_risk" | "matched" | "inactive") {
     case "at_risk":
       return {
         label: "Kræver opmærksomhed",
-        className: "bg-red-500/15 text-red-400 border border-red-500/20",
+        className: "bg-rose-500/15 text-rose-400 border border-rose-500/20",
         icon: AlertCircle,
       };
     case "matched":
       return {
         label: "Matchet",
-        className: "bg-green-500/15 text-green-400 border border-green-500/20",
+        className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20",
         icon: CheckCircle2,
       };
     case "inactive":
       return {
         label: "Inaktiv",
-        className: "bg-yellow-500/15 text-yellow-400 border border-yellow-500/20",
+        className: "bg-amber-500/15 text-amber-400 border border-amber-500/20",
         icon: UserX,
       };
   }
@@ -389,7 +389,7 @@ function StudentsContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60dvh]">
         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
       </div>
     );
@@ -403,7 +403,7 @@ function StudentsContent() {
     >
       <div>
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-          Elever
+          <span className="gradient-text">Elever</span>
         </h1>
         <p className="text-[var(--text-secondary)] mt-1">
           Oversigt over alle elever og deres aktivitet
@@ -414,10 +414,10 @@ function StudentsContent() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/20"
+          className="flex items-center gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20"
         >
-          <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-          <p className="text-sm text-red-300">
+          <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+          <p className="text-sm text-rose-300">
             <span className="font-semibold">{atRiskCount} elev{atRiskCount > 1 ? "er" : ""}</span>{" "}
             har mange swipes men ingen matches — de kan have brug for vejledning.
           </p>
@@ -496,7 +496,7 @@ function StudentsContent() {
         )}
       </AnimatePresence>
 
-      <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden">
+      <div className="rounded-2xl glass-card overflow-hidden">
         <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-4 px-6 py-4 border-b border-white/10 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
           <button
             onClick={() => handleSort("name")}
@@ -550,7 +550,7 @@ function StudentsContent() {
                   key={student.id}
                   variants={rowVariants}
                   onClick={() => openStudentDetail(student.id)}
-                  className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-2 md:gap-4 px-6 py-4 border-b border-white/5 hover:bg-white/[0.05] transition-colors cursor-pointer ${
+                  className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-2 md:gap-4 px-6 py-4 border-b border-white/5 hover:bg-white/[0.04] transition-colors cursor-pointer ${
                     i % 2 === 0 ? "bg-white/[0.01]" : ""
                   }`}
                 >
@@ -558,9 +558,9 @@ function StudentsContent() {
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
                         status === "at_risk"
-                          ? "bg-red-500/20 text-red-400"
+                          ? "bg-rose-500/20 text-rose-400"
                           : status === "matched"
-                            ? "bg-green-500/20 text-green-400"
+                            ? "bg-emerald-500/20 text-emerald-400"
                             : "bg-white/10 text-[var(--text-muted)]"
                       }`}
                     >
@@ -588,7 +588,7 @@ function StudentsContent() {
                       </p>
                     </div>
                     {isAnonymized && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-400 border border-yellow-500/20 flex-shrink-0">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20 flex-shrink-0">
                         Ingen samtykke
                       </span>
                     )}
@@ -616,7 +616,7 @@ function StudentsContent() {
                     <span
                       className={`text-sm font-semibold ${
                         student.matches > 0
-                          ? "text-green-400"
+                          ? "text-emerald-400"
                           : "text-[var(--text-muted)]"
                       }`}
                     >
@@ -681,10 +681,10 @@ function StudentsContent() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
+              className="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-[#12121A] flex justify-center py-3 rounded-t-3xl">
+              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
@@ -851,7 +851,7 @@ function StudentsContent() {
                         {selectedProfile.phone && (
                           <a
                             href={`tel:${selectedProfile.phone}`}
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
                           >
                             <Phone className="w-5 h-5" />
                             <span className="font-medium text-sm">Ring: {selectedProfile.phone}</span>
@@ -914,7 +914,7 @@ function StudentsContent() {
                                 </span>
                                 <button
                                   onClick={() => deleteNote(note.id)}
-                                  className="text-text-muted hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                                  className="text-text-muted hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
@@ -977,7 +977,7 @@ export default function StudentsPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex items-center justify-center min-h-[60dvh]">
           <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
         </div>
       }

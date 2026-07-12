@@ -238,16 +238,16 @@ export default function ManagerFeedPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      <div className="aurora-bg aurora-bg-subtle flex items-center justify-center min-h-[100dvh]">
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
 
   if (!store) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mb-4">
+      <div className="aurora-bg aurora-bg-subtle flex flex-col items-center justify-center min-h-[100dvh] px-6 text-center">
+        <div className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center mb-4">
           <Users className="w-8 h-8 text-blue-400" />
         </div>
         <h2 className="text-xl font-bold text-white mb-2">Ingen butik oprettet</h2>
@@ -259,15 +259,16 @@ export default function ManagerFeedPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 pt-6 pb-28">
+    <div className="aurora-bg aurora-bg-subtle min-h-[100dvh]">
+    <div className="max-w-md mx-auto px-4 pt-6 pb-4">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-6"
       >
-        <h1 className="text-2xl font-bold text-white tracking-tight">
-          Interesserede elever
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">
+          Interesserede <span className="gradient-text">elever</span>
         </h1>
         <p className="text-text-secondary text-sm mt-1">
           {currentStudent
@@ -277,15 +278,15 @@ export default function ManagerFeedPage() {
       </motion.div>
 
       {/* Card stack */}
-      <div className="relative" style={{ height: 'calc(100dvh - 340px)', minHeight: 360 }}>
+      <div className="relative" style={{ height: 'calc(100dvh - 360px)', minHeight: 360 }}>
         {!currentStudent ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10"
+            className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 rounded-[28px] glass-card"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center mb-4">
-              <Users className="w-8 h-8 text-purple-400" />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center mb-4">
+              <Users className="w-8 h-8 text-violet-400" />
             </div>
             <h2 className="text-lg font-bold text-white mb-2">
               Ingen interesserede elever endnu
@@ -316,18 +317,18 @@ export default function ManagerFeedPage() {
               >
                 {/* Swipe overlays */}
                 <motion.div
-                  className="absolute inset-0 z-10 rounded-3xl bg-green-500/20 border-2 border-green-500/40 flex items-center justify-center pointer-events-none"
+                  className="absolute inset-0 z-10 rounded-[28px] bg-emerald-500/20 border-2 border-emerald-500/40 flex items-center justify-center pointer-events-none"
                   style={{ opacity: rightOpacity }}
                 >
-                  <div className="bg-green-500 rounded-full p-4 shadow-lg shadow-green-500/30">
+                  <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full p-4 glow-green">
                     <Heart className="w-10 h-10 text-white" />
                   </div>
                 </motion.div>
                 <motion.div
-                  className="absolute inset-0 z-10 rounded-3xl bg-red-500/20 border-2 border-red-500/40 flex items-center justify-center pointer-events-none"
+                  className="absolute inset-0 z-10 rounded-[28px] bg-rose-500/20 border-2 border-rose-500/40 flex items-center justify-center pointer-events-none"
                   style={{ opacity: leftOpacity }}
                 >
-                  <div className="bg-red-500 rounded-full p-4 shadow-lg shadow-red-500/30">
+                  <div className="bg-rose-500 rounded-full p-4 glow-red">
                     <X className="w-10 h-10 text-white" />
                   </div>
                 </motion.div>
@@ -336,7 +337,7 @@ export default function ManagerFeedPage() {
 
                 {/* Profile button — stops drag propagation so tap always works */}
                 <button
-                  className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/50 backdrop-blur-lg border border-white/20 text-white text-xs font-medium"
+                  className="absolute top-4 left-4 z-20 flex items-center gap-2 px-4 py-2 rounded-full glass-strong text-white text-xs font-semibold shadow-lg"
                   onPointerDownCapture={(e) => e.stopPropagation()}
                   onClick={() => setSelectedStudent(currentStudent)}
                 >
@@ -362,9 +363,9 @@ export default function ManagerFeedPage() {
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('left')}
             disabled={swiping}
-            className="w-16 h-16 rounded-full bg-white/5 border border-red-500/30 flex items-center justify-center hover:bg-red-500/10 transition-colors disabled:opacity-50"
+            className="w-[72px] h-[72px] rounded-full bg-white/5 backdrop-blur-xl border border-rose-500/30 flex items-center justify-center hover:bg-rose-500/10 hover:glow-red transition-all disabled:opacity-50"
           >
-            <X className="w-7 h-7 text-red-400" />
+            <X className="w-8 h-8 text-rose-400" />
           </motion.button>
 
           <motion.button
@@ -372,9 +373,9 @@ export default function ManagerFeedPage() {
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('right')}
             disabled={swiping}
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/30 disabled:opacity-50"
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center glow-green disabled:opacity-50"
           >
-            <Heart className="w-7 h-7 text-white" />
+            <Heart className="w-9 h-9 text-white" />
           </motion.button>
         </motion.div>
       )}
@@ -394,10 +395,10 @@ export default function ManagerFeedPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
+              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-[#12121A] flex justify-center py-3 rounded-t-3xl">
+              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
@@ -414,7 +415,7 @@ export default function ManagerFeedPage() {
 
                 {/* Avatar + name */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
                     {selectedStudent.avatar_url ? (
                       <img
                         src={selectedStudent.avatar_url}
@@ -458,8 +459,8 @@ export default function ManagerFeedPage() {
                     <h3 className="text-sm font-medium text-text-secondary mb-1.5">
                       Uddannelse
                     </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                      <GraduationCap className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                       <div>
                         {selectedStudent.youth_education && (
                           <p>
@@ -481,8 +482,8 @@ export default function ManagerFeedPage() {
                     <h3 className="text-sm font-medium text-text-secondary mb-1.5">
                       Adresse
                     </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                      <MapPin className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                       <span>
                         {selectedStudent.address}
                         {(selectedStudent.postal_code || selectedStudent.city) && ', '}
@@ -499,8 +500,8 @@ export default function ManagerFeedPage() {
                     <h3 className="text-sm font-medium text-text-secondary mb-1.5">
                       Fødselsdato
                     </h3>
-                    <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                      <Calendar className="w-4 h-4 text-purple-400 shrink-0" />
+                    <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <Calendar className="w-4 h-4 text-violet-400 shrink-0" />
                       <span>
                         {new Date(selectedStudent.date_of_birth).toLocaleDateString('da-DK', {
                           day: 'numeric',
@@ -518,7 +519,7 @@ export default function ManagerFeedPage() {
                     <h3 className="text-sm font-medium text-text-secondary mb-1.5">
                       Erhvervserfaring
                     </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
                       <Briefcase className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                       <p>{selectedStudent.work_experience}</p>
                     </div>
@@ -544,7 +545,7 @@ export default function ManagerFeedPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
+                        <div className="w-full h-full bg-gradient-to-br from-violet-900/30 to-blue-900/30" />
                       )}
                       <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                         <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
@@ -565,7 +566,7 @@ export default function ManagerFeedPage() {
                       href={selectedStudent.cv_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
                     >
                       <FileText className="w-5 h-5" />
                       <span className="font-medium text-sm">Se elevens CV</span>
@@ -602,7 +603,7 @@ export default function ManagerFeedPage() {
                     </a>
                   )}
                   {!selectedStudent.phone && !selectedStudent.email && (
-                    <p className="text-text-muted text-sm p-3.5 rounded-xl bg-white/5 border border-white/5">
+                    <p className="text-text-muted text-sm p-3.5 rounded-xl bg-white/5 border border-white/10">
                       Eleven har ikke delt kontaktoplysninger endnu
                     </p>
                   )}
@@ -662,7 +663,7 @@ export default function ManagerFeedPage() {
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="bg-gradient-to-br from-purple-900/90 to-blue-900/90 rounded-3xl p-8 text-center border border-white/20 shadow-2xl max-w-sm w-full"
+              className="bg-gradient-to-br from-violet-900/90 to-blue-900/90 backdrop-blur-xl rounded-3xl p-8 text-center border border-white/20 shadow-2xl glow-violet max-w-sm w-full"
               onClick={(e) => e.stopPropagation()}
             >
               <motion.div
@@ -684,7 +685,7 @@ export default function ManagerFeedPage() {
                   setShowMatch(false);
                   window.location.href = '/manager/matches';
                 }}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold shadow-lg"
+                className="w-full py-3 rounded-xl btn-gradient text-white font-semibold"
               >
                 Se match
               </motion.button>
@@ -698,6 +699,7 @@ export default function ManagerFeedPage() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
     </div>
   );
 }

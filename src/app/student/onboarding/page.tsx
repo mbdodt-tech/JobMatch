@@ -240,17 +240,17 @@ export default function StudentOnboarding() {
                 <motion.div
                   className={`h-1.5 w-full rounded-full transition-colors duration-300 ${
                     i <= step
-                      ? 'bg-gradient-to-r from-purple-500 to-blue-500'
+                      ? 'bg-gradient-to-r from-violet-500 to-blue-500'
                       : 'bg-white/10'
                   }`}
                   animate={
                     i === step
-                      ? { boxShadow: ['0 0 8px rgba(124,58,237,0.4)', '0 0 16px rgba(124,58,237,0.6)', '0 0 8px rgba(124,58,237,0.4)'] }
+                      ? { boxShadow: ['0 0 8px rgba(139,92,246,0.4)', '0 0 16px rgba(139,92,246,0.6)', '0 0 8px rgba(139,92,246,0.4)'] }
                       : { boxShadow: '0 0 0px transparent' }
                   }
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className={`text-[10px] font-medium ${i <= step ? 'text-purple-400' : 'text-[#64748B]'}`}>
+                <span className={`text-[10px] font-medium ${i <= step ? 'text-violet-400' : 'text-[#64748B]'}`}>
                   {s.label}
                 </span>
               </div>
@@ -296,7 +296,7 @@ export default function StudentOnboarding() {
           <button
             onClick={step === 3 ? handleSubmit : goNext}
             disabled={loading || (step === 2 && (!form.primary_style || !form.secondary_style))}
-            className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-shadow active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 transition-shadow active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <motion.div
@@ -370,7 +370,7 @@ function StepPersonalInfo({
             value={form.full_name}
             onChange={(e) => update('full_name', e.target.value)}
             placeholder="Fx Anders Jensen"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
           />
         </div>
 
@@ -383,7 +383,7 @@ function StepPersonalInfo({
             type="date"
             value={form.date_of_birth}
             onChange={(e) => update('date_of_birth', e.target.value)}
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base [color-scheme:dark]"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base [color-scheme:dark]"
           />
         </div>
 
@@ -397,7 +397,7 @@ function StepPersonalInfo({
             value={form.phone}
             onChange={(e) => update('phone', e.target.value)}
             placeholder="+45 12 34 56 78"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
           />
         </div>
 
@@ -411,7 +411,7 @@ function StepPersonalInfo({
             value={form.address}
             onChange={(e) => update('address', e.target.value)}
             placeholder="Fx Vesterbrogade 12, 2. th"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
           />
         </div>
 
@@ -426,7 +426,7 @@ function StepPersonalInfo({
               value={form.postal_code}
               onChange={(e) => handlePostalCode(e.target.value)}
               placeholder="1620"
-              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
             />
           </div>
           <div className="space-y-1.5">
@@ -437,9 +437,9 @@ function StepPersonalInfo({
               readOnly={form.postal_code.length === 4 && !!DANISH_POSTAL_CODES[form.postal_code]}
               onChange={(e) => update('city', e.target.value)}
               placeholder="Udfyldes automatisk"
-              className={`w-full px-4 py-3.5 rounded-2xl border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base ${
+              className={`w-full px-4 py-3.5 rounded-2xl border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base ${
                 form.postal_code.length === 4 && DANISH_POSTAL_CODES[form.postal_code]
-                  ? 'bg-purple-500/10 border-purple-500/20'
+                  ? 'bg-violet-500/10 border-violet-500/20'
                   : 'bg-white/5'
               }`}
             />
@@ -521,7 +521,7 @@ function StepEducation({
                   onClick={() => update('youth_education', key)}
                   className={`py-3 px-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97] ${
                     form.youth_education === key
-                      ? 'bg-purple-500/20 border-purple-500/50 text-purple-300 border shadow-md shadow-purple-500/10'
+                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-300 border shadow-md shadow-violet-500/10'
                       : 'bg-white/5 border border-white/10 text-[#94A3B8] hover:bg-white/10'
                   }`}
                 >
@@ -549,7 +549,7 @@ function StepEducation({
               }}
               onFocus={() => setShowDropdown(true)}
               placeholder="Søg efter din skole..."
-              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base"
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
             />
             {schoolSearch && (
               <button
@@ -576,7 +576,7 @@ function StepEducation({
                     key={school.name}
                     onClick={() => handleSchoolSelect(school.name)}
                     className={`w-full px-4 py-3 text-left hover:bg-white/10 transition-colors flex items-center justify-between ${
-                      form.youth_education_school === school.name ? 'bg-purple-500/15' : ''
+                      form.youth_education_school === school.name ? 'bg-violet-500/15' : ''
                     }`}
                   >
                     <div>
@@ -586,7 +586,7 @@ function StepEducation({
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                       school.type === 'erhvervsskole'
                         ? 'bg-blue-500/15 text-blue-400'
-                        : 'bg-purple-500/15 text-purple-400'
+                        : 'bg-violet-500/15 text-violet-400'
                     }`}>
                       {school.type === 'erhvervsskole' ? 'Erhvervsskole' : 'Gymnasium'}
                     </span>
@@ -631,7 +631,7 @@ function StepEducation({
             onChange={(e) => update('work_experience', e.target.value)}
             placeholder="Fortæl kort om dine job, praktik eller frivilligt arbejde — fx 'Deltidsjob i Netto i 1 år, kundeservice og varepåfyldning.'"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/30 transition-all text-base resize-none"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base resize-none"
           />
           <p className="text-xs text-[#64748B]">
             Ingen erfaring endnu? Det er helt fint — skriv blot hvad du brænder for.
@@ -885,7 +885,7 @@ function StepDiscQuiz({
         </div>
         <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500"
+            className="h-full rounded-full bg-gradient-to-r from-violet-500 to-blue-500"
             animate={{ width: `${((current + 1) / total) * 100}%` }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           />
@@ -915,14 +915,14 @@ function StepDiscQuiz({
                   whileTap={{ scale: 0.98 }}
                   className={`w-full flex items-center gap-3 p-4 rounded-2xl text-left transition-all ${
                     selected
-                      ? 'border-2 border-purple-500/60 bg-purple-500/15'
+                      ? 'border-2 border-violet-500/60 bg-violet-500/15'
                       : 'border border-white/10 bg-white/5 hover:bg-white/[0.08]'
                   }`}
                 >
                   <div
                     className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-colors ${
                       selected
-                        ? 'border-purple-400 bg-purple-500'
+                        ? 'border-violet-400 bg-violet-500'
                         : 'border-white/20'
                     }`}
                   >
@@ -1024,7 +1024,7 @@ function StepVideoGdpr({
         }}
         className={`relative rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
           dragOver
-            ? 'border-purple-500 bg-purple-500/10'
+            ? 'border-violet-500 bg-violet-500/10'
             : form.video_file
             ? 'border-green-500/50 bg-green-500/5'
             : 'border-white/15 bg-white/5 hover:border-white/25'
@@ -1085,7 +1085,7 @@ function StepVideoGdpr({
         }}
         className={`relative rounded-2xl border-2 border-dashed p-6 text-center transition-all ${
           cvDragOver
-            ? 'border-purple-500 bg-purple-500/10'
+            ? 'border-violet-500 bg-violet-500/10'
             : form.cv_file
             ? 'border-green-500/50 bg-green-500/5'
             : 'border-white/15 bg-white/5 hover:border-white/25'
@@ -1132,7 +1132,7 @@ function StepVideoGdpr({
       {/* GDPR */}
       <div className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-4">
         <div className="flex items-start gap-3">
-          <Shield size={20} className="text-purple-400 mt-0.5 flex-shrink-0" />
+          <Shield size={20} className="text-violet-400 mt-0.5 flex-shrink-0" />
           <div>
             <h3 className="font-semibold text-[#F8FAFC] text-sm">
               Samtykke til deling af data (GDPR)
@@ -1156,7 +1156,7 @@ function StepVideoGdpr({
           </span>
           <div
             className={`w-12 h-7 rounded-full relative transition-colors duration-300 ${
-              form.gdpr_consent ? 'bg-purple-500' : 'bg-white/15'
+              form.gdpr_consent ? 'bg-violet-500' : 'bg-white/15'
             }`}
           >
             <motion.div
