@@ -13,6 +13,9 @@ import {
   Eye,
   EyeOff,
   ChevronDown,
+  User,
+  Mail,
+  Lock,
 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -126,27 +129,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[var(--bg-primary)] flex flex-col items-center justify-center px-5 relative overflow-hidden">
-      {/* Background orbs */}
-      <motion.div
-        className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-emerald-500/25 to-teal-500/15 blur-3xl"
-        style={{ top: '10%', right: '5%' }}
-        animate={{ x: [0, -30, 20, 0], y: [0, 20, -15, 0], scale: [1, 1.1, 0.95, 1] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute w-[320px] h-[320px] rounded-full bg-gradient-to-br from-teal-500/20 to-cyan-400/15 blur-3xl"
-        style={{ bottom: '10%', left: '5%' }}
-        animate={{ x: [0, 25, -20, 0], y: [0, -25, 15, 0], scale: [1, 0.95, 1.1, 1] }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
-      <motion.div
-        className="absolute w-[220px] h-[220px] rounded-full bg-gradient-to-br from-lime-400/15 to-emerald-500/10 blur-3xl"
-        style={{ top: '55%', left: '45%' }}
-        animate={{ x: [0, 20, -25, 0], y: [0, -20, 15, 0] }}
-        transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 4 }}
-      />
-
+    <div className="min-h-[100dvh] aurora-bg aurora-bg-emerald aurora-animated flex flex-col items-center justify-center px-5 relative overflow-hidden">
       <div className="relative z-10 w-full max-w-md">
         {/* Progress indicator */}
         <motion.div
@@ -159,8 +142,8 @@ export default function SignupPage() {
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
                   step >= s
-                    ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
-                    : 'bg-white/5 border border-white/10 text-text-muted'
+                    ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white glow-green'
+                    : 'glass text-text-muted'
                 }`}
               >
                 {s}
@@ -177,7 +160,7 @@ export default function SignupPage() {
         </motion.div>
 
         {/* Card */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl shadow-emerald-500/10 overflow-hidden">
+        <div className="p-6 sm:p-8 rounded-3xl glass-card overflow-hidden">
           {/* Logo */}
           <motion.div
             initial={{ scale: 0 }}
@@ -185,7 +168,7 @@ export default function SignupPage() {
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             className="flex justify-center mb-6"
           >
-            <div className="animate-float w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient flex items-center justify-center shadow-lg shadow-emerald-500/50">
+            <div className="animate-float w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-400 animate-gradient glow-green flex items-center justify-center">
               <Sparkles className="w-8 h-8 text-white" />
             </div>
           </motion.div>
@@ -202,8 +185,8 @@ export default function SignupPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-center mb-8">
-                  <h1 className="text-3xl font-extrabold tracking-tight">
-                    <span className="gradient-text">Kom i gang</span>
+                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                    Kom i <span className="gradient-text-emerald">gang</span>
                   </h1>
                   <p className="text-text-secondary text-base mt-2">Hvem er du?</p>
                 </div>
@@ -214,13 +197,13 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => goToStep2('student')}
-                    className="w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500/5 hover:shadow-lg hover:shadow-emerald-500/10 transition-all text-left group"
+                    className="w-full p-5 rounded-2xl glass-card hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all text-left group"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 glow-green flex items-center justify-center shrink-0">
                         <GraduationCap className="w-7 h-7 text-white" />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h3 className="text-white font-bold text-lg">Elev</h3>
                         <p className="text-text-secondary text-sm mt-0.5">
                           Jeg leder efter en praktikplads
@@ -235,13 +218,13 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => goToStep2('store_manager')}
-                    className="w-full p-5 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-500/50 hover:bg-cyan-500/5 hover:shadow-lg hover:shadow-cyan-500/10 transition-all text-left group"
+                    className="w-full p-5 rounded-2xl glass-card hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 transition-all text-left group"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/30">
                         <Store className="w-7 h-7 text-white" />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h3 className="text-white font-bold text-lg">Butikschef</h3>
                         <p className="text-text-secondary text-sm mt-0.5">
                           Jeg leder efter en praktikant
@@ -254,7 +237,7 @@ export default function SignupPage() {
 
                 <p className="text-center text-sm text-text-secondary mt-8">
                   Har du allerede en konto?{' '}
-                  <Link href="/login" className="font-semibold gradient-text hover:opacity-80 transition-opacity">
+                  <Link href="/login" className="font-semibold gradient-text-emerald hover:opacity-80 transition-opacity">
                     Log ind
                   </Link>
                 </p>
@@ -272,8 +255,8 @@ export default function SignupPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-center mb-8">
-                  <h1 className="text-3xl font-extrabold tracking-tight">
-                    <span className="gradient-text">Næsten i mål</span>
+                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                    Næsten i <span className="gradient-text-emerald">mål</span>
                   </h1>
                   <p className="text-text-secondary text-base mt-2">Udfyld dine oplysninger</p>
                 </div>
@@ -282,33 +265,40 @@ export default function SignupPage() {
                   {/* Full Name */}
                   <div>
                     <label className="block text-sm font-semibold text-text-secondary mb-2">Fulde navn</label>
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      placeholder="Dit fulde navn"
-                      required
-                      className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
-                    />
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
+                      <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Dit fulde navn"
+                        required
+                        className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
+                      />
+                    </div>
                   </div>
 
                   {/* Email */}
                   <div>
                     <label className="block text-sm font-semibold text-text-secondary mb-2">Email</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="din@email.dk"
-                      required
-                      className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
-                    />
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="din@email.dk"
+                        required
+                        className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
+                      />
+                    </div>
                   </div>
 
                   {/* Password */}
                   <div>
                     <label className="block text-sm font-semibold text-text-secondary mb-2">Adgangskode</label>
                     <div className="relative">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                       <input
                         type={showPassword ? 'text' : 'password'}
                         value={password}
@@ -316,7 +306,7 @@ export default function SignupPage() {
                         placeholder="Mindst 6 tegn"
                         required
                         minLength={6}
-                        className="w-full px-4 !pr-12 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
+                        className="w-full !pl-12 !pr-12 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
                       />
                       <button
                         type="button"
@@ -376,7 +366,7 @@ export default function SignupPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={goBack}
-                      className="px-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all flex items-center gap-1"
+                      className="px-5 py-4 rounded-2xl glass text-white font-medium hover:bg-white/10 transition-all flex items-center gap-1"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       Tilbage
@@ -387,7 +377,7 @@ export default function SignupPage() {
                       disabled={loading}
                       whileHover={{ scale: loading ? 1 : 1.02 }}
                       whileTap={{ scale: loading ? 1 : 0.98 }}
-                      className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 animate-gradient text-white font-bold text-base shadow-lg shadow-emerald-500/40 hover:shadow-emerald-500/60 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-shadow"
+                      className="flex-1 py-4 rounded-2xl btn-gradient-emerald text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>
