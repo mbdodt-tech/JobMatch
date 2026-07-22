@@ -191,22 +191,29 @@ export default function DashboardPage() {
       const eduMap: Record<string, { swipes: number; matches: number }> = {};
 
       if (students) {
-        for (const s of students) {
-          const line = s.education_line as EducationLine;
-          if (!eduMap[line]) eduMap[line] = { swipes: 0, matches: 0 };
-
-          const { count: swipeCount } = await supabase
-            .from("swipes")
-            .select("*", { count: "exact", head: true })
-            .eq("profile_id", s.id);
-
-          const { count: matchCount } = await supabase
-            .from("matches")
-            .select("*", { count: "exact", head: true })
-            .eq("student_id", s.id);
-
-          eduMap[line].swipes += swipeCount ?? 0;
-          eduMap[line].matches += matchCount ?? 0;
+        const perStudent = await Promise.all(
+          students.map(async (s) => {
+            const [{ count: swipeCount }, { count: matchCount }] = await Promise.all([
+              supabase
+                .from("swipes")
+                .select("*", { count: "exact", head: true })
+                .eq("profile_id", s.id),
+              supabase
+                .from("matches")
+                .select("*", { count: "exact", head: true })
+                .eq("student_id", s.id),
+            ]);
+            return {
+              line: s.education_line as EducationLine,
+              swipes: swipeCount ?? 0,
+              matches: matchCount ?? 0,
+            };
+          })
+        );
+        for (const r of perStudent) {
+          if (!eduMap[r.line]) eduMap[r.line] = { swipes: 0, matches: 0 };
+          eduMap[r.line].swipes += r.swipes;
+          eduMap[r.line].matches += r.matches;
         }
       }
 
@@ -226,26 +233,27 @@ export default function DashboardPage() {
         .eq("is_active", true);
 
       if (stores) {
-        const storeStats: PopularStore[] = [];
-        for (const store of stores) {
-          const { count: rightSwipes } = await supabase
-            .from("swipes")
-            .select("*", { count: "exact", head: true })
-            .eq("store_id", store.id)
-            .eq("direction", "right");
-
-          const { count: storeMatches } = await supabase
-            .from("matches")
-            .select("*", { count: "exact", head: true })
-            .eq("store_id", store.id);
-
-          storeStats.push({
-            name: store.name,
-            city: store.city,
-            rightSwipes: rightSwipes ?? 0,
-            matches: storeMatches ?? 0,
-          });
-        }
+        const storeStats: PopularStore[] = await Promise.all(
+          stores.map(async (store) => {
+            const [{ count: rightSwipes }, { count: storeMatches }] = await Promise.all([
+              supabase
+                .from("swipes")
+                .select("*", { count: "exact", head: true })
+                .eq("store_id", store.id)
+                .eq("direction", "right"),
+              supabase
+                .from("matches")
+                .select("*", { count: "exact", head: true })
+                .eq("store_id", store.id),
+            ]);
+            return {
+              name: store.name,
+              city: store.city,
+              rightSwipes: rightSwipes ?? 0,
+              matches: storeMatches ?? 0,
+            };
+          })
+        );
         setPopularStores(
           storeStats.sort((a, b) => b.rightSwipes - a.rightSwipes).slice(0, 5)
         );
@@ -258,26 +266,27 @@ export default function DashboardPage() {
         .limit(5);
 
       if (matches) {
-        const enriched: RecentMatch[] = [];
-        for (const m of matches) {
-          const { data: studentProfile } = await supabase
-            .from("profiles")
-            .select("full_name")
-            .eq("id", m.student_id)
-            .single();
-
-          const { data: storeData } = await supabase
-            .from("stores")
-            .select("name")
-            .eq("id", m.store_id)
-            .single();
-
-          enriched.push({
-            student: studentProfile?.full_name ?? "Ukendt",
-            store: storeData?.name ?? "Ukendt",
-            matchedAt: m.matched_at,
-          });
-        }
+        const enriched: RecentMatch[] = await Promise.all(
+          matches.map(async (m) => {
+            const [{ data: studentProfile }, { data: storeData }] = await Promise.all([
+              supabase
+                .from("profiles")
+                .select("full_name")
+                .eq("id", m.student_id)
+                .single(),
+              supabase
+                .from("stores")
+                .select("name")
+                .eq("id", m.store_id)
+                .single(),
+            ]);
+            return {
+              student: studentProfile?.full_name ?? "Ukendt",
+              store: storeData?.name ?? "Ukendt",
+              matchedAt: m.matched_at,
+            };
+          })
+        );
         setRecentMatches(enriched);
       }
 

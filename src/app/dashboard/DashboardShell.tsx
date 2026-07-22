@@ -68,24 +68,23 @@ export default function DashboardShell({
         .eq("is_active", true);
 
       if (students) {
-        let count = 0;
-        for (const s of students) {
-          const { count: swipeCount } = await supabase
-            .from("swipes")
-            .select("*", { count: "exact", head: true })
-            .eq("profile_id", s.id)
-            .eq("direction", "right");
-
-          const { count: matchCount } = await supabase
-            .from("matches")
-            .select("*", { count: "exact", head: true })
-            .eq("student_id", s.id);
-
-          if ((swipeCount ?? 0) >= 5 && (matchCount ?? 0) === 0) {
-            count++;
-          }
-        }
-        setAtRiskCount(count);
+        const results = await Promise.all(
+          students.map(async (s) => {
+            const [{ count: swipeCount }, { count: matchCount }] = await Promise.all([
+              supabase
+                .from("swipes")
+                .select("*", { count: "exact", head: true })
+                .eq("profile_id", s.id)
+                .eq("direction", "right"),
+              supabase
+                .from("matches")
+                .select("*", { count: "exact", head: true })
+                .eq("student_id", s.id),
+            ]);
+            return (swipeCount ?? 0) >= 5 && (matchCount ?? 0) === 0;
+          })
+        );
+        setAtRiskCount(results.filter(Boolean).length);
       }
     }
 

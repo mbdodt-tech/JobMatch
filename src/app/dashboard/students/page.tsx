@@ -186,32 +186,34 @@ function StudentsContent() {
         return;
       }
 
-      const enriched: Student[] = [];
-      for (const p of profiles) {
-        const { count: swipeCount } = await supabase
-          .from("swipes")
-          .select("*", { count: "exact", head: true })
-          .eq("profile_id", p.id);
+      const enriched: Student[] = await Promise.all(
+        profiles.map(async (p) => {
+          const [{ count: swipeCount }, { count: matchCount }] = await Promise.all([
+            supabase
+              .from("swipes")
+              .select("*", { count: "exact", head: true })
+              .eq("profile_id", p.id),
+            supabase
+              .from("matches")
+              .select("*", { count: "exact", head: true })
+              .eq("student_id", p.id),
+          ]);
 
-        const { count: matchCount } = await supabase
-          .from("matches")
-          .select("*", { count: "exact", head: true })
-          .eq("student_id", p.id);
+          const eduLabel = p.education_line
+            ? EDUCATION_LINE_LABELS[p.education_line as EducationLine] || p.education_line
+            : "Ikke angivet";
 
-        const eduLabel = p.education_line
-          ? EDUCATION_LINE_LABELS[p.education_line as EducationLine] || p.education_line
-          : "Ikke angivet";
-
-        enriched.push({
-          id: p.id,
-          name: p.full_name || "Ukendt",
-          education_line: eduLabel,
-          swipes: swipeCount ?? 0,
-          matches: matchCount ?? 0,
-          last_active: p.last_active_at || "",
-          gdpr_consent: p.gdpr_consent ?? false,
-        });
-      }
+          return {
+            id: p.id,
+            name: p.full_name || "Ukendt",
+            education_line: eduLabel,
+            swipes: swipeCount ?? 0,
+            matches: matchCount ?? 0,
+            last_active: p.last_active_at || "",
+            gdpr_consent: p.gdpr_consent ?? false,
+          };
+        })
+      );
 
       setStudentsData(enriched);
       setLoading(false);
