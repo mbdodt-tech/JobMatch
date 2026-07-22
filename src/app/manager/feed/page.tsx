@@ -33,10 +33,9 @@ import {
   BEHAVIORAL_STYLE_LABELS,
   BEHAVIORAL_STYLE_COLORS,
   BEHAVIORAL_STYLE_ICONS,
-  EDUCATION_LINE_LABELS,
-  YOUTH_EDUCATION_LABELS,
+  educationLineLabels,
+  youthEducationLabels,
 } from '@/lib/types/database';
-import type { EducationLine, YouthEducationType } from '@/lib/types/database';
 import StudentCard from '@/components/manager/StudentCard';
 
 function StyleBadge({ style }: { style: BehavioralStyle }) {
@@ -426,10 +425,9 @@ export default function ManagerFeedPage() {
                         return age ? <span className="text-base font-normal text-white/60 ml-2">{age} år</span> : null;
                       })()}
                     </h2>
-                    {selectedStudent.education_line && (
+                    {educationLineLabels(selectedStudent) && (
                       <p className="text-text-secondary text-sm">
-                        {EDUCATION_LINE_LABELS[selectedStudent.education_line as EducationLine] ||
-                          selectedStudent.education_line.replace(/_/g, ' ')}
+                        {educationLineLabels(selectedStudent)}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-1.5 mt-2">
@@ -452,11 +450,8 @@ export default function ManagerFeedPage() {
                     <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
                       <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                       <div>
-                        {selectedStudent.youth_education && (
-                          <p>
-                            {YOUTH_EDUCATION_LABELS[selectedStudent.youth_education as YouthEducationType] ||
-                              selectedStudent.youth_education}
-                          </p>
+                        {youthEducationLabels(selectedStudent) && (
+                          <p>{youthEducationLabels(selectedStudent)}</p>
                         )}
                         {selectedStudent.youth_education_school && (
                           <p className="text-text-secondary mt-0.5">{selectedStudent.youth_education_school}</p>

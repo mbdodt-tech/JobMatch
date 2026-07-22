@@ -62,6 +62,44 @@ export const BEHAVIORAL_STYLE_COLORS: Record<BehavioralStyle, string> = {
   stabilizing: '#8B5CF6',  // purple
 };
 
+// ----- Multi-select helpers -----
+// Students can pick several education lines / youth educations. The array
+// columns are authoritative; older rows only have the legacy single value.
+
+export function getEducationLines(p: {
+  education_line: EducationLine | null;
+  education_lines?: EducationLine[] | null;
+}): EducationLine[] {
+  if (p.education_lines?.length) return p.education_lines;
+  return p.education_line ? [p.education_line] : [];
+}
+
+export function getYouthEducations(p: {
+  youth_education: YouthEducationType | null;
+  youth_educations?: YouthEducationType[] | null;
+}): YouthEducationType[] {
+  if (p.youth_educations?.length) return p.youth_educations;
+  return p.youth_education ? [p.youth_education] : [];
+}
+
+export function educationLineLabels(p: {
+  education_line: EducationLine | null;
+  education_lines?: EducationLine[] | null;
+}): string {
+  return getEducationLines(p)
+    .map((l) => EDUCATION_LINE_LABELS[l] || l)
+    .join(' · ');
+}
+
+export function youthEducationLabels(p: {
+  youth_education: YouthEducationType | null;
+  youth_educations?: YouthEducationType[] | null;
+}): string {
+  return getYouthEducations(p)
+    .map((y) => YOUTH_EDUCATION_LABELS[y] || y)
+    .join(' · ');
+}
+
 // ----- Database row types -----
 
 export interface Organization {
@@ -100,7 +138,9 @@ export interface Profile {
   avatar_url: string | null;
   date_of_birth: string | null;
   education_line: EducationLine | null;
+  education_lines: EducationLine[] | null;
   youth_education: YouthEducationType | null;
+  youth_educations: YouthEducationType[] | null;
   youth_education_school: string | null;
   work_experience: string | null;
   primary_style: BehavioralStyle | null;

@@ -14,8 +14,8 @@ import {
   BEHAVIORAL_STYLE_LABELS,
   BEHAVIORAL_STYLE_ICONS,
   BEHAVIORAL_STYLE_COLORS,
-  EDUCATION_LINE_LABELS,
-  YOUTH_EDUCATION_LABELS,
+  educationLineLabels,
+  youthEducationLabels,
 } from '@/lib/types/database';
 
 export default function StudentProfile() {
@@ -229,17 +229,17 @@ export default function StudentProfile() {
           <h1 className="text-xl font-bold gradient-text break-words">{profile.full_name}</h1>
           <div className="flex items-center justify-center gap-2 mt-1 text-sm text-[#94A3B8]">
             {age && <span>{age} år</span>}
-            {profile.education_line && (
+            {educationLineLabels(profile) && (
               <>
                 <span className="text-[#94A3B8]">·</span>
-                <span>{EDUCATION_LINE_LABELS[profile.education_line]}</span>
+                <span>{educationLineLabels(profile)}</span>
               </>
             )}
           </div>
-          {profile.youth_education && (
-            <div className="flex items-center justify-center gap-1.5 mt-1 text-xs text-[#94A3B8]">
+          {(youthEducationLabels(profile) || profile.youth_education_school) && (
+            <div className="flex items-center justify-center gap-1.5 mt-1 text-xs text-[#94A3B8] flex-wrap px-4">
               <GraduationCap size={12} />
-              <span>{YOUTH_EDUCATION_LABELS[profile.youth_education]}</span>
+              <span>{youthEducationLabels(profile)}</span>
               {profile.youth_education_school && <span>— {profile.youth_education_school}</span>}
             </div>
           )}

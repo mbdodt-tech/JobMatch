@@ -37,6 +37,8 @@ import {
   BEHAVIORAL_STYLE_LABELS,
   BEHAVIORAL_STYLE_COLORS,
   BEHAVIORAL_STYLE_ICONS,
+  educationLineLabels,
+  youthEducationLabels,
 } from "@/lib/types/database";
 import type {
   EducationLine,
@@ -730,10 +732,9 @@ function StudentsContent() {
                         <h2 className="text-xl font-bold text-white truncate">
                           {selectedProfile.full_name}
                         </h2>
-                        {selectedProfile.education_line && (
+                        {educationLineLabels(selectedProfile) && (
                           <p className="text-text-secondary text-sm">
-                            {EDUCATION_LINE_LABELS[selectedProfile.education_line as EducationLine] ||
-                              selectedProfile.education_line}
+                            {educationLineLabels(selectedProfile)}
                           </p>
                         )}
                         <div className="flex flex-wrap gap-1.5 mt-2">
@@ -754,8 +755,8 @@ function StudentsContent() {
                         <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
                           <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                           <div>
-                            {selectedProfile.youth_education && (
-                              <p>{YOUTH_EDUCATION_LABELS[selectedProfile.youth_education as YouthEducationType] || selectedProfile.youth_education}</p>
+                            {youthEducationLabels(selectedProfile) && (
+                              <p>{youthEducationLabels(selectedProfile)}</p>
                             )}
                             {selectedProfile.youth_education_school && (
                               <p className="text-text-secondary mt-0.5">{selectedProfile.youth_education_school}</p>

@@ -24,10 +24,9 @@ import {
   BEHAVIORAL_STYLE_LABELS,
   BEHAVIORAL_STYLE_COLORS,
   BEHAVIORAL_STYLE_ICONS,
-  EDUCATION_LINE_LABELS,
-  YOUTH_EDUCATION_LABELS,
+  educationLineLabels,
+  youthEducationLabels,
 } from '@/lib/types/database';
-import type { EducationLine, YouthEducationType } from '@/lib/types/database';
 
 function StyleBadge({ style }: { style: BehavioralStyle }) {
   return (
@@ -223,9 +222,9 @@ export default function ManagerMatchesPage() {
                         <span className="font-medium text-white/80"> {age}</span>
                       )}
                     </p>
-                    {match.student.education_line && (
-                      <p className="text-white/60 text-xs capitalize truncate mt-0.5">
-                        {match.student.education_line.replace(/_/g, ' ')}
+                    {educationLineLabels(match.student) && (
+                      <p className="text-white/60 text-xs truncate mt-0.5">
+                        {educationLineLabels(match.student)}
                       </p>
                     )}
                   </div>
@@ -285,10 +284,9 @@ export default function ManagerMatchesPage() {
                         return age ? <span className="text-base font-normal text-white/60 ml-2">{age} år</span> : null;
                       })()}
                     </h2>
-                    {selectedMatch.student.education_line && (
+                    {educationLineLabels(selectedMatch.student) && (
                       <p className="text-text-secondary text-sm">
-                        {EDUCATION_LINE_LABELS[selectedMatch.student.education_line as EducationLine] ||
-                          selectedMatch.student.education_line.replace(/_/g, ' ')}
+                        {educationLineLabels(selectedMatch.student)}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-1.5 mt-2">
@@ -309,8 +307,8 @@ export default function ManagerMatchesPage() {
                     <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
                       <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                       <div>
-                        {selectedMatch.student.youth_education && (
-                          <p>{YOUTH_EDUCATION_LABELS[selectedMatch.student.youth_education as YouthEducationType] || selectedMatch.student.youth_education}</p>
+                        {youthEducationLabels(selectedMatch.student) && (
+                          <p>{youthEducationLabels(selectedMatch.student)}</p>
                         )}
                         {selectedMatch.student.youth_education_school && (
                           <p className="text-text-secondary mt-0.5">{selectedMatch.student.youth_education_school}</p>
