@@ -38,7 +38,13 @@ export async function updateSession(request: NextRequest) {
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
-    return NextResponse.redirect(url);
+    // Carry any refreshed auth cookies onto the redirect so the session
+    // isn't dropped on the way to /login.
+    const redirectResponse = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach(({ name, value }) =>
+      redirectResponse.cookies.set(name, value)
+    );
+    return redirectResponse;
   }
 
   return supabaseResponse;
