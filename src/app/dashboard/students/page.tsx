@@ -702,9 +702,10 @@ function StudentsContent() {
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={closeDetail}
+                    aria-label="Luk"
                     className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -817,6 +818,7 @@ function StudentsContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Video-pitch</h3>
                         <button
+                          aria-label="Afspil video-pitch"
                           onClick={() => {
                             if (!sheetVideoUrl) return;
                             setVideoUrl(sheetVideoUrl);
@@ -926,9 +928,10 @@ function StudentsContent() {
                                 </span>
                                 <button
                                   onClick={() => deleteNote(note.id)}
+                                  aria-label="Slet note"
                                   className="text-text-muted hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                                 </button>
                               </div>
                             </div>
@@ -960,9 +963,10 @@ function StudentsContent() {
           >
             <button
               onClick={() => setShowVideoPlayer(false)}
+              aria-label="Luk video"
               className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
             <motion.div
               initial={{ scale: 0.9 }}

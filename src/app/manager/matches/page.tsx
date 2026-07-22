@@ -269,9 +269,10 @@ export default function ManagerMatchesPage() {
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={() => setSelectedMatch(null)}
+                    aria-label="Luk"
                     className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
 
@@ -385,6 +386,7 @@ export default function ManagerMatchesPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => sheetVideoUrl && openVideo(sheetVideoUrl)}
+                      aria-label="Afspil video-pitch"
                       className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
                     >
                       {selectedMatch.student.video_thumbnail_url ? (
@@ -464,9 +466,10 @@ export default function ManagerMatchesPage() {
           >
             <button
               onClick={() => setShowVideoPlayer(false)}
+              aria-label="Luk video"
               className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
             <motion.div
               initial={{ scale: 0.9 }}

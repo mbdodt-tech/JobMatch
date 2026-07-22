@@ -195,9 +195,10 @@ export default function DashboardShell({
       <div className="lg:hidden fixed top-0 inset-x-0 z-50 h-16 bg-[var(--bg-primary)]/80 backdrop-blur-xl border-b border-white/10 flex items-center px-4 safe-top">
         <button
           onClick={() => setSidebarOpen(true)}
+          aria-label="Åbn menu"
           className="p-2 rounded-xl hover:bg-white/10 text-[var(--text-secondary)] transition-colors"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-6 h-6" aria-hidden="true" />
         </button>
         <div className="flex-1 flex justify-center">
           <div className="flex items-center gap-2">
@@ -231,9 +232,10 @@ export default function DashboardShell({
               <div className="absolute top-4 right-4">
                 <button
                   onClick={() => setSidebarOpen(false)}
+                  aria-label="Luk menu"
                   className="p-2 rounded-xl hover:bg-white/10 text-[var(--text-secondary)] transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
               <SidebarContent />

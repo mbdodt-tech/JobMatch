@@ -443,9 +443,10 @@ export default function StudentMatches() {
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={() => setSelectedStore(null)}
+                    aria-label="Luk"
                     className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#94A3B8] hover:text-white transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
 
