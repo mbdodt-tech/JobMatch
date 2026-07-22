@@ -227,10 +227,11 @@ export default function ManagerStorePage() {
 
             {/* Store name */}
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-name" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Butiksnavn *
               </label>
               <input
+                id="store-name"
                 type="text"
                 value={store.name || ''}
                 onChange={(e) => setStore({ ...store, name: e.target.value })}
@@ -242,10 +243,11 @@ export default function ManagerStorePage() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-description" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Beskrivelse
               </label>
               <textarea
+                id="store-description"
                 value={store.description || ''}
                 onChange={(e) =>
                   setStore({ ...store, description: e.target.value })
@@ -258,10 +260,11 @@ export default function ManagerStorePage() {
 
             {/* Job description PDF upload */}
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-job-description" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Jobbeskrivelse (PDF) — valgfrit alternativ
               </label>
               <input
+                id="store-job-description"
                 ref={jobDescInputRef}
                 type="file"
                 accept=".pdf,application/pdf"
@@ -330,10 +333,11 @@ export default function ManagerStorePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-address" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Adresse *
               </label>
               <input
+                id="store-address"
                 type="text"
                 value={store.address || ''}
                 onChange={(e) =>
@@ -347,10 +351,11 @@ export default function ManagerStorePage() {
 
             <div className="grid grid-cols-[1fr_1.6fr] gap-3">
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                <label htmlFor="store-postal-code" className="block text-sm font-medium text-text-secondary mb-1.5">
                   Postnummer *
                 </label>
                 <input
+                  id="store-postal-code"
                   type="text"
                   inputMode="numeric"
                   maxLength={4}
@@ -368,10 +373,11 @@ export default function ManagerStorePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1.5">
+                <label htmlFor="store-city" className="block text-sm font-medium text-text-secondary mb-1.5">
                   By *
                 </label>
                 <input
+                  id="store-city"
                   type="text"
                   value={store.city || ''}
                   readOnly={!!store.postal_code && store.postal_code.length === 4 && !!DANISH_POSTAL_CODES[store.postal_code]}
@@ -441,10 +447,11 @@ export default function ManagerStorePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-internship-slots" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Antal ledige pladser
               </label>
               <input
+                id="store-internship-slots"
                 type="number"
                 min={0}
                 max={50}
@@ -469,10 +476,11 @@ export default function ManagerStorePage() {
 
             {/* Logo */}
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-logo-url" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Logo URL
               </label>
               <input
+                id="store-logo-url"
                 type="url"
                 value={store.logo_url || ''}
                 onChange={(e) =>
@@ -485,10 +493,11 @@ export default function ManagerStorePage() {
 
             {/* Cover image */}
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-cover-image-url" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Cover-billede URL
               </label>
               <input
+                id="store-cover-image-url"
                 type="url"
                 value={store.cover_image_url || ''}
                 onChange={(e) =>
@@ -508,12 +517,13 @@ export default function ManagerStorePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-phone" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Telefon
               </label>
               <div className="relative">
                 <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input
+                  id="store-phone"
                   type="tel"
                   value={store.phone || ''}
                   onChange={(e) =>
@@ -526,12 +536,13 @@ export default function ManagerStorePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-email" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input
+                  id="store-email"
                   type="email"
                   value={store.email || ''}
                   onChange={(e) =>
@@ -544,12 +555,13 @@ export default function ManagerStorePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-text-secondary mb-1.5">
+              <label htmlFor="store-website" className="block text-sm font-medium text-text-secondary mb-1.5">
                 Hjemmeside
               </label>
               <div className="relative">
                 <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                 <input
+                  id="store-website"
                   type="url"
                   value={store.website || ''}
                   onChange={(e) =>

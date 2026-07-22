@@ -358,10 +358,11 @@ function StepPersonalInfo({
       <div className="space-y-4">
         {/* Name */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+          <label htmlFor="onboarding-full-name" className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
             <User size={14} /> Fulde navn
           </label>
           <input
+            id="onboarding-full-name"
             type="text"
             value={form.full_name}
             onChange={(e) => update('full_name', e.target.value)}
@@ -372,10 +373,11 @@ function StepPersonalInfo({
 
         {/* Date of birth */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+          <label htmlFor="onboarding-date-of-birth" className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
             <Calendar size={14} /> Fødselsdato
           </label>
           <input
+            id="onboarding-date-of-birth"
             type="date"
             value={form.date_of_birth}
             onChange={(e) => update('date_of_birth', e.target.value)}
@@ -385,10 +387,11 @@ function StepPersonalInfo({
 
         {/* Phone */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+          <label htmlFor="onboarding-phone" className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
             <Phone size={14} /> Telefonnummer
           </label>
           <input
+            id="onboarding-phone"
             type="tel"
             value={form.phone}
             onChange={(e) => update('phone', e.target.value)}
@@ -399,10 +402,11 @@ function StepPersonalInfo({
 
         {/* Address */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+          <label htmlFor="onboarding-address" className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
             <MapPin size={14} /> Adresse
           </label>
           <input
+            id="onboarding-address"
             type="text"
             value={form.address}
             onChange={(e) => update('address', e.target.value)}
@@ -414,8 +418,9 @@ function StepPersonalInfo({
         {/* Postal code + city */}
         <div className="grid grid-cols-[1fr_1.6fr] gap-3">
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#94A3B8]">Postnr.</label>
+            <label htmlFor="onboarding-postal-code" className="text-sm font-medium text-[#94A3B8]">Postnr.</label>
             <input
+              id="onboarding-postal-code"
               type="text"
               inputMode="numeric"
               maxLength={4}
@@ -426,8 +431,9 @@ function StepPersonalInfo({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#94A3B8]">By</label>
+            <label htmlFor="onboarding-city" className="text-sm font-medium text-[#94A3B8]">By</label>
             <input
+              id="onboarding-city"
               type="text"
               value={form.city}
               readOnly={form.postal_code.length === 4 && !!DANISH_POSTAL_CODES[form.postal_code]}
@@ -530,12 +536,13 @@ function StepEducation({
 
         {/* School name — searchable dropdown */}
         <div className="space-y-1.5 relative" ref={dropdownRef}>
-          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+          <label htmlFor="onboarding-school" className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
             <GraduationCap size={14} /> Skole
           </label>
           <div className="relative">
             <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
             <input
+              id="onboarding-school"
               type="text"
               value={schoolSearch}
               onChange={(e) => {
@@ -619,10 +626,11 @@ function StepEducation({
 
         {/* Work experience */}
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
+          <label htmlFor="onboarding-work-experience" className="text-sm font-medium text-[#94A3B8] flex items-center gap-2">
             <Briefcase size={14} /> Erhvervserfaring
           </label>
           <textarea
+            id="onboarding-work-experience"
             value={form.work_experience}
             onChange={(e) => update('work_experience', e.target.value)}
             placeholder="Fortæl kort om dine job, praktik eller frivilligt arbejde — fx 'Deltidsjob i Netto i 1 år, kundeservice og varepåfyldning.'"
@@ -1066,6 +1074,7 @@ function StepVideoGdpr({
           ref={videoInputRef}
           type="file"
           accept="video/*"
+          aria-label="Upload videopitch"
           onChange={(e) => handleFile(e.target.files)}
           className="absolute inset-0 opacity-0 cursor-pointer"
         />
@@ -1127,6 +1136,7 @@ function StepVideoGdpr({
           ref={cvInputRef}
           type="file"
           accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          aria-label="Upload CV"
           onChange={(e) => handleCvFile(e.target.files)}
           className="absolute inset-0 opacity-0 cursor-pointer"
         />

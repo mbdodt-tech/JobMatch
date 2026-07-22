@@ -439,6 +439,7 @@ function StudentsContent() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
           <input
             type="text"
+            aria-label="Søg efter elev"
             placeholder="Søg efter elev eller uddannelse..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

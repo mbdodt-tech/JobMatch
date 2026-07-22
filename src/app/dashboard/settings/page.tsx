@@ -97,17 +97,17 @@ export default function DashboardSettings() {
         </div>
         <div className="p-5 space-y-4">
           <div>
-            <label className="text-xs text-[var(--text-muted)] block mb-1.5">Organisationsnavn</label>
-            <input type="text" value={orgName} onChange={e => setOrgName(e.target.value)} className="w-full" />
+            <label htmlFor="settings-org-name" className="text-xs text-[var(--text-muted)] block mb-1.5">Organisationsnavn</label>
+            <input id="settings-org-name" type="text" value={orgName} onChange={e => setOrgName(e.target.value)} className="w-full" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-[var(--text-muted)] block mb-1.5">Kontakt-email</label>
-              <input type="email" value={orgEmail} onChange={e => setOrgEmail(e.target.value)} className="w-full" />
+              <label htmlFor="settings-org-email" className="text-xs text-[var(--text-muted)] block mb-1.5">Kontakt-email</label>
+              <input id="settings-org-email" type="email" value={orgEmail} onChange={e => setOrgEmail(e.target.value)} className="w-full" />
             </div>
             <div>
-              <label className="text-xs text-[var(--text-muted)] block mb-1.5">Telefon</label>
-              <input type="tel" value={orgPhone} onChange={e => setOrgPhone(e.target.value)} className="w-full" />
+              <label htmlFor="settings-org-phone" className="text-xs text-[var(--text-muted)] block mb-1.5">Telefon</label>
+              <input id="settings-org-phone" type="tel" value={orgPhone} onChange={e => setOrgPhone(e.target.value)} className="w-full" />
             </div>
           </div>
         </div>
@@ -143,13 +143,13 @@ export default function DashboardSettings() {
         <div className="p-5 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs text-[var(--text-muted)] block mb-1.5">Min. swipes for alarm</label>
-              <input type="number" defaultValue={30} className="w-full" />
+              <label htmlFor="settings-min-swipes" className="text-xs text-[var(--text-muted)] block mb-1.5">Min. swipes for alarm</label>
+              <input id="settings-min-swipes" type="number" defaultValue={30} className="w-full" />
               <p className="text-[10px] text-[var(--text-muted)] mt-1">Elever med flere swipes end dette og 0 matches markeres</p>
             </div>
             <div>
-              <label className="text-xs text-[var(--text-muted)] block mb-1.5">Inaktivitetsdage</label>
-              <input type="number" defaultValue={7} className="w-full" />
+              <label htmlFor="settings-inactivity-days" className="text-xs text-[var(--text-muted)] block mb-1.5">Inaktivitetsdage</label>
+              <input id="settings-inactivity-days" type="number" defaultValue={7} className="w-full" />
               <p className="text-[10px] text-[var(--text-muted)] mt-1">Dage uden aktivitet før eleven markeres som inaktiv</p>
             </div>
           </div>

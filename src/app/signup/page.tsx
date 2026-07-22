@@ -262,10 +262,11 @@ export default function SignupPage() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Full Name */}
                   <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-2">Fulde navn</label>
+                    <label htmlFor="signup-name" className="block text-sm font-semibold text-text-secondary mb-2">Fulde navn</label>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                       <input
+                        id="signup-name"
                         type="text"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
@@ -278,10 +279,11 @@ export default function SignupPage() {
 
                   {/* Email */}
                   <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-2">Email</label>
+                    <label htmlFor="signup-email" className="block text-sm font-semibold text-text-secondary mb-2">Email</label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                       <input
+                        id="signup-email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -294,10 +296,11 @@ export default function SignupPage() {
 
                   {/* Password */}
                   <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-2">Adgangskode</label>
+                    <label htmlFor="signup-password" className="block text-sm font-semibold text-text-secondary mb-2">Adgangskode</label>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                       <input
+                        id="signup-password"
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -320,12 +323,13 @@ export default function SignupPage() {
                   {/* Organization selector for students */}
                   {role === 'student' && (
                     <div>
-                      <label className="block text-sm font-semibold text-text-secondary mb-2">
+                      <label htmlFor="signup-org" className="block text-sm font-semibold text-text-secondary mb-2">
                         Erhvervscenter / skole
                       </label>
                       <div className="relative">
                         <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                         <select
+                          id="signup-org"
                           value={organizationId}
                           onChange={(e) => setOrganizationId(e.target.value)}
                           className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base appearance-none cursor-pointer"
