@@ -16,6 +16,7 @@ export default function StudentFeed() {
   const [loading, setLoading] = useState(true);
   const [matchedStore, setMatchedStore] = useState<Store | null>(null);
   const [showMatch, setShowMatch] = useState(false);
+  const [swiping, setSwiping] = useState(false);
 
   const supabase = createClient();
 
@@ -73,53 +74,51 @@ export default function StudentFeed() {
   }, [fetchStores]);
 
   const handleSwipe = async (direction: 'left' | 'right') => {
+    if (swiping) return;
     const store = stores[currentIndex];
     if (!store) return;
+    setSwiping(true);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) { router.replace('/login'); return; }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    // Record the swipe
-    const { data: swipeData } = await supabase
-      .from('swipes')
-      .insert({
-        profile_id: user.id,
-        store_id: store.id,
-        swiper_role: 'student',
-        direction,
-      })
-      .select()
-      .single();
-
-    // Check for match if swiped right
-    if (direction === 'right' && swipeData) {
-      const { data: storeSwipe } = await supabase
+      const { data: swipeData, error: swipeError } = await supabase
         .from('swipes')
-        .select('*')
-        .eq('store_id', store.id)
-        .eq('profile_id', store.manager_id)
-        .eq('direction', 'right')
-        .maybeSingle();
+        .insert({ profile_id: user.id, store_id: store.id, swiper_role: 'student', direction })
+        .select()
+        .single();
+      if (swipeError) { console.error('Kunne ikke gemme swipe:', swipeError); return; }
 
-      if (storeSwipe) {
-        // Create a match!
-        await supabase.from('matches').insert({
-          student_id: user.id,
-          store_id: store.id,
-          student_swipe_id: swipeData.id,
-          store_swipe_id: storeSwipe.id,
-          status: 'active',
-        });
+      if (direction === 'right' && swipeData) {
+        // The manager's swipe is stored with profile_id = the student's id and
+        // swiper_role = 'store_manager' (not the manager's own id).
+        const { data: storeSwipe } = await supabase
+          .from('swipes')
+          .select('*')
+          .eq('store_id', store.id)
+          .eq('profile_id', user.id)
+          .eq('swiper_role', 'store_manager')
+          .eq('direction', 'right')
+          .maybeSingle();
 
-        setMatchedStore(store);
-        setShowMatch(true);
+        if (storeSwipe) {
+          const { error: matchError } = await supabase.from('matches').insert({
+            student_id: user.id,
+            store_id: store.id,
+            student_swipe_id: swipeData.id,
+            store_swipe_id: storeSwipe.id,
+            status: 'active',
+          });
+          if (matchError) { console.error('Kunne ikke oprette match:', matchError); }
+          else { setMatchedStore(store); setShowMatch(true); }
+        }
       }
+      setCurrentIndex((prev) => prev + 1);
+    } finally {
+      setSwiping(false);
     }
-
-    // Move to next card
-    setCurrentIndex((prev) => prev + 1);
   };
 
   const visibleStores = stores.slice(currentIndex, currentIndex + 3);
@@ -197,7 +196,9 @@ export default function StudentFeed() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('left')}
-            className="w-16 h-16 rounded-full glass ring-1 ring-rose-500/30 flex items-center justify-center shadow-lg hover:bg-rose-500/10 hover:ring-rose-500/50 transition-colors group"
+            disabled={swiping}
+            aria-label="Afvis"
+            className="w-16 h-16 rounded-full glass ring-1 ring-rose-500/30 flex items-center justify-center shadow-lg hover:bg-rose-500/10 hover:ring-rose-500/50 transition-colors group disabled:opacity-50"
           >
             <X
               size={28}
@@ -208,7 +209,9 @@ export default function StudentFeed() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('right')}
-            className="w-18 h-18 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 ring-1 ring-white/10 flex items-center justify-center glow-green hover:brightness-110 transition-all group"
+            disabled={swiping}
+            aria-label="Synes godt om"
+            className="w-18 h-18 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 ring-1 ring-white/10 flex items-center justify-center glow-green hover:brightness-110 transition-all group disabled:opacity-50"
           >
             <Heart
               size={32}
