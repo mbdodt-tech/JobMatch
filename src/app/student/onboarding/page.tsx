@@ -964,16 +964,45 @@ function StepVideoGdpr({
   const videoInputRef = useRef<HTMLInputElement>(null);
   const cvInputRef = useRef<HTMLInputElement>(null);
 
+  const [fileError, setFileError] = useState('');
+
+  const MAX_VIDEO = 100 * 1024 * 1024; // 100 MB
+  const MAX_CV = 10 * 1024 * 1024; // 10 MB
+  const CV_TYPES = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+
   const handleFile = (files: FileList | null) => {
-    if (files?.[0]) {
-      update('video_file', files[0]);
+    const file = files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) {
+      setFileError('Videoen skal være en videofil (fx MP4).');
+      return;
     }
+    if (file.size > MAX_VIDEO) {
+      setFileError('Videoen må højst fylde 100 MB.');
+      return;
+    }
+    setFileError('');
+    update('video_file', file);
   };
 
   const handleCvFile = (files: FileList | null) => {
-    if (files?.[0]) {
-      update('cv_file', files[0]);
+    const file = files?.[0];
+    if (!file) return;
+    const okType = CV_TYPES.includes(file.type) || /\.(pdf|docx?)$/i.test(file.name);
+    if (!okType) {
+      setFileError('CV skal være en PDF- eller Word-fil.');
+      return;
     }
+    if (file.size > MAX_CV) {
+      setFileError('CV må højst fylde 10 MB.');
+      return;
+    }
+    setFileError('');
+    update('cv_file', file);
   };
 
   const removeVideo = (e: React.MouseEvent) => {
@@ -1005,6 +1034,13 @@ function StepVideoGdpr({
           Upload en kort videopitch, dit CV og accepter GDPR
         </p>
       </div>
+
+      {fileError && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm">
+          <AlertCircle size={16} className="shrink-0" />
+          <span>{fileError}</span>
+        </div>
+      )}
 
       {/* Video upload */}
       <div
