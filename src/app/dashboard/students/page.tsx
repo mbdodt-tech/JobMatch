@@ -718,7 +718,7 @@ function StudentsContent() {
                   <button
                     onClick={closeDetail}
                     aria-label="Luk"
-                    className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
+                    className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
                   >
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
