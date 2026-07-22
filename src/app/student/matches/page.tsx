@@ -140,6 +140,14 @@ export default function StudentMatches() {
     return () => { document.body.style.overflow = ''; };
   }, [selectedStore]);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedStore) setSelectedStore(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedStore]);
+
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     const now = new Date();
@@ -432,6 +440,9 @@ export default function StudentMatches() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Butiksdetaljer"
               className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >

@@ -131,6 +131,16 @@ export default function ManagerMatchesPage() {
     resolveMediaUrl(selectedMatch?.student.video_pitch_url, 'video').then(setSheetVideoUrl);
   }, [selectedMatch?.student.cv_url, selectedMatch?.student.video_pitch_url]);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (showVideoPlayer) setShowVideoPlayer(false);
+      else if (selectedMatch) setSelectedMatch(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showVideoPlayer, selectedMatch]);
+
   if (loading) {
     return (
       <div className="aurora-bg aurora-bg-subtle flex items-center justify-center min-h-[100dvh]">
@@ -257,6 +267,9 @@ export default function ManagerMatchesPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Elevprofil"
               className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -461,6 +474,9 @@ export default function ManagerMatchesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Video-pitch"
             className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4"
             onClick={() => setShowVideoPlayer(false)}
           >

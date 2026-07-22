@@ -173,6 +173,17 @@ function StudentsContent() {
   }, [selectedProfile?.cv_url, selectedProfile?.video_pitch_url]);
 
   useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (showVideoPlayer) setShowVideoPlayer(false);
+      else if (selectedStudentId) closeDetail();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showVideoPlayer, selectedStudentId]);
+
+  useEffect(() => {
     async function fetchStudents() {
       const supabase = createClient();
 
@@ -692,6 +703,9 @@ function StudentsContent() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Elevprofil"
               className="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -959,6 +973,9 @@ function StudentsContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Video-pitch"
             className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4"
             onClick={() => setShowVideoPlayer(false)}
           >

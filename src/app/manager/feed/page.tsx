@@ -231,6 +231,17 @@ export default function ManagerFeedPage() {
     resolveMediaUrl(selectedStudent?.video_pitch_url, 'video').then(setSheetVideoUrl);
   }, [selectedStudent?.cv_url, selectedStudent?.video_pitch_url]);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (showVideoPlayer) setShowVideoPlayer(false);
+      else if (selectedStudent) setSelectedStudent(null);
+      else if (showMatch) setShowMatch(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showVideoPlayer, selectedStudent, showMatch]);
+
   function openVideo(url: string) {
     setVideoUrl(url);
     setShowVideoPlayer(true);
@@ -398,6 +409,9 @@ export default function ManagerFeedPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Elevprofil"
               className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -627,6 +641,9 @@ export default function ManagerFeedPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Video-pitch"
             className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4"
             onClick={() => setShowVideoPlayer(false)}
           >
@@ -662,6 +679,10 @@ export default function ManagerFeedPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-live="assertive"
+            aria-label="Det er et match"
             className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
             onClick={() => setShowMatch(false)}
           >

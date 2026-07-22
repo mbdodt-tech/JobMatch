@@ -167,6 +167,17 @@ function StoresContent() {
     fetchStores();
   }, []);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (showImportModal && !importing) setShowImportModal(false);
+      else if (selectedStoreId) closeDetail();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showImportModal, importing, selectedStoreId]);
+
   async function fetchStores() {
     const supabase = createClient();
 
@@ -634,6 +645,9 @@ function StoresContent() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Butiksdetaljer"
               className="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >
@@ -819,6 +833,9 @@ function StoresContent() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Importér butikker"
               className="w-full sm:max-w-lg bg-[#0E0E18] rounded-t-3xl sm:rounded-3xl border border-white/10 max-h-[90dvh] overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Briefcase, Phone, ArrowRight } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 
@@ -85,11 +85,24 @@ export default function MatchCelebration({
   onViewContact,
   onContinue,
 }: MatchCelebrationProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (visible) dialogRef.current?.focus();
+  }, [visible]);
+
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center"
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="match-title"
+          aria-live="assertive"
+          tabIndex={-1}
+          onKeyDown={(e) => { if (e.key === 'Escape') onContinue(); }}
+          className="fixed inset-0 z-[100] flex items-center justify-center outline-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -137,14 +150,15 @@ export default function MatchCelebration({
               />
             </motion.div>
 
-            {/* Match text */}
-            <motion.h1
+            {/* Match text — h2 so it doesn't collide with the feed's page h1 */}
+            <motion.h2
+              id="match-title"
               className="text-4xl font-extrabold tracking-tight gradient-text-emerald mb-2"
               animate={{ scale: [1, 1.03, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
               Det er et match! 🎉
-            </motion.h1>
+            </motion.h2>
 
             <p className="text-lg text-[#94A3B8] mb-2 font-medium">
               {store.name}
