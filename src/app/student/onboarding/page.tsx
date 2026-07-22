@@ -60,9 +60,9 @@ interface FormData {
   address: string;
   postal_code: string;
   city: string;
-  youth_education: YouthEducationType | '';
+  youth_educations: YouthEducationType[];
   youth_education_school: string;
-  education_line: EducationLine | '';
+  education_lines: EducationLine[];
   work_experience: string;
   primary_style: BehavioralStyle | null;
   secondary_style: BehavioralStyle | null;
@@ -84,9 +84,9 @@ export default function StudentOnboarding() {
     address: '',
     postal_code: '',
     city: '',
-    youth_education: '',
+    youth_educations: [],
     youth_education_school: '',
-    education_line: '',
+    education_lines: [],
     work_experience: '',
     primary_style: null,
     secondary_style: null,
@@ -198,9 +198,13 @@ export default function StudentOnboarding() {
           address: form.address || null,
           postal_code: form.postal_code || null,
           city: form.city || null,
-          youth_education: form.youth_education || null,
+          // Arrays hold every choice; the legacy single columns get the first
+          // choice so existing queries and dashboards keep working.
+          youth_educations: form.youth_educations.length ? form.youth_educations : null,
+          youth_education: form.youth_educations[0] || null,
           youth_education_school: form.youth_education_school || null,
-          education_line: form.education_line || null,
+          education_lines: form.education_lines.length ? form.education_lines : null,
+          education_line: form.education_lines[0] || null,
           work_experience: form.work_experience || null,
           primary_style: form.primary_style,
           secondary_style: form.secondary_style,
@@ -278,6 +282,18 @@ export default function StudentOnboarding() {
 
       {/* Bottom action bar */}
       <div className="sticky bottom-0 z-40 backdrop-blur-xl bg-[#05050A]/80 border-t border-white/5 px-4 py-4 safe-bottom">
+        {/* Errors surface here, right where the user just tapped */}
+        {submitError && (
+          <div className="max-w-md mx-auto mb-3 flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+            <AlertCircle size={16} className="shrink-0" aria-hidden="true" />
+            <span>{submitError}</span>
+          </div>
+        )}
+        {step === 3 && !form.gdpr_consent && !submitError && (
+          <p className="max-w-md mx-auto mb-3 text-center text-xs text-[#94A3B8]">
+            Accepter GDPR-samtykket ovenfor for at afslutte
+          </p>
+        )}
         <div className="max-w-md mx-auto flex gap-3">
           {step > 0 && (
             <button
@@ -291,7 +307,11 @@ export default function StudentOnboarding() {
 
           <button
             onClick={step === 3 ? handleSubmit : goNext}
-            disabled={loading || (step === 2 && (!form.primary_style || !form.secondary_style))}
+            disabled={
+              loading ||
+              (step === 2 && (!form.primary_style || !form.secondary_style)) ||
+              (step === 3 && !form.gdpr_consent)
+            }
             className="flex-1 py-4 rounded-2xl btn-gradient text-white font-semibold flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
@@ -510,26 +530,41 @@ function StepEducation({
       </div>
 
       <div className="space-y-4">
-        {/* Youth education type */}
+        {/* Youth education type — multi-select */}
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-[#94A3B8]">
             Ungdomsuddannelse
           </label>
+          <p className="text-xs text-[#94A3B8]">Vælg én eller flere</p>
           <div className="grid grid-cols-3 gap-2">
             {(Object.keys(YOUTH_EDUCATION_LABELS) as YouthEducationType[]).map(
-              (key) => (
-                <button
-                  key={key}
-                  onClick={() => update('youth_education', key)}
-                  className={`py-3 px-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97] ${
-                    form.youth_education === key
-                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-300 border shadow-md shadow-violet-500/10'
-                      : 'bg-white/5 border border-white/10 text-[#94A3B8] hover:bg-white/10'
-                  }`}
-                >
-                  {YOUTH_EDUCATION_LABELS[key]}
-                </button>
-              ),
+              (key) => {
+                const selected = form.youth_educations.includes(key);
+                return (
+                  <button
+                    key={key}
+                    aria-pressed={selected}
+                    onClick={() =>
+                      update(
+                        'youth_educations',
+                        selected
+                          ? form.youth_educations.filter((v) => v !== key)
+                          : [...form.youth_educations, key],
+                      )
+                    }
+                    className={`relative py-3 px-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97] ${
+                      selected
+                        ? 'bg-violet-500/20 border-violet-500/50 text-violet-300 border shadow-md shadow-violet-500/10'
+                        : 'bg-white/5 border border-white/10 text-[#94A3B8] hover:bg-white/10'
+                    }`}
+                  >
+                    {selected && (
+                      <Check size={12} className="absolute top-1.5 right-1.5" aria-hidden="true" />
+                    )}
+                    {YOUTH_EDUCATION_LABELS[key]}
+                  </button>
+                );
+              },
             )}
           </div>
         </div>
@@ -600,26 +635,41 @@ function StepEducation({
           </AnimatePresence>
         </div>
 
-        {/* Education line */}
+        {/* Education lines — multi-select */}
         <div className="space-y-1.5">
           <label className="text-sm font-medium text-[#94A3B8]">
             Uddannelsesretning
           </label>
+          <p className="text-xs text-[#94A3B8]">Vælg én eller flere — du kan søge inden for flere områder</p>
           <div className="grid grid-cols-2 gap-2">
             {(Object.keys(EDUCATION_LINE_LABELS) as EducationLine[]).map(
-              (key) => (
-                <button
-                  key={key}
-                  onClick={() => update('education_line', key)}
-                  className={`py-3 px-3 rounded-xl text-sm font-medium transition-all text-left active:scale-[0.97] ${
-                    form.education_line === key
-                      ? 'bg-blue-500/20 border-blue-500/50 text-blue-300 border shadow-md shadow-blue-500/10'
-                      : 'bg-white/5 border border-white/10 text-[#94A3B8] hover:bg-white/10'
-                  }`}
-                >
-                  {EDUCATION_LINE_LABELS[key]}
-                </button>
-              ),
+              (key) => {
+                const selected = form.education_lines.includes(key);
+                return (
+                  <button
+                    key={key}
+                    aria-pressed={selected}
+                    onClick={() =>
+                      update(
+                        'education_lines',
+                        selected
+                          ? form.education_lines.filter((v) => v !== key)
+                          : [...form.education_lines, key],
+                      )
+                    }
+                    className={`relative py-3 px-3 pr-7 rounded-xl text-sm font-medium transition-all text-left active:scale-[0.97] ${
+                      selected
+                        ? 'bg-blue-500/20 border-blue-500/50 text-blue-300 border shadow-md shadow-blue-500/10'
+                        : 'bg-white/5 border border-white/10 text-[#94A3B8] hover:bg-white/10'
+                    }`}
+                  >
+                    {selected && (
+                      <Check size={12} className="absolute top-1/2 -translate-y-1/2 right-2" aria-hidden="true" />
+                    )}
+                    {EDUCATION_LINE_LABELS[key]}
+                  </button>
+                );
+              },
             )}
           </div>
         </div>
@@ -982,11 +1032,14 @@ function StepVideoGdpr({
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ];
 
+  // Must match the video-pitches bucket constraints (100 MB, mp4/webm/mov)
+  const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
+
   const handleFile = (files: FileList | null) => {
     const file = files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('video/')) {
-      setFileError('Videoen skal være en videofil (fx MP4).');
+    if (!VIDEO_TYPES.includes(file.type)) {
+      setFileError('Videoen skal være MP4, WebM eller MOV.');
       return;
     }
     if (file.size > MAX_VIDEO) {
@@ -1073,7 +1126,7 @@ function StepVideoGdpr({
         <input
           ref={videoInputRef}
           type="file"
-          accept="video/*"
+          accept=".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime"
           aria-label="Upload videopitch"
           onChange={(e) => handleFile(e.target.files)}
           className="absolute inset-0 opacity-0 cursor-pointer"
