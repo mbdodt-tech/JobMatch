@@ -10,10 +10,11 @@ import {
   X,
   Heart,
   GraduationCap,
-  ChevronRight,
   FileText,
   ExternalLink,
   MapPin,
+  Briefcase,
+  Calendar,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
@@ -21,7 +22,10 @@ import {
   BEHAVIORAL_STYLE_LABELS,
   BEHAVIORAL_STYLE_COLORS,
   BEHAVIORAL_STYLE_ICONS,
+  EDUCATION_LINE_LABELS,
+  YOUTH_EDUCATION_LABELS,
 } from '@/lib/types/database';
+import type { EducationLine, YouthEducationType } from '@/lib/types/database';
 
 function StyleBadge({ style }: { style: BehavioralStyle }) {
   return (
@@ -36,6 +40,18 @@ function StyleBadge({ style }: { style: BehavioralStyle }) {
       {BEHAVIORAL_STYLE_ICONS[style]} {BEHAVIORAL_STYLE_LABELS[style]}
     </span>
   );
+}
+
+function calculateAge(dateOfBirth: string | null): number | null {
+  if (!dateOfBirth) return null;
+  const dob = new Date(dateOfBirth);
+  const now = new Date();
+  let age = now.getFullYear() - dob.getFullYear();
+  const monthDiff = now.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dob.getDate())) {
+    age--;
+  }
+  return age;
 }
 
 interface MatchWithStudent extends Match {
@@ -98,24 +114,34 @@ export default function ManagerMatchesPage() {
     setShowVideoPlayer(true);
   }
 
+  useEffect(() => {
+    if (selectedMatch) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedMatch]);
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      <div className="aurora-bg aurora-bg-subtle flex items-center justify-center min-h-[100dvh]">
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 pt-6">
+    <div className="aurora-bg aurora-bg-subtle min-h-[100dvh]">
+    <div className="max-w-md mx-auto px-4 pt-6 pb-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-2xl font-bold text-white tracking-tight">
-          Dine matches
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">
+          Dine <span className="gradient-text-emerald">matches</span>
         </h1>
         <p className="text-text-secondary text-sm mt-1">
           {matches.length} {matches.length === 1 ? 'match' : 'matches'}
@@ -128,8 +154,8 @@ export default function ManagerMatchesPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mb-4">
-            <Heart className="w-8 h-8 text-green-400" />
+          <div className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center mb-4">
+            <Heart className="w-8 h-8 text-emerald-400" />
           </div>
           <h2 className="text-lg font-bold text-white mb-2">
             Ingen matches endnu
@@ -149,70 +175,62 @@ export default function ManagerMatchesPage() {
               transition: { staggerChildren: 0.08 },
             },
           }}
-          className="space-y-3"
+          className="grid grid-cols-2 gap-3"
         >
-          {matches.map((match) => (
-            <motion.div
-              key={match.id}
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-            >
-              <motion.button
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
-                onClick={() => setSelectedMatch(match)}
-                className="w-full text-left p-4 rounded-2xl bg-white/5 backdrop-blur-xl border border-green-500/15 hover:border-green-500/30 transition-all group"
+          {matches.map((match) => {
+            const age = calculateAge(match.student.date_of_birth);
+            return (
+              <motion.div
+                key={match.id}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
               >
-                <div className="flex items-center gap-4">
-                  {/* Avatar */}
-                  <div className="relative shrink-0">
-                    <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                      {match.student.avatar_url ? (
-                        <img
-                          src={match.student.avatar_url}
-                          alt={match.student.full_name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-xl font-bold text-white">
-                          {match.student.full_name?.charAt(0)?.toUpperCase() || '?'}
-                        </span>
-                      )}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setSelectedMatch(match)}
+                  className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden border border-white/10 shadow-xl text-left"
+                >
+                  {match.student.avatar_url ? (
+                    <img
+                      src={match.student.avatar_url}
+                      alt={match.student.full_name}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center">
+                      <span className="text-6xl font-extrabold text-white/25 select-none">
+                        {match.student.full_name?.charAt(0)?.toUpperCase() || '?'}
+                      </span>
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-green-500 border-2 border-[#0A0A0F] flex items-center justify-center">
-                      <Heart className="w-2.5 h-2.5 text-white" />
-                    </div>
+                  )}
+
+                  <div className="absolute inset-0 card-scrim" />
+
+                  <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-semibold glow-green">
+                    <Heart className="w-3 h-3" />
+                    Match
                   </div>
 
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-semibold truncate">
+                  <div className="absolute bottom-0 left-0 right-0 p-3 min-w-0">
+                    <p className="text-white font-bold truncate">
                       {match.student.full_name}
-                    </h3>
+                      {age && (
+                        <span className="font-medium text-white/80"> {age}</span>
+                      )}
+                    </p>
                     {match.student.education_line && (
-                      <div className="flex items-center gap-1 text-text-secondary text-xs mt-0.5">
-                        <GraduationCap className="w-3 h-3" />
-                        <span className="capitalize">
-                          {match.student.education_line.replace(/_/g, ' ')}
-                        </span>
-                      </div>
+                      <p className="text-white/60 text-xs capitalize truncate mt-0.5">
+                        {match.student.education_line.replace(/_/g, ' ')}
+                      </p>
                     )}
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {match.student.primary_style && (
-                        <StyleBadge style={match.student.primary_style} />
-                      )}
-                      {match.student.secondary_style && (
-                        <StyleBadge style={match.student.secondary_style} />
-                      )}
-                    </div>
                   </div>
-
-                  <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-white transition-colors shrink-0" />
-                </div>
-              </motion.button>
-            </motion.div>
-          ))}
+                </motion.button>
+              </motion.div>
+            );
+          })}
         </motion.div>
       )}
 
@@ -223,7 +241,7 @@ export default function ManagerMatchesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedMatch(null)}
           >
             <motion.div
@@ -231,11 +249,10 @@ export default function ManagerMatchesPage() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-[#12121A] rounded-t-3xl border-t border-white/10 overflow-y-auto"
+              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Drag handle */}
-              <div className="flex justify-center py-3">
+              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
 
@@ -250,9 +267,9 @@ export default function ManagerMatchesPage() {
                   </button>
                 </div>
 
-                {/* Student info */}
+                {/* Avatar + name */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
                     {selectedMatch.student.avatar_url ? (
                       <img
                         src={selectedMatch.student.avatar_url}
@@ -265,13 +282,18 @@ export default function ManagerMatchesPage() {
                       </span>
                     )}
                   </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-white">
+                  <div className="min-w-0">
+                    <h2 className="text-xl font-bold text-white truncate">
                       {selectedMatch.student.full_name}
+                      {(() => {
+                        const age = calculateAge(selectedMatch.student.date_of_birth);
+                        return age ? <span className="text-base font-normal text-white/60 ml-2">{age} år</span> : null;
+                      })()}
                     </h2>
                     {selectedMatch.student.education_line && (
-                      <p className="text-text-secondary text-sm capitalize">
-                        {selectedMatch.student.education_line.replace(/_/g, ' ')}
+                      <p className="text-text-secondary text-sm">
+                        {EDUCATION_LINE_LABELS[selectedMatch.student.education_line as EducationLine] ||
+                          selectedMatch.student.education_line.replace(/_/g, ' ')}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-1.5 mt-2">
@@ -285,14 +307,30 @@ export default function ManagerMatchesPage() {
                   </div>
                 </div>
 
+                {/* Youth education */}
+                {(selectedMatch.student.youth_education || selectedMatch.student.youth_education_school) && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelse</h3>
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                      <div>
+                        {selectedMatch.student.youth_education && (
+                          <p>{YOUTH_EDUCATION_LABELS[selectedMatch.student.youth_education as YouthEducationType] || selectedMatch.student.youth_education}</p>
+                        )}
+                        {selectedMatch.student.youth_education_school && (
+                          <p className="text-text-secondary mt-0.5">{selectedMatch.student.youth_education_school}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Address */}
                 {(selectedMatch.student.address || selectedMatch.student.city) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      Adresse
-                    </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                      <MapPin className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                       <span>
                         {selectedMatch.student.address}
                         {(selectedMatch.student.postal_code || selectedMatch.student.city) && ', '}
@@ -303,40 +341,48 @@ export default function ManagerMatchesPage() {
                   </div>
                 )}
 
+                {/* Date of birth */}
+                {selectedMatch.student.date_of_birth && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Fødselsdato</h3>
+                    <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <Calendar className="w-4 h-4 text-violet-400 shrink-0" />
+                      <span>
+                        {new Date(selectedMatch.student.date_of_birth).toLocaleDateString('da-DK', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Work experience */}
                 {selectedMatch.student.work_experience && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      Erhvervserfaring
-                    </h3>
-                    <p className="text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                      {selectedMatch.student.work_experience}
-                    </p>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Erhvervserfaring</h3>
+                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
+                      <Briefcase className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                      <p>{selectedMatch.student.work_experience}</p>
+                    </div>
                   </div>
                 )}
 
                 {/* Video pitch */}
                 {selectedMatch.student.video_pitch_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      Video-pitch
-                    </h3>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Video-pitch</h3>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() =>
-                        openVideo(selectedMatch.student.video_pitch_url!)
-                      }
+                      onClick={() => openVideo(selectedMatch.student.video_pitch_url!)}
                       className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
                     >
                       {selectedMatch.student.video_thumbnail_url ? (
-                        <img
-                          src={selectedMatch.student.video_thumbnail_url}
-                          alt="Video thumbnail"
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={selectedMatch.student.video_thumbnail_url} alt="Video thumbnail" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
+                        <div className="w-full h-full bg-gradient-to-br from-violet-900/30 to-blue-900/30" />
                       )}
                       <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                         <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
@@ -350,14 +396,12 @@ export default function ManagerMatchesPage() {
                 {/* CV */}
                 {selectedMatch.student.cv_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
-                      CV
-                    </h3>
+                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">CV</h3>
                     <a
                       href={selectedMatch.student.cv_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
                     >
                       <FileText className="w-5 h-5" />
                       <span className="font-medium text-sm">Se elevens CV</span>
@@ -366,20 +410,16 @@ export default function ManagerMatchesPage() {
                   </div>
                 )}
 
-                {/* Contact buttons */}
+                {/* Contact */}
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-text-secondary mb-2">
-                    Kontaktoplysninger
-                  </h3>
+                  <h3 className="text-sm font-medium text-text-secondary mb-2">Kontaktoplysninger</h3>
                   {selectedMatch.student.phone && (
                     <a
                       href={`tel:${selectedMatch.student.phone}`}
                       className="flex items-center gap-3 p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors"
                     >
                       <Phone className="w-5 h-5" />
-                      <span className="font-medium text-sm">
-                        Ring: {selectedMatch.student.phone}
-                      </span>
+                      <span className="font-medium text-sm">Ring: {selectedMatch.student.phone}</span>
                     </a>
                   )}
                   {selectedMatch.student.email && (
@@ -388,13 +428,11 @@ export default function ManagerMatchesPage() {
                       className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
                     >
                       <Mail className="w-5 h-5" />
-                      <span className="font-medium text-sm">
-                        Email: {selectedMatch.student.email}
-                      </span>
+                      <span className="font-medium text-sm">Email: {selectedMatch.student.email}</span>
                     </a>
                   )}
                   {!selectedMatch.student.phone && !selectedMatch.student.email && (
-                    <p className="text-text-muted text-sm p-3.5 rounded-xl bg-white/5 border border-white/5">
+                    <p className="text-text-muted text-sm p-3.5 rounded-xl bg-white/5 border border-white/10">
                       Eleven har ikke delt kontaktoplysninger endnu
                     </p>
                   )}
@@ -412,7 +450,7 @@ export default function ManagerMatchesPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4"
             onClick={() => setShowVideoPlayer(false)}
           >
             <button
@@ -438,6 +476,7 @@ export default function ManagerMatchesPage() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
     </div>
   );
 }

@@ -131,14 +131,14 @@ export default function FollowUpPage() {
   };
 
   const urgencyColors = {
-    critical: { bg: 'bg-red-500/15', border: 'border-red-500/30', text: 'text-red-400', label: 'Kritisk' },
+    critical: { bg: 'bg-rose-500/15', border: 'border-rose-500/30', text: 'text-rose-400', label: 'Kritisk' },
     high: { bg: 'bg-orange-500/15', border: 'border-orange-500/30', text: 'text-orange-400', label: 'Høj' },
-    medium: { bg: 'bg-yellow-500/15', border: 'border-yellow-500/30', text: 'text-yellow-400', label: 'Medium' },
+    medium: { bg: 'bg-amber-500/15', border: 'border-amber-500/30', text: 'text-amber-400', label: 'Medium' },
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60dvh]">
         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
       </div>
     );
@@ -149,25 +149,25 @@ export default function FollowUpPage() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       <motion.div variants={itemVariants}>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">Opfølgning</h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]"><span className="gradient-text">Opfølgning</span></h1>
         <p className="text-[var(--text-secondary)] mt-1">Elever der kan have brug for vejledning</p>
       </motion.div>
 
       {students.length === 0 ? (
-        <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-green-500/10 border border-green-500/20">
-          <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+        <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-green-300">Alle elever klarer sig godt!</p>
-            <p className="text-xs text-green-400/70 mt-0.5">Der er ingen elever der kræver opfølgning lige nu</p>
+            <p className="text-sm font-semibold text-emerald-300">Alle elever klarer sig godt!</p>
+            <p className="text-xs text-emerald-400/70 mt-0.5">Der er ingen elever der kræver opfølgning lige nu</p>
           </div>
         </motion.div>
       ) : (
         <>
-          <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+          <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+            <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-red-300">{notContacted} elev{notContacted !== 1 ? 'er' : ''} kræver opmærksomhed</p>
-              <p className="text-xs text-red-400/70 mt-0.5">Disse elever har mange swipes men ingen matches, eller er blevet inaktive</p>
+              <p className="text-sm font-semibold text-rose-300">{notContacted} elev{notContacted !== 1 ? 'er' : ''} kræver opmærksomhed</p>
+              <p className="text-xs text-rose-400/70 mt-0.5">Disse elever har mange swipes men ingen matches, eller er blevet inaktive</p>
             </div>
           </motion.div>
 
@@ -178,15 +178,15 @@ export default function FollowUpPage() {
               const isExpanded = expandedId === student.id;
 
               return (
-                <motion.div key={student.id} variants={itemVariants} className={`rounded-2xl bg-white/5 backdrop-blur-xl border transition-all overflow-hidden ${student.contacted ? 'border-green-500/20 opacity-60' : 'border-white/10'}`}>
+                <motion.div key={student.id} variants={itemVariants} className={`rounded-2xl glass-card transition-all overflow-hidden ${student.contacted ? '!border-emerald-500/20 opacity-60' : ''}`}>
                   <button onClick={() => setExpandedId(isExpanded ? null : student.id)} className="w-full flex items-center gap-4 p-4 text-left">
                     <div className={`w-10 h-10 rounded-xl ${colors.bg} border ${colors.border} flex items-center justify-center shrink-0`}>
-                      {student.contacted ? <CheckCircle2 size={18} className="text-green-400" /> : <AlertTriangle size={18} className={colors.text} />}
+                      {student.contacted ? <CheckCircle2 size={18} className="text-emerald-400" /> : <AlertTriangle size={18} className={colors.text} />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="font-semibold text-[var(--text-primary)] text-sm truncate">{student.name}</p>
-                        {student.contacted && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-400">Kontaktet</span>}
+                        {student.contacted && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">Kontaktet</span>}
                       </div>
                       <p className="text-xs text-[var(--text-muted)]">{student.education_line} · {student.primary_style}</p>
                     </div>
@@ -210,11 +210,11 @@ export default function FollowUpPage() {
                               <p className="text-[10px] text-[var(--text-muted)]">Swipes</p>
                             </div>
                             <div className="p-2.5 rounded-xl bg-white/5 text-center">
-                              <p className="text-sm font-bold text-red-400">{student.matches}</p>
+                              <p className="text-sm font-bold text-rose-400">{student.matches}</p>
                               <p className="text-[10px] text-[var(--text-muted)]">Matches</p>
                             </div>
                             <div className="p-2.5 rounded-xl bg-white/5 text-center">
-                              <p className="text-sm font-bold text-orange-400">{student.days_inactive}d</p>
+                              <p className="text-sm font-bold text-amber-400">{student.days_inactive}d</p>
                               <p className="text-[10px] text-[var(--text-muted)]">Inaktiv</p>
                             </div>
                           </div>
@@ -223,7 +223,7 @@ export default function FollowUpPage() {
                               <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors">
                                 <Mail size={14} /> Send besked
                               </button>
-                              <button onClick={() => markContacted(student.id)} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/20 transition-colors">
+                              <button onClick={() => markContacted(student.id)} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">
                                 <CheckCircle2 size={14} /> Markér kontaktet
                               </button>
                             </div>

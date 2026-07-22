@@ -85,7 +85,7 @@ export default function MatchCelebration({
           transition={{ duration: 0.3 }}
         >
           {/* Background overlay */}
-          <div className="absolute inset-0 bg-[#0A0A0F]/90 backdrop-blur-lg" />
+          <div className="absolute inset-0 bg-[#05050A]/90 backdrop-blur-lg" />
 
           {/* Confetti */}
           <ConfettiParticles />
@@ -104,8 +104,8 @@ export default function MatchCelebration({
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 p-0.5 shadow-2xl shadow-purple-500/40">
-                <div className="w-full h-full rounded-3xl bg-[#12121A] flex items-center justify-center overflow-hidden">
+              <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-500 p-0.5 glow-green">
+                <div className="w-full h-full rounded-3xl bg-[#12121E] flex items-center justify-center overflow-hidden">
                   {store.logo_url ? (
                     <img
                       src={store.logo_url}
@@ -113,14 +113,14 @@ export default function MatchCelebration({
                       className="w-full h-full object-contain p-3"
                     />
                   ) : (
-                    <Briefcase size={40} className="text-purple-400" />
+                    <Briefcase size={40} className="text-emerald-400" />
                   )}
                 </div>
               </div>
 
               {/* Glow */}
               <motion.div
-                className="absolute inset-0 rounded-3xl bg-purple-500/20 blur-xl -z-10"
+                className="absolute inset-0 rounded-3xl bg-emerald-500/20 blur-xl -z-10"
                 animate={{ opacity: [0.3, 0.7, 0.3] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -128,7 +128,7 @@ export default function MatchCelebration({
 
             {/* Match text */}
             <motion.h1
-              className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2"
+              className="text-4xl font-extrabold tracking-tight gradient-text-emerald mb-2"
               animate={{ scale: [1, 1.03, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
@@ -146,7 +146,7 @@ export default function MatchCelebration({
             <div className="w-full space-y-3">
               <button
                 onClick={onViewContact}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold text-base flex items-center justify-center gap-2 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-shadow active:scale-[0.98]"
+                className="w-full py-4 rounded-2xl btn-gradient-emerald text-white font-semibold text-base flex items-center justify-center gap-2 active:scale-[0.98]"
               >
                 <Phone size={18} />
                 Se kontaktinfo
@@ -154,7 +154,7 @@ export default function MatchCelebration({
 
               <button
                 onClick={onContinue}
-                className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[#94A3B8] font-medium text-base flex items-center justify-center gap-2 hover:bg-white/10 transition-colors active:scale-[0.98]"
+                className="w-full py-4 rounded-2xl glass text-[#94A3B8] font-medium text-base flex items-center justify-center gap-2 hover:bg-white/10 transition-colors active:scale-[0.98]"
               >
                 Fortsæt
                 <ArrowRight size={18} />

@@ -134,9 +134,9 @@ export default function StudentProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0F] flex items-center justify-center">
+      <div className="min-h-dvh aurora-bg aurora-bg-subtle flex items-center justify-center">
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-          <User size={32} className="text-purple-400" />
+          <User size={32} className="text-violet-400" />
         </motion.div>
       </div>
     );
@@ -146,11 +146,11 @@ export default function StudentProfile() {
   const age = calculateAge(profile.date_of_birth);
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F] pb-32">
+    <div className="min-h-dvh aurora-bg aurora-bg-subtle pb-32">
       {/* Gradient Header */}
       <div className="relative h-40 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/40 via-blue-600/30 to-cyan-500/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/40 via-blue-600/30 to-cyan-500/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05050A] via-transparent to-transparent" />
         {/* Floating particles */}
         {[...Array(6)].map((_, i) => (
           <motion.div
@@ -167,8 +167,8 @@ export default function StudentProfile() {
         {/* Avatar */}
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex justify-center mb-4">
           <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 p-0.5">
-              <div className="w-full h-full rounded-full bg-[#12121A] flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 p-0.5 glow-violet">
+              <div className="w-full h-full rounded-full bg-[#12121E] flex items-center justify-center">
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                 ) : (
@@ -179,7 +179,7 @@ export default function StudentProfile() {
             <button
               onClick={() => avatarInputRef.current?.click()}
               disabled={uploading !== null}
-              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-purple-500 border-2 border-[#0A0A0F] flex items-center justify-center disabled:opacity-50"
+              className="absolute bottom-0 right-0 w-8 h-8 rounded-full btn-gradient border-2 border-[#05050A] flex items-center justify-center disabled:opacity-50"
               title="Skift profilbillede"
             >
               {uploading === 'avatar' ? (
@@ -204,7 +204,7 @@ export default function StudentProfile() {
 
         {/* Name & Info */}
         <div className="text-center mb-6">
-          <h1 className="text-xl font-bold text-[#F8FAFC]">{profile.full_name}</h1>
+          <h1 className="text-xl font-bold gradient-text break-words">{profile.full_name}</h1>
           <div className="flex items-center justify-center gap-2 mt-1 text-sm text-[#94A3B8]">
             {age && <span>{age} år</span>}
             {profile.education_line && (
@@ -228,12 +228,12 @@ export default function StudentProfile() {
           {[
             { label: 'Swipes', value: stats.swipes, icon: ArrowLeftRight, color: 'text-blue-400' },
             { label: 'Matches', value: stats.matches, icon: Heart, color: 'text-green-400' },
-            { label: 'Profil', value: profile.onboarding_completed ? '100%' : '50%', icon: Eye, color: 'text-purple-400' },
+            { label: 'Profil', value: profile.onboarding_completed ? '100%' : '50%', icon: Eye, color: 'text-violet-400' },
           ].map((stat) => (
             <motion.div
               key={stat.label}
               whileHover={{ scale: 1.03 }}
-              className="p-3 rounded-xl bg-white/5 border border-white/10 text-center"
+              className="p-3 rounded-2xl glass-card glass-card-hover text-center"
             >
               <stat.icon size={16} className={`${stat.color} mx-auto mb-1`} />
               <div className="text-lg font-bold text-[#F8FAFC]">{stat.value}</div>
@@ -289,7 +289,7 @@ export default function StudentProfile() {
         )}
 
         {/* Address */}
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+        <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center gap-2 mb-2">
             <MapPin size={14} className="text-[#64748B]" />
             <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Adresse</h3>
@@ -300,7 +300,7 @@ export default function StudentProfile() {
                 type="text"
                 value={formData.address || ''}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                 placeholder="Gadenavn og nummer"
               />
               <div className="flex gap-2">
@@ -308,14 +308,14 @@ export default function StudentProfile() {
                   type="text"
                   value={formData.postal_code || ''}
                   onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
-                  className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                  className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                   placeholder="Postnr."
                 />
                 <input
                   type="text"
                   value={formData.city || ''}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                  className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                   placeholder="By"
                 />
               </div>
@@ -330,7 +330,7 @@ export default function StudentProfile() {
         </div>
 
         {/* Work Experience */}
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+        <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center gap-2 mb-2">
             <Briefcase size={14} className="text-[#64748B]" />
             <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Joberfaring</h3>
@@ -340,7 +340,7 @@ export default function StudentProfile() {
               value={formData.work_experience || ''}
               onChange={(e) => setFormData({ ...formData, work_experience: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
               placeholder="Beskriv din joberfaring..."
             />
           ) : (
@@ -351,11 +351,11 @@ export default function StudentProfile() {
         </div>
 
         {/* GDPR Toggle */}
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+        <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <Shield size={14} className="text-purple-400" />
+                <Shield size={14} className="text-violet-400" />
                 <h3 className="text-sm font-semibold text-[#F8FAFC]">GDPR-samtykke</h3>
               </div>
               <p className="text-xs text-[#64748B] leading-relaxed">
@@ -373,7 +373,7 @@ export default function StudentProfile() {
         </div>
 
         {/* CV Upload */}
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+        <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center gap-2 mb-2">
             <FileText size={14} className="text-[#64748B]" />
             <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">CV</h3>
@@ -412,10 +412,10 @@ export default function StudentProfile() {
             <button
               onClick={() => cvInputRef.current?.click()}
               disabled={uploading !== null}
-              className="w-full py-6 rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 hover:border-purple-500/40 hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+              className="w-full py-6 rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 hover:border-violet-500/40 hover:bg-violet-500/5 transition-colors disabled:opacity-50"
             >
               {uploading === 'cv' ? (
-                <Loader2 size={24} className="text-purple-400 animate-spin" />
+                <Loader2 size={24} className="text-violet-400 animate-spin" />
               ) : (
                 <Upload size={24} className="text-[#64748B]" />
               )}
@@ -427,7 +427,7 @@ export default function StudentProfile() {
         </div>
 
         {/* Video Pitch */}
-        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-4">
+        <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <Camera size={14} className="text-[#64748B]" />
@@ -437,7 +437,7 @@ export default function StudentProfile() {
               <button
                 onClick={() => videoInputRef.current?.click()}
                 disabled={uploading !== null}
-                className="text-xs text-purple-400 hover:text-purple-300 transition-colors disabled:opacity-50 flex items-center gap-1"
+                className="text-xs text-violet-400 hover:text-violet-300 transition-colors disabled:opacity-50 flex items-center gap-1"
               >
                 {uploading === 'video' ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />}
                 Skift video
@@ -463,10 +463,10 @@ export default function StudentProfile() {
             <button
               onClick={() => videoInputRef.current?.click()}
               disabled={uploading !== null}
-              className="w-full aspect-video rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 hover:border-purple-500/40 hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+              className="w-full aspect-video rounded-xl bg-white/5 border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 hover:border-violet-500/40 hover:bg-violet-500/5 transition-colors disabled:opacity-50"
             >
               {uploading === 'video' ? (
-                <Loader2 size={24} className="text-purple-400 animate-spin" />
+                <Loader2 size={24} className="text-violet-400 animate-spin" />
               ) : (
                 <Camera size={24} className="text-[#64748B]" />
               )}
@@ -497,7 +497,7 @@ export default function StudentProfile() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20"
+                className="flex-1 py-3 rounded-xl btn-gradient text-white font-semibold text-sm flex items-center justify-center gap-2"
               >
                 <Save size={16} /> {saving ? 'Gemmer…' : 'Gem'}
               </button>
@@ -505,7 +505,7 @@ export default function StudentProfile() {
           ) : (
             <button
               onClick={() => setEditing(true)}
-              className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
+              className="w-full py-3 rounded-xl glass glass-card-hover text-[#F8FAFC] font-medium text-sm flex items-center justify-center gap-2 hover:bg-white/10 transition-colors"
             >
               <Edit3 size={16} /> Rediger profil
             </button>

@@ -182,13 +182,14 @@ export default function ManagerStorePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+      <div className="aurora-bg aurora-bg-subtle flex items-center justify-center min-h-[100dvh]">
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
 
   return (
+    <div className="aurora-bg aurora-bg-subtle min-h-[100dvh]">
     <div className="max-w-md mx-auto px-4 pt-6 pb-8">
       {/* Header */}
       <motion.div
@@ -196,8 +197,12 @@ export default function ManagerStorePage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-2xl font-bold text-white tracking-tight">
-          {isNew ? 'Opret din butik' : 'Min butik'}
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">
+          {isNew ? (
+            <>Opret din <span className="gradient-text">butik</span></>
+          ) : (
+            <>Min <span className="gradient-text">butik</span></>
+          )}
         </h1>
         <p className="text-text-secondary text-sm mt-1">
           {isNew
@@ -214,9 +219,9 @@ export default function ManagerStorePage() {
           className="space-y-6"
         >
           {/* Basic info card */}
-          <div className="p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <div className="flex items-center gap-2 mb-2">
-              <StoreIcon className="w-5 h-5 text-purple-400" />
+              <StoreIcon className="w-5 h-5 text-violet-400" />
               <h2 className="text-white font-semibold">Butikoplysninger</h2>
             </div>
 
@@ -231,7 +236,7 @@ export default function ManagerStorePage() {
                 onChange={(e) => setStore({ ...store, name: e.target.value })}
                 placeholder="F.eks. Netto Østerbro"
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
               />
             </div>
 
@@ -247,7 +252,7 @@ export default function ManagerStorePage() {
                 }
                 placeholder="Fortæl lidt om butikken og hvad praktikanten kan forvente..."
                 rows={3}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm resize-none"
               />
             </div>
 
@@ -299,10 +304,10 @@ export default function ManagerStorePage() {
                   type="button"
                   onClick={() => jobDescInputRef.current?.click()}
                   disabled={uploadingPdf}
-                  className="w-full py-4 rounded-xl bg-white/5 border border-dashed border-white/10 flex items-center justify-center gap-2 hover:border-purple-500/40 hover:bg-purple-500/5 transition-colors disabled:opacity-50"
+                  className="w-full py-4 rounded-xl bg-white/5 border border-dashed border-white/10 flex items-center justify-center gap-2 hover:border-violet-500/40 hover:bg-violet-500/5 transition-colors disabled:opacity-50"
                 >
                   {uploadingPdf ? (
-                    <Loader2 size={18} className="text-purple-400 animate-spin" />
+                    <Loader2 size={18} className="text-violet-400 animate-spin" />
                   ) : (
                     <Upload size={18} className="text-[#64748B]" />
                   )}
@@ -318,7 +323,7 @@ export default function ManagerStorePage() {
           </div>
 
           {/* Address card */}
-          <div className="p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="w-5 h-5 text-blue-400" />
               <h2 className="text-white font-semibold">Adresse</h2>
@@ -336,7 +341,7 @@ export default function ManagerStorePage() {
                 }
                 placeholder="Gade og nummer"
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
               />
             </div>
 
@@ -359,7 +364,7 @@ export default function ManagerStorePage() {
                   }}
                   placeholder="2100"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
                 />
               </div>
               <div>
@@ -375,9 +380,9 @@ export default function ManagerStorePage() {
                   }
                   placeholder="Udfyldes automatisk"
                   required
-                  className={`w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm ${
+                  className={`w-full px-4 py-3 rounded-xl border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm ${
                     store.postal_code && store.postal_code.length === 4 && DANISH_POSTAL_CODES[store.postal_code]
-                      ? 'bg-purple-500/10 border-purple-500/20'
+                      ? 'bg-violet-500/10 border-violet-500/20'
                       : 'bg-white/5'
                   }`}
                 />
@@ -386,7 +391,7 @@ export default function ManagerStorePage() {
           </div>
 
           {/* Education lines card */}
-          <div className="p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-5 h-5 text-green-400" />
               <h2 className="text-white font-semibold">Uddannelseslinjer</h2>
@@ -406,14 +411,14 @@ export default function ManagerStorePage() {
                     onClick={() => toggleEducationLine(line)}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left text-sm ${
                       isSelected
-                        ? 'bg-purple-500/10 border-purple-500/30 text-white'
+                        ? 'bg-violet-500/10 border-violet-500/30 text-white'
                         : 'bg-white/[0.02] border-white/5 text-text-secondary hover:border-white/10'
                     }`}
                   >
                     <div
                       className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-all ${
                         isSelected
-                          ? 'bg-purple-500 border-purple-500'
+                          ? 'bg-violet-500 border-violet-500'
                           : 'border-white/20 bg-transparent'
                       }`}
                     >
@@ -429,7 +434,7 @@ export default function ManagerStorePage() {
           </div>
 
           {/* Internship slots */}
-          <div className="p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <Hash className="w-5 h-5 text-orange-400" />
               <h2 className="text-white font-semibold">Praktikpladser</h2>
@@ -450,13 +455,13 @@ export default function ManagerStorePage() {
                     internship_slots: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-24 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm text-center"
+                className="w-24 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm text-center"
               />
             </div>
           </div>
 
           {/* Images card */}
-          <div className="p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <div className="flex items-center gap-2 mb-2">
               <ImagePlus className="w-5 h-5 text-cyan-400" />
               <h2 className="text-white font-semibold">Billeder</h2>
@@ -474,7 +479,7 @@ export default function ManagerStorePage() {
                   setStore({ ...store, logo_url: e.target.value })
                 }
                 placeholder="https://..."
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
               />
             </div>
 
@@ -490,15 +495,15 @@ export default function ManagerStorePage() {
                   setStore({ ...store, cover_image_url: e.target.value })
                 }
                 placeholder="https://..."
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
               />
             </div>
           </div>
 
           {/* Contact card */}
-          <div className="p-5 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 space-y-4">
+          <div className="p-5 rounded-2xl glass-card space-y-4">
             <div className="flex items-center gap-2 mb-2">
-              <Phone className="w-5 h-5 text-purple-400" />
+              <Phone className="w-5 h-5 text-violet-400" />
               <h2 className="text-white font-semibold">Kontakt</h2>
             </div>
 
@@ -515,7 +520,7 @@ export default function ManagerStorePage() {
                     setStore({ ...store, phone: e.target.value })
                   }
                   placeholder="+45 12 34 56 78"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
                 />
               </div>
             </div>
@@ -533,7 +538,7 @@ export default function ManagerStorePage() {
                     setStore({ ...store, email: e.target.value })
                   }
                   placeholder="butik@email.dk"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
                 />
               </div>
             </div>
@@ -551,7 +556,7 @@ export default function ManagerStorePage() {
                     setStore({ ...store, website: e.target.value })
                   }
                   placeholder="https://www.butik.dk"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all text-sm"
                 />
               </div>
             </div>
@@ -563,10 +568,8 @@ export default function ManagerStorePage() {
             disabled={saving}
             whileHover={{ scale: saving ? 1 : 1.02 }}
             whileTap={{ scale: saving ? 1 : 0.98 }}
-            className={`w-full py-4 rounded-2xl font-semibold text-white shadow-lg flex items-center justify-center gap-2 transition-all ${
-              saved
-                ? 'bg-green-500 shadow-green-500/20'
-                : 'bg-gradient-to-r from-purple-600 to-blue-500 shadow-purple-500/20'
+            className={`w-full py-4 rounded-2xl font-semibold text-white flex items-center justify-center gap-2 transition-all ${
+              saved ? 'bg-emerald-500 glow-green' : 'btn-gradient'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {saving ? (
@@ -588,6 +591,7 @@ export default function ManagerStorePage() {
           </motion.button>
         </motion.div>
       </form>
+    </div>
     </div>
   );
 }

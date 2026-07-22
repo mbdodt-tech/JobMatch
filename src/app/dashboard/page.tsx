@@ -61,6 +61,7 @@ function KpiCard({
   value,
   icon: Icon,
   accentColor,
+  iconClass,
   glowClass,
   suffix,
   href,
@@ -69,6 +70,7 @@ function KpiCard({
   value: number;
   icon: React.ElementType;
   accentColor: string;
+  iconClass: string;
   glowClass?: string;
   suffix?: string;
   href?: string;
@@ -76,21 +78,19 @@ function KpiCard({
   const card = (
     <motion.div
       variants={itemVariants}
-      className={`relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 group transition-all duration-300 ${
-        href
-          ? "cursor-pointer hover:scale-[1.02] hover:border-white/20"
-          : "hover:scale-[1.02]"
+      className={`relative overflow-hidden rounded-2xl glass-card glass-card-hover p-6 group ${
+        href ? "cursor-pointer" : ""
       } ${glowClass ?? ""}`}
     >
       <div
         className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-20 ${accentColor}`}
       />
-      <div className="flex items-start justify-between relative z-10">
-        <div>
-          <p className="text-sm font-medium text-[var(--text-secondary)] mb-1">
+      <div className="flex items-start justify-between gap-3 relative z-10">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-[var(--text-secondary)] mb-1 truncate">
             {label}
           </p>
-          <p className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
+          <p className="text-3xl xl:text-4xl font-extrabold tracking-tight tabular-nums text-[var(--text-primary)]">
             {value.toLocaleString("da-DK")}
             {suffix && (
               <span className="text-xl font-bold text-[var(--text-muted)] ml-0.5">
@@ -99,8 +99,8 @@ function KpiCard({
             )}
           </p>
         </div>
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white/10">
-          <Icon className={`w-5 h-5 ${accentColor.replace("bg-", "text-")}`} />
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${iconClass}`}>
+          <Icon className="w-5 h-5" />
         </div>
       </div>
       {href && (
@@ -293,7 +293,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60dvh]">
         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
       </div>
     );
@@ -308,7 +308,7 @@ export default function DashboardPage() {
     >
       <motion.div variants={itemVariants}>
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-          Overblik
+          <span className="gradient-text">Overblik</span>
         </h1>
         <p className="text-[var(--text-secondary)] mt-1">
           Realtidsoversigt over elever, swipes og matches
@@ -321,13 +321,15 @@ export default function DashboardPage() {
           value={kpiData.totalStudents}
           icon={Users}
           accentColor="bg-blue-500"
+          iconClass="bg-blue-500/15 text-blue-400"
           href="/dashboard/students"
         />
         <KpiCard
           label="Aktive denne uge"
           value={kpiData.activeThisWeek}
           icon={Activity}
-          accentColor="bg-green-500"
+          accentColor="bg-emerald-500"
+          iconClass="bg-emerald-500/15 text-emerald-400"
           glowClass="glow-green"
           href="/dashboard/students"
         />
@@ -336,7 +338,8 @@ export default function DashboardPage() {
           value={kpiData.totalMatches}
           icon={Heart}
           accentColor="bg-purple-500"
-          glowClass="glow-purple"
+          iconClass="bg-purple-500/15 text-purple-400"
+          glowClass="glow-violet"
           href="/dashboard/students?status=matched"
         />
         <KpiCard
@@ -344,6 +347,7 @@ export default function DashboardPage() {
           value={kpiData.matchRate}
           icon={TrendingUp}
           accentColor="bg-cyan-500"
+          iconClass="bg-cyan-500/15 text-cyan-400"
           suffix="%"
           href="/dashboard/students?status=matched"
         />
@@ -352,9 +356,9 @@ export default function DashboardPage() {
       {educationLines.length > 0 && (
         <motion.div
           variants={itemVariants}
-          className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6"
+          className="rounded-2xl glass-card p-6"
         >
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6">
+          <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)] mb-6">
             Aktivitet per uddannelseslinje
           </h2>
           <div className="space-y-5">
@@ -362,20 +366,20 @@ export default function DashboardPage() {
               <Link
                 key={line.name}
                 href={`/dashboard/students?education=${encodeURIComponent(line.name)}`}
-                className="block space-y-2 rounded-xl -mx-2 px-2 py-1.5 hover:bg-white/5 transition-colors group"
+                className="block space-y-2 rounded-xl -mx-2 px-2 py-1.5 hover:bg-white/[0.04] transition-colors group"
               >
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-[var(--text-primary)] group-hover:text-white transition-colors">
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="font-medium text-[var(--text-primary)] group-hover:text-white transition-colors min-w-0 truncate">
                     {line.name}
                   </span>
-                  <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-                      {line.swipes} swipes
+                  <div className="flex items-center gap-3 text-xs text-[var(--text-secondary)] shrink-0">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-violet-400 shrink-0" />
+                      {line.swipes}
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                      {line.matches} matches
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                      {line.matches}
                     </span>
                   </div>
                 </div>
@@ -384,7 +388,7 @@ export default function DashboardPage() {
                     initial={{ width: 0 }}
                     animate={{ width: `${(line.swipes / maxSwipes) * 100}%` }}
                     transition={{ duration: 0.8, delay: i * 0.1, ease: "easeOut" }}
-                    className="h-full rounded-full bg-gradient-to-r from-blue-600 to-blue-400"
+                    className="h-full rounded-full bg-gradient-to-r from-violet-600 to-blue-400"
                   />
                   <motion.div
                     initial={{ width: 0 }}
@@ -392,7 +396,7 @@ export default function DashboardPage() {
                       width: `${(line.matches / maxSwipes) * 100}%`,
                     }}
                     transition={{ duration: 0.8, delay: i * 0.1 + 0.2, ease: "easeOut" }}
-                    className="h-full rounded-full bg-gradient-to-r from-green-600 to-green-400"
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-teal-400"
                   />
                 </div>
               </Link>
@@ -404,10 +408,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <motion.div
           variants={itemVariants}
-          className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6"
+          className="rounded-2xl glass-card p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">
+            <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
               Populære butikker
             </h2>
             <Store className="w-5 h-5 text-[var(--text-muted)]" />
@@ -427,12 +431,12 @@ export default function DashboardPage() {
                 >
                 <Link
                   href={`/dashboard/stores?search=${encodeURIComponent(store.name)}`}
-                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group"
+                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.04] transition-colors group"
                 >
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
                       i === 0
-                        ? "bg-yellow-500/20 text-yellow-400"
+                        ? "bg-amber-500/20 text-amber-400"
                         : i === 1
                           ? "bg-gray-400/20 text-gray-300"
                           : i === 2
@@ -457,7 +461,7 @@ export default function DashboardPage() {
                         swipes
                       </span>
                     </p>
-                    <p className="text-xs text-green-400">
+                    <p className="text-xs text-emerald-400">
                       {store.matches} matches
                     </p>
                   </div>
@@ -471,10 +475,10 @@ export default function DashboardPage() {
 
         <motion.div
           variants={itemVariants}
-          className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6"
+          className="rounded-2xl glass-card p-6"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">
+            <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
               Seneste matches
             </h2>
             <Heart className="w-5 h-5 text-purple-400" />
@@ -494,7 +498,7 @@ export default function DashboardPage() {
                 >
                 <Link
                   href={`/dashboard/students?search=${encodeURIComponent(match.student)}`}
-                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group"
+                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.04] transition-colors group"
                 >
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 border border-purple-500/20 flex items-center justify-center">
                     <Heart className="w-4 h-4 text-purple-400" />
