@@ -261,19 +261,14 @@ function StoresContent() {
       return;
     }
 
-    const promises: Promise<any>[] = [
+    const [managerRes, swipeRes, matchRes, chainRes] = await Promise.all([
       supabase.from('profiles').select('full_name, phone, email').eq('id', store.manager_id).single(),
       supabase.from('swipes').select('*', { count: 'exact', head: true }).eq('store_id', storeId).eq('direction', 'right'),
       supabase.from('matches').select('*', { count: 'exact', head: true }).eq('store_id', storeId),
-    ];
-
-    if (store.chain_id) {
-      promises.push(supabase.from('store_chains').select('name').eq('id', store.chain_id).single());
-    }
-
-    const results = await Promise.all(promises);
-    const [managerRes, swipeRes, matchRes] = results;
-    const chainRes = store.chain_id ? results[3] : null;
+      store.chain_id
+        ? supabase.from('store_chains').select('name').eq('id', store.chain_id).single()
+        : Promise.resolve(null),
+    ]);
 
     setSelectedStore({
       id: store.id,

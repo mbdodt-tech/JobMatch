@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, Mail, Clock, ChevronDown, TrendingDown, CheckCircle2, Loader2 } from 'lucide-react';
+import { AlertTriangle, Mail, ChevronDown, TrendingDown, CheckCircle2, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { EDUCATION_LINE_LABELS, BEHAVIORAL_STYLE_LABELS, BEHAVIORAL_STYLE_ICONS } from '@/lib/types/database';
 import type { EducationLine, BehavioralStyle } from '@/lib/types/database';
