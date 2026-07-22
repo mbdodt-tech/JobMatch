@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, Heart, Loader2, Sparkles } from 'lucide-react';
+import { X, Heart, Loader2, Sparkles, RotateCcw } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Store, Match } from '@/lib/types/database';
 import SwipeCard from '@/components/student/SwipeCard';
@@ -17,6 +17,12 @@ export default function StudentFeed() {
   const [matchedStore, setMatchedStore] = useState<Store | null>(null);
   const [showMatch, setShowMatch] = useState(false);
   const [swiping, setSwiping] = useState(false);
+  const [lastSwipe, setLastSwipe] = useState<{
+    swipeId: string;
+    index: number;
+    storeId: string;
+    matched: boolean;
+  } | null>(null);
 
   const supabase = createClient();
 
@@ -97,6 +103,7 @@ export default function StudentFeed() {
         .single();
       if (swipeError) { console.error('Kunne ikke gemme swipe:', swipeError); return; }
 
+      let matched = false;
       if (direction === 'right' && swipeData) {
         // The manager's swipe is stored with profile_id = the student's id and
         // swiper_role = 'store_manager' (not the manager's own id).
@@ -118,10 +125,43 @@ export default function StudentFeed() {
             status: 'active',
           });
           if (matchError) { console.error('Kunne ikke oprette match:', matchError); }
-          else { setMatchedStore(store); setShowMatch(true); }
+          else { matched = true; setMatchedStore(store); setShowMatch(true); }
         }
       }
+      if (swipeData) {
+        setLastSwipe({ swipeId: swipeData.id, index: currentIndex, storeId: store.id, matched });
+      }
       setCurrentIndex((prev) => prev + 1);
+    } finally {
+      setSwiping(false);
+    }
+  };
+
+  const handleUndo = async () => {
+    if (swiping || !lastSwipe) return;
+    setSwiping(true);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) { router.replace('/login'); return; }
+
+      if (lastSwipe.matched) {
+        await supabase
+          .from('matches')
+          .delete()
+          .eq('student_id', user.id)
+          .eq('store_id', lastSwipe.storeId);
+      }
+      const { error: delError } = await supabase
+        .from('swipes')
+        .delete()
+        .eq('id', lastSwipe.swipeId);
+      if (delError) { console.error('Kunne ikke fortryde swipe:', delError); return; }
+
+      setShowMatch(false);
+      setCurrentIndex(lastSwipe.index);
+      setLastSwipe(null);
     } finally {
       setSwiping(false);
     }
@@ -198,7 +238,20 @@ export default function StudentFeed() {
 
       {/* Action buttons */}
       {!loading && !isEmpty && (
-        <div className="relative z-10 max-w-md mx-auto px-4 py-4 flex items-center justify-center gap-6">
+        <div className="relative z-10 max-w-md mx-auto px-4 py-4 flex items-center justify-center gap-5">
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleUndo}
+            disabled={swiping || !lastSwipe}
+            aria-label="Fortryd sidste swipe"
+            className="w-12 h-12 rounded-full glass ring-1 ring-amber-500/30 flex items-center justify-center shadow-lg hover:bg-amber-500/10 hover:ring-amber-500/50 transition-colors group disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <RotateCcw
+              size={20}
+              className="text-amber-400 group-hover:text-amber-300 transition-colors"
+            />
+          </motion.button>
+
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('left')}
