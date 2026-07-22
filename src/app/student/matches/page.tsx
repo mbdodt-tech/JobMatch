@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { safeExternalHref } from '@/lib/url';
+import Modal from '@/components/Modal';
 import type { Match, Store, EducationLine } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 
@@ -132,22 +133,7 @@ export default function StudentMatches() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (selectedStore) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [selectedStore]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && selectedStore) setSelectedStore(null);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [selectedStore]);
+  // Body scroll-lock, Escape and focus handling are provided by the Modal (Radix Dialog).
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -427,26 +413,15 @@ export default function StudentMatches() {
       </div>
 
       {/* ── Store detail bottom sheet ── */}
-      <AnimatePresence>
+      <Modal
+        open={!!selectedStore}
+        onOpenChange={(o) => !o && setSelectedStore(null)}
+        title="Butiksdetaljer"
+        variant="sheet"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+      >
         {selectedStore && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedStore(null)}
-          >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Butiksdetaljer"
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <>
               <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
@@ -594,10 +569,9 @@ export default function StudentMatches() {
                   )
                 )}
               </div>
-            </motion.div>
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
     </div>
   );
 }
