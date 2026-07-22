@@ -37,7 +37,7 @@ export default function StudentProfile() {
   useEffect(() => {
     async function fetch() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { setLoading(false); window.location.href = '/login'; return; }
 
       const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single();
       if (p) {

@@ -89,63 +89,58 @@ export default function ManagerFeedPage() {
   }, []);
 
   async function loadData() {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    setLoading(true);
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) { window.location.href = '/login'; return; }
 
-    const { data: storeData } = await supabase
-      .from('stores')
-      .select('*')
-      .eq('manager_id', user.id)
-      .single();
+      const { data: storeData } = await supabase
+        .from('stores')
+        .select('*')
+        .eq('manager_id', user.id)
+        .single();
 
-    if (!storeData) {
+      if (!storeData) return;
+      setStore(storeData);
+
+      const { data: rightSwipes } = await supabase
+        .from('swipes')
+        .select('profile_id')
+        .eq('store_id', storeData.id)
+        .eq('swiper_role', 'student')
+        .eq('direction', 'right');
+
+      if (!rightSwipes || rightSwipes.length === 0) return;
+
+      const studentIds = rightSwipes.map((s) => s.profile_id);
+
+      const { data: alreadySwiped } = await supabase
+        .from('swipes')
+        .select('profile_id')
+        .eq('store_id', storeData.id)
+        .eq('swiper_role', 'store_manager');
+
+      const alreadySwipedIds = (alreadySwiped || []).map((s) => s.profile_id);
+      const remainingIds = studentIds.filter(
+        (id) => !alreadySwipedIds.includes(id)
+      );
+
+      if (remainingIds.length === 0) return;
+
+      const { data: studentProfiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .in('id', remainingIds);
+
+      if (studentProfiles) {
+        setStudents(studentProfiles);
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-    setStore(storeData);
-
-    const { data: rightSwipes } = await supabase
-      .from('swipes')
-      .select('profile_id')
-      .eq('store_id', storeData.id)
-      .eq('swiper_role', 'student')
-      .eq('direction', 'right');
-
-    if (!rightSwipes || rightSwipes.length === 0) {
-      setLoading(false);
-      return;
-    }
-
-    const studentIds = rightSwipes.map((s) => s.profile_id);
-
-    const { data: alreadySwiped } = await supabase
-      .from('swipes')
-      .select('profile_id')
-      .eq('store_id', storeData.id)
-      .eq('swiper_role', 'store_manager');
-
-    const alreadySwipedIds = (alreadySwiped || []).map((s) => s.profile_id);
-    const remainingIds = studentIds.filter(
-      (id) => !alreadySwipedIds.includes(id)
-    );
-
-    if (remainingIds.length === 0) {
-      setLoading(false);
-      return;
-    }
-
-    const { data: studentProfiles } = await supabase
-      .from('profiles')
-      .select('*')
-      .in('id', remainingIds);
-
-    if (studentProfiles) {
-      setStudents(studentProfiles);
-    }
-    setLoading(false);
   }
 
   const handleSwipe = useCallback(

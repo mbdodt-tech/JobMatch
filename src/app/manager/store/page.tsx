@@ -64,7 +64,7 @@ export default function ManagerStorePage() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) { setLoading(false); window.location.href = '/login'; return; }
 
     const { data } = await supabase
       .from('stores')

@@ -24,7 +24,7 @@ export default function DashboardSettings() {
     async function loadSettings() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { setLoading(false); window.location.href = '/login'; return; }
 
       const { data: profile } = await supabase
         .from('profiles')
