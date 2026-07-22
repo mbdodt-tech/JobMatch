@@ -50,6 +50,7 @@ export default function SignupPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   useEffect(() => {
     async function loadOrganizations() {
@@ -93,12 +94,19 @@ export default function SignupPage() {
       return;
     }
 
+    if (role === 'student' && !organizationId) {
+      setError('Vælg din skole for at fortsætte');
+      setLoading(false);
+      return;
+    }
+
     try {
       const supabase = createClient();
-      const { error: authError } = await supabase.auth.signUp({
+      const { data, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             full_name: fullName,
             role,
@@ -113,6 +121,14 @@ export default function SignupPage() {
         } else {
           setError(authError.message);
         }
+        setLoading(false);
+        return;
+      }
+
+      // Email confirmation enabled → no session yet. Redirecting into the app
+      // would just bounce back to /login, so show the check-your-inbox screen.
+      if (!data.session) {
+        setConfirmationSent(true);
         setLoading(false);
         return;
       }
@@ -171,6 +187,35 @@ export default function SignupPage() {
             <Logo variant="icon" className="animate-float w-16 h-16 rounded-2xl glow-green" />
           </motion.div>
 
+          {confirmationSent ? (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
+              aria-live="polite"
+            >
+              <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+                <Mail className="w-7 h-7 text-emerald-400" />
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                Tjek din <span className="gradient-text-emerald">indbakke</span>
+              </h1>
+              <p className="text-text-secondary text-base mt-3 leading-relaxed">
+                Vi har sendt et bekræftelses-link til{' '}
+                <span className="text-white font-medium break-all">{email}</span>.
+                Klik på linket for at aktivere din konto — derefter logger du ind.
+              </p>
+              <p className="text-text-muted text-sm mt-4">
+                Ingen mail? Kig i spam-mappen.
+              </p>
+              <Link
+                href="/login"
+                className="mt-8 inline-flex w-full items-center justify-center py-4 rounded-2xl btn-gradient-emerald text-white font-semibold text-base"
+              >
+                Gå til log ind
+              </Link>
+            </motion.div>
+          ) : (
           <AnimatePresence mode="wait" custom={direction}>
             {step === 1 && (
               <motion.div
@@ -399,6 +444,7 @@ export default function SignupPage() {
               </motion.div>
             )}
           </AnimatePresence>
+          )}
         </div>
       </div>
     </div>

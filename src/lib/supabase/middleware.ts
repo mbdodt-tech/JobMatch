@@ -35,16 +35,52 @@ export async function updateSession(request: NextRequest) {
     (route) => request.nextUrl.pathname === route
   );
 
-  if (!user && !isPublicRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
+  const withAuthCookies = (url: URL) => {
     // Carry any refreshed auth cookies onto the redirect so the session
-    // isn't dropped on the way to /login.
+    // isn't dropped along the way.
     const redirectResponse = NextResponse.redirect(url);
     supabaseResponse.cookies.getAll().forEach(({ name, value }) =>
       redirectResponse.cookies.set(name, value)
     );
     return redirectResponse;
+  };
+
+  if (!user && !isPublicRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return withAuthCookies(url);
+  }
+
+  // Already signed in? /login and /signup would only confuse ("Opret konto"
+  // while logged in) — send the user to their own area instead.
+  const authPages = ['/login', '/signup'];
+  if (user && authPages.includes(request.nextUrl.pathname)) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role, onboarding_completed')
+      .eq('id', user.id)
+      .single();
+
+    const role = profile?.role ?? user.user_metadata?.role;
+    let destination: string | null = null;
+    switch (role) {
+      case 'student':
+        destination = profile?.onboarding_completed ? '/student/feed' : '/student/onboarding';
+        break;
+      case 'store_manager':
+        destination = '/manager/feed';
+        break;
+      case 'school_admin':
+      case 'super_admin':
+        destination = '/dashboard';
+        break;
+    }
+
+    if (destination) {
+      const url = request.nextUrl.clone();
+      url.pathname = destination;
+      return withAuthCookies(url);
+    }
   }
 
   return supabaseResponse;
