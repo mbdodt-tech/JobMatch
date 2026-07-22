@@ -29,6 +29,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { resolveMediaUrl } from "@/lib/storage";
 import {
   EDUCATION_LINE_LABELS,
   YOUTH_EDUCATION_LABELS,
@@ -163,6 +164,13 @@ function StudentsContent() {
   const [savingNote, setSavingNote] = useState(false);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
+  const [sheetCvUrl, setSheetCvUrl] = useState<string | null>(null);
+  const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    resolveMediaUrl(selectedProfile?.cv_url, "cv").then(setSheetCvUrl);
+    resolveMediaUrl(selectedProfile?.video_pitch_url, "video").then(setSheetVideoUrl);
+  }, [selectedProfile?.cv_url, selectedProfile?.video_pitch_url]);
 
   useEffect(() => {
     async function fetchStudents() {
@@ -808,7 +816,8 @@ function StudentsContent() {
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Video-pitch</h3>
                         <button
                           onClick={() => {
-                            setVideoUrl(selectedProfile.video_pitch_url!);
+                            if (!sheetVideoUrl) return;
+                            setVideoUrl(sheetVideoUrl);
                             setShowVideoPlayer(true);
                           }}
                           className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
@@ -832,10 +841,11 @@ function StudentsContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">CV</h3>
                         <a
-                          href={selectedProfile.cv_url}
+                          href={sheetCvUrl ?? undefined}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                          aria-disabled={!sheetCvUrl}
+                          className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors aria-disabled:opacity-50"
                         >
                           <FileText className="w-5 h-5" />
                           <span className="font-medium text-sm">Se elevens CV</span>

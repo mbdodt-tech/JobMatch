@@ -8,6 +8,7 @@ import {
   FileText, Upload, Loader2, ExternalLink, MapPin
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { resolveMediaUrl } from '@/lib/storage';
 import type { Profile } from '@/lib/types/database';
 import {
   BEHAVIORAL_STYLE_LABELS,
@@ -26,6 +27,8 @@ export default function StudentProfile() {
   const [formData, setFormData] = useState<Partial<Profile>>({});
   const [uploading, setUploading] = useState<'avatar' | 'video' | 'cv' | null>(null);
   const [uploadError, setUploadError] = useState('');
+  const [cvUrl, setCvUrl] = useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const cvInputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +59,11 @@ export default function StudentProfile() {
     fetch();
   }, []);
 
+  useEffect(() => {
+    resolveMediaUrl(profile?.cv_url, 'cv').then(setCvUrl);
+    resolveMediaUrl(profile?.video_pitch_url, 'video').then(setVideoUrl);
+  }, [profile?.cv_url, profile?.video_pitch_url]);
+
   const handleSave = async () => {
     if (!profile) return;
     setSaving(true);
@@ -81,35 +89,49 @@ export default function StudentProfile() {
     setUploadError('');
     setUploading(kind);
     try {
-      const folder = kind === 'avatar' ? 'avatars' : kind === 'video' ? 'videos' : 'cvs';
-      const baseName = kind === 'avatar' ? 'avatar' : kind === 'video' ? 'pitch' : 'cv';
       const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
-      const path = `${folder}/${profile.id}/${baseName}.${ext}`;
+      const column = kind === 'avatar' ? 'avatar_url' : kind === 'video' ? 'video_pitch_url' : 'cv_url';
 
-      const { error } = await supabase.storage
-        .from('student-media')
-        .upload(path, file, { upsert: true });
-      if (error) {
-        setUploadError(`Upload fejlede: ${error.message}`);
-        return;
+      let value: string;
+      if (kind === 'avatar') {
+        // Avatars stay in the public bucket (rendered directly, non-sensitive).
+        const path = `avatars/${profile.id}/avatar.${ext}`;
+        const { error } = await supabase.storage
+          .from('student-media')
+          .upload(path, file, { upsert: true });
+        if (error) {
+          setUploadError(`Upload fejlede: ${error.message}`);
+          return;
+        }
+        const { data } = supabase.storage.from('student-media').getPublicUrl(path);
+        value = `${data.publicUrl}?t=${Date.now()}`; // cache-bust replaced file
+      } else {
+        // CV and video are sensitive — stored in a private bucket as a path,
+        // served later via signed URLs.
+        const bucket = kind === 'video' ? 'video-pitches' : 'student-docs';
+        const baseName = kind === 'video' ? 'pitch' : 'cv';
+        const path = `${profile.id}/${baseName}.${ext}`;
+        const { error } = await supabase.storage
+          .from(bucket)
+          .upload(path, file, { upsert: true });
+        if (error) {
+          setUploadError(`Upload fejlede: ${error.message}`);
+          return;
+        }
+        value = path;
       }
 
-      const { data } = supabase.storage.from('student-media').getPublicUrl(path);
-      // Cache-bust so a replaced file shows immediately
-      const url = `${data.publicUrl}?t=${Date.now()}`;
-
-      const column = kind === 'avatar' ? 'avatar_url' : kind === 'video' ? 'video_pitch_url' : 'cv_url';
       const { error: dbError } = await supabase
         .from('profiles')
-        .update({ [column]: url })
+        .update({ [column]: value })
         .eq('id', profile.id);
       if (dbError) {
         setUploadError(`Kunne ikke gemme: ${dbError.message}`);
         return;
       }
 
-      setProfile({ ...profile, [column]: url } as Profile);
-      setFormData({ ...formData, [column]: url });
+      setProfile({ ...profile, [column]: value } as Profile);
+      setFormData({ ...formData, [column]: value });
     } finally {
       setUploading(null);
     }
@@ -392,10 +414,11 @@ export default function StudentProfile() {
           {profile.cv_url ? (
             <div className="flex items-center gap-3">
               <a
-                href={profile.cv_url}
+                href={cvUrl ?? undefined}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 flex items-center gap-2 py-2.5 px-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/20 transition-colors"
+                className="flex-1 flex items-center gap-2 py-2.5 px-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/20 transition-colors aria-disabled:opacity-50"
+                aria-disabled={!cvUrl}
               >
                 <FileText size={16} /> Se mit CV <ExternalLink size={12} className="ml-auto" />
               </a>
@@ -457,7 +480,7 @@ export default function StudentProfile() {
           />
           {profile.video_pitch_url ? (
             <div className="relative aspect-video rounded-xl overflow-hidden bg-black/50">
-              <video src={profile.video_pitch_url} className="w-full h-full object-cover" controls />
+              <video src={videoUrl ?? undefined} className="w-full h-full object-cover" controls />
             </div>
           ) : (
             <button

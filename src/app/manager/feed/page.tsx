@@ -26,6 +26,7 @@ import {
   Info,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { resolveMediaUrl } from '@/lib/storage';
 import type { Profile, Store, BehavioralStyle } from '@/lib/types/database';
 import {
   BEHAVIORAL_STYLE_LABELS,
@@ -75,6 +76,8 @@ export default function ManagerFeedPage() {
   const [selectedStudent, setSelectedStudent] = useState<Profile | null>(null);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
+  const [sheetCvUrl, setSheetCvUrl] = useState<string | null>(null);
+  const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
@@ -227,6 +230,11 @@ export default function ManagerFeedPage() {
     }
     return () => { document.body.style.overflow = ''; };
   }, [selectedStudent]);
+
+  useEffect(() => {
+    resolveMediaUrl(selectedStudent?.cv_url, 'cv').then(setSheetCvUrl);
+    resolveMediaUrl(selectedStudent?.video_pitch_url, 'video').then(setSheetVideoUrl);
+  }, [selectedStudent?.cv_url, selectedStudent?.video_pitch_url]);
 
   function openVideo(url: string) {
     setVideoUrl(url);
@@ -535,7 +543,7 @@ export default function ManagerFeedPage() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => openVideo(selectedStudent.video_pitch_url!)}
+                      onClick={() => sheetVideoUrl && openVideo(sheetVideoUrl)}
                       className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
                     >
                       {selectedStudent.video_thumbnail_url ? (
@@ -563,10 +571,11 @@ export default function ManagerFeedPage() {
                       CV
                     </h3>
                     <a
-                      href={selectedStudent.cv_url}
+                      href={sheetCvUrl ?? undefined}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
+                      aria-disabled={!sheetCvUrl}
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors aria-disabled:opacity-50"
                     >
                       <FileText className="w-5 h-5" />
                       <span className="font-medium text-sm">Se elevens CV</span>
