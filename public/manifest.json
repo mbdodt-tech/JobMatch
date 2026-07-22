@@ -4,8 +4,8 @@
   "description": "Find din drømmepraktik — swipe, match, connect",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0A0A0F",
-  "theme_color": "#7C3AED",
+  "background_color": "#05050A",
+  "theme_color": "#8B5CF6",
   "orientation": "portrait",
   "icons": [
     {

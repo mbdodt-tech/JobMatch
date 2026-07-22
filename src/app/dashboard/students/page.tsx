@@ -411,7 +411,7 @@ function StudentsContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
@@ -477,7 +477,7 @@ function StudentsContent() {
           onClick={() => setShowFilterPanel(!showFilterPanel)}
           className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all text-sm font-medium ${
             statusFilter !== "all"
-              ? "bg-purple-500/20 border-purple-500/30 text-purple-300"
+              ? "bg-violet-500/20 border-violet-500/30 text-violet-300"
               : "bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10"
           }`}
         >
@@ -507,7 +507,7 @@ function StudentsContent() {
                 onClick={() => setStatusFilter(opt.key)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   statusFilter === opt.key
-                    ? "bg-purple-500/30 text-purple-200 border border-purple-500/30"
+                    ? "bg-violet-500/30 text-violet-200 border border-violet-500/30"
                     : "bg-white/5 text-[var(--text-secondary)] border border-white/10 hover:bg-white/10"
                 }`}
               >
@@ -726,13 +726,13 @@ function StudentsContent() {
 
                 {profileLoading ? (
                   <div className="flex items-center justify-center py-16">
-                    <Loader2 className="w-6 h-6 text-purple-400 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
                   </div>
                 ) : selectedProfile ? (
                   <>
                     {/* Avatar + name */}
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
                         {selectedProfile.avatar_url ? (
                           <img
                             src={selectedProfile.avatar_url}
@@ -771,7 +771,7 @@ function StudentsContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelse</h3>
                         <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <GraduationCap className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                          <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                           <div>
                             {selectedProfile.youth_education && (
                               <p>{YOUTH_EDUCATION_LABELS[selectedProfile.youth_education as YouthEducationType] || selectedProfile.youth_education}</p>
@@ -789,7 +789,7 @@ function StudentsContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
                         <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <MapPin className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                          <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                           <span>
                             {selectedProfile.address}
                             {(selectedProfile.postal_code || selectedProfile.city) && ", "}
@@ -805,7 +805,7 @@ function StudentsContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Fødselsdato</h3>
                         <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <Calendar className="w-4 h-4 text-purple-400 shrink-0" />
+                          <Calendar className="w-4 h-4 text-violet-400 shrink-0" />
                           <span>
                             {new Date(selectedProfile.date_of_birth).toLocaleDateString("da-DK", {
                               day: "numeric",
@@ -844,7 +844,7 @@ function StudentsContent() {
                           {selectedProfile.video_thumbnail_url ? (
                             <img src={selectedProfile.video_thumbnail_url} alt="Video" className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-purple-900/30 to-blue-900/30" />
+                            <div className="w-full h-full bg-gradient-to-br from-violet-900/30 to-blue-900/30" />
                           )}
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                             <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center border border-white/20">
@@ -864,7 +864,7 @@ function StudentsContent() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-disabled={!sheetCvUrl}
-                          className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors aria-disabled:opacity-50"
+                          className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors aria-disabled:opacity-50"
                         >
                           <FileText className="w-5 h-5" />
                           <span className="font-medium text-sm">Se elevens CV</span>
@@ -901,7 +901,7 @@ function StudentsContent() {
                     {/* ── Admin notes ── */}
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <MessageSquarePlus className="w-4 h-4 text-purple-400" />
+                        <MessageSquarePlus className="w-4 h-4 text-violet-400" />
                         <h3 className="text-sm font-medium text-text-secondary">
                           Interne noter ({notes.length})
                         </h3>
@@ -914,12 +914,12 @@ function StudentsContent() {
                           onChange={(e) => setNewNote(e.target.value)}
                           onKeyDown={(e) => e.key === "Enter" && saveNote()}
                           placeholder="Skriv en note om eleven..."
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                         />
                         <button
                           onClick={saveNote}
                           disabled={!newNote.trim() || savingNote}
-                          className="px-4 py-3 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="px-4 py-3 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 hover:bg-violet-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           {savingNote ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -1012,7 +1012,7 @@ export default function StudentsPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[60dvh]">
-          <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
         </div>
       }
     >

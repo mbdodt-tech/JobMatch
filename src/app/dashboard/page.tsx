@@ -307,7 +307,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
@@ -350,8 +350,8 @@ export default function DashboardPage() {
           label="Matches i alt"
           value={kpiData.totalMatches}
           icon={Heart}
-          accentColor="bg-purple-500"
-          iconClass="bg-purple-500/15 text-purple-400"
+          accentColor="bg-violet-500"
+          iconClass="bg-violet-500/15 text-violet-400"
           glowClass="glow-violet"
           href="/dashboard/students?status=matched"
         />
@@ -494,7 +494,7 @@ export default function DashboardPage() {
             <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
               Seneste matches
             </h2>
-            <Heart className="w-5 h-5 text-purple-400" />
+            <Heart className="w-5 h-5 text-violet-400" />
           </div>
           <div className="space-y-3">
             {recentMatches.length === 0 ? (
@@ -513,8 +513,8 @@ export default function DashboardPage() {
                   href={`/dashboard/students?search=${encodeURIComponent(match.student)}`}
                   className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.04] transition-colors group"
                 >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 border border-purple-500/20 flex items-center justify-center">
-                    <Heart className="w-4 h-4 text-purple-400" />
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/30 to-blue-500/30 border border-violet-500/20 flex items-center justify-center">
+                    <Heart className="w-4 h-4 text-violet-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-[var(--text-primary)] truncate group-hover:text-white transition-colors">

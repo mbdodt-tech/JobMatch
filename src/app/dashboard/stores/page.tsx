@@ -484,7 +484,7 @@ function StoresContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
@@ -522,7 +522,7 @@ function StoresContent() {
         {[
           { label: 'Aktive butikker', value: activeCount, color: 'text-emerald-400' },
           { label: 'Praktik­pladser', value: totalSlots, color: 'text-blue-400' },
-          { label: 'Matches', value: totalMatches, color: 'text-purple-400' },
+          { label: 'Matches', value: totalMatches, color: 'text-violet-400' },
         ].map(stat => (
           <motion.div key={stat.label} variants={itemVariants} className="p-3 sm:p-4 rounded-2xl glass-card glass-card-hover text-center min-w-0 overflow-hidden">
             <p className={`text-2xl font-extrabold tabular-nums ${stat.color}`}>{stat.value}</p>
@@ -567,11 +567,11 @@ function StoresContent() {
                 onClick={() => toggleChain(chain.id)}
                 className="w-full flex items-center gap-4 p-5 hover:bg-white/[0.04] transition-colors text-left"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
                   {chain.logo_url ? (
                     <img src={chain.logo_url} alt={chain.name} className="w-full h-full object-cover" />
                   ) : (
-                    <Building2 className="w-5 h-5 text-purple-400" />
+                    <Building2 className="w-5 h-5 text-violet-400" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -665,12 +665,12 @@ function StoresContent() {
 
                 {storeLoading ? (
                   <div className="flex items-center justify-center py-16">
-                    <Loader2 className="w-6 h-6 text-purple-400 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
                   </div>
                 ) : selectedStore ? (
                   <>
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shrink-0">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
                         {selectedStore.logo_url ? (
                           <img src={selectedStore.logo_url} alt={selectedStore.name} className="w-full h-full object-cover" />
                         ) : (
@@ -685,7 +685,7 @@ function StoresContent() {
                           </span>
                         </div>
                         {selectedStore.chain_name && (
-                          <p className="text-purple-400 text-sm mt-0.5 flex items-center gap-1.5">
+                          <p className="text-violet-400 text-sm mt-0.5 flex items-center gap-1.5">
                             <Building2 className="w-3.5 h-3.5" />
                             {selectedStore.chain_name}
                           </p>
@@ -723,7 +723,7 @@ function StoresContent() {
                     <div className="mb-5">
                       <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
                       <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                        <MapPin className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                        <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                         <span>{selectedStore.address}, {selectedStore.postal_code} {selectedStore.city}</span>
                       </div>
                     </div>
@@ -732,10 +732,10 @@ function StoresContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelseslinjer</h3>
                         <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <GraduationCap className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                          <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                           <div className="flex flex-wrap gap-1.5">
                             {selectedStore.education_lines.map(line => (
-                              <span key={line} className="px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-medium text-purple-300">
+                              <span key={line} className="px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-xs font-medium text-violet-300">
                                 {EDUCATION_LINE_LABELS[line] || line}
                               </span>
                             ))}
@@ -755,7 +755,7 @@ function StoresContent() {
                     <div className="mb-5">
                       <h3 className="text-sm font-medium text-text-secondary mb-1.5">Ansvarlig</h3>
                       <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                        <Building2 className="w-4 h-4 text-purple-400 shrink-0" />
+                        <Building2 className="w-4 h-4 text-violet-400 shrink-0" />
                         <span>{selectedStore.manager_name}</span>
                       </div>
                     </div>
@@ -767,7 +767,7 @@ function StoresContent() {
                           href={safeExternalHref(selectedStore.job_description_url)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                          className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
                         >
                           <FileText className="w-5 h-5" />
                           <span className="font-medium text-sm">Se jobopslag (PDF)</span>
@@ -802,7 +802,7 @@ function StoresContent() {
                             href={safeExternalHref(selectedStore.website)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
                           >
                             <Globe className="w-5 h-5" />
                             <span className="font-medium text-sm break-all">{selectedStore.website}</span>
@@ -847,7 +847,7 @@ function StoresContent() {
                 <div className="flex items-center justify-between px-6 pb-4 pt-2 sm:pt-6">
                   <div>
                     <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                      <FileSpreadsheet className="w-5 h-5 text-purple-400" />
+                      <FileSpreadsheet className="w-5 h-5 text-violet-400" />
                       Importér butikker
                     </h2>
                     <p className="text-xs text-text-secondary mt-0.5">
@@ -869,12 +869,12 @@ function StoresContent() {
                   {[1, 2, 3, 4].map(step => (
                     <div key={step} className={`flex items-center ${step > 1 ? 'flex-1' : ''}`}>
                       {step > 1 && (
-                        <div className={`h-px flex-1 mx-2 transition-colors ${step <= importStep ? 'bg-gradient-to-r from-purple-500 to-blue-500' : 'bg-white/10'}`} />
+                        <div className={`h-px flex-1 mx-2 transition-colors ${step <= importStep ? 'bg-gradient-to-r from-violet-500 to-blue-500' : 'bg-white/10'}`} />
                       )}
                       <div
                         className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
                           step <= importStep
-                            ? `bg-gradient-to-br from-purple-500 to-blue-500 text-white ${step === importStep ? 'glow-violet' : ''}`
+                            ? `bg-gradient-to-br from-violet-500 to-blue-500 text-white ${step === importStep ? 'glow-violet' : ''}`
                             : 'bg-white/10 text-[var(--text-muted)]'
                         }`}
                       >
@@ -898,7 +898,7 @@ function StoresContent() {
                             onClick={() => setImportChainId(chain.id)}
                             className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left ${
                               importChainId === chain.id
-                                ? 'bg-purple-500/20 border-purple-500/30 text-purple-300'
+                                ? 'bg-violet-500/20 border-violet-500/30 text-violet-300'
                                 : 'bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10'
                             }`}
                           >
@@ -925,12 +925,12 @@ function StoresContent() {
                           onChange={e => setNewChainName(e.target.value)}
                           onKeyDown={e => e.key === 'Enter' && createNewChain()}
                           placeholder="F.eks. Matas, Magasin, IKEA..."
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-purple-500/50 text-sm"
+                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                         />
                         <button
                           onClick={createNewChain}
                           disabled={!newChainName.trim() || creatingChain}
-                          className="px-4 py-3 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 hover:bg-purple-500/30 transition-colors disabled:opacity-40"
+                          className="px-4 py-3 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 hover:bg-violet-500/30 transition-colors disabled:opacity-40"
                         >
                           {creatingChain ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                         </button>
@@ -968,7 +968,7 @@ function StoresContent() {
                               onClick={() => setSelectedManagerId(m.id)}
                               className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left ${
                                 selectedManagerId === m.id
-                                  ? 'bg-purple-500/20 border-purple-500/30 text-purple-300'
+                                  ? 'bg-violet-500/20 border-violet-500/30 text-violet-300'
                                   : 'bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10'
                               }`}
                             >
@@ -1016,7 +1016,7 @@ function StoresContent() {
 
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-purple-500/30 hover:bg-purple-500/5 transition-all cursor-pointer"
+                      className="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer"
                     >
                       <Upload className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-3" />
                       <p className="text-sm text-[var(--text-secondary)]">Klik for at vælge en Excel-fil</p>
@@ -1184,7 +1184,7 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
       onClick={onClick}
       className={`group relative p-5 rounded-2xl glass-card glass-card-hover cursor-pointer ${store.is_active ? '' : '!border-rose-500/10 opacity-60'}`}
     >
-      {store.is_active && <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 opacity-50 rounded-t-2xl" />}
+      {store.is_active && <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-violet-500 to-blue-500 opacity-50 rounded-t-2xl" />}
       <div className="flex items-start justify-between mb-3">
         <div className="min-w-0 flex-1 mr-3">
           <h3 className="font-semibold text-[var(--text-primary)] text-lg truncate">{store.name}</h3>
@@ -1202,7 +1202,7 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
       </div>
       <div className="flex flex-wrap gap-1.5 mb-3">
         {store.education_lines.map(line => (
-          <span key={line} className="px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-[10px] font-medium text-purple-300">{line}</span>
+          <span key={line} className="px-2 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-[10px] font-medium text-violet-300">{line}</span>
         ))}
       </div>
       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5">
@@ -1228,7 +1228,7 @@ export default function DashboardStores() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[60dvh]">
-          <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
         </div>
       }
     >

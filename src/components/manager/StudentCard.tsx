@@ -46,7 +46,7 @@ export default function StudentCard({ student }: StudentCardProps) {
           className="absolute inset-0 w-full h-full object-cover"
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-violet-600 to-blue-600 flex items-center justify-center">
           <span className="text-[7rem] leading-none font-extrabold text-white/25 select-none">
             {student.full_name?.charAt(0)?.toUpperCase() || '?'}
           </span>

@@ -78,7 +78,7 @@ export default function DashboardSettings() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function DashboardSettings() {
           <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2"><Bell size={14} /> Notifikationer & Rapporter</h2>
         </div>
         {[
-          { label: 'Automatiske påmindelser', desc: 'Send påmindelser til inaktive elever efter 7 dage', value: autoReminders, set: setAutoReminders, color: 'text-purple-400', icon: Bell },
+          { label: 'Automatiske påmindelser', desc: 'Send påmindelser til inaktive elever efter 7 dage', value: autoReminders, set: setAutoReminders, color: 'text-violet-400', icon: Bell },
           { label: 'Ugentlig rapport', desc: 'Modtag en email-rapport hver mandag med KPI-oversigt', value: weeklyReport, set: setWeeklyReport, color: 'text-blue-400', icon: Mail },
           { label: 'Anonymiser i eksport', desc: 'Skjul navne ved data-eksport til eksterne parter', value: anonymizeExport, set: setAnonymizeExport, color: 'text-emerald-400', icon: Shield },
         ].map((t, i) => (
@@ -166,7 +166,7 @@ export default function DashboardSettings() {
           <ChevronRight size={16} className="text-[var(--text-muted)]" />
         </button>
         <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors">
-          <div className="flex items-center gap-3"><Shield size={18} className="text-purple-400" /><span className="text-sm text-[var(--text-primary)]">GDPR Databehandleraftale</span></div>
+          <div className="flex items-center gap-3"><Shield size={18} className="text-violet-400" /><span className="text-sm text-[var(--text-primary)]">GDPR Databehandleraftale</span></div>
           <ChevronRight size={16} className="text-[var(--text-muted)]" />
         </button>
       </div>
