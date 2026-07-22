@@ -10,6 +10,7 @@ import type { EducationLine, BehavioralStyle } from '@/lib/types/database';
 interface AtRiskStudent {
   id: string;
   name: string;
+  email: string | null;
   education_line: string;
   swipes: number;
   matches: number;
@@ -41,7 +42,7 @@ export default function FollowUpPage() {
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, education_line, primary_style, last_active_at')
+        .select('id, full_name, email, education_line, primary_style, last_active_at')
         .eq('role', 'student')
         .eq('is_active', true);
 
@@ -50,23 +51,35 @@ export default function FollowUpPage() {
         return;
       }
 
-      const atRisk: AtRiskStudent[] = [];
       const now = new Date();
 
-      for (const p of profiles) {
-        const { count: swipeCount } = await supabase
-          .from('swipes')
-          .select('*', { count: 'exact', head: true })
-          .eq('profile_id', p.id);
+      // Batch the per-student counts and load who's already been contacted.
+      const [enriched, followUpsRes] = await Promise.all([
+        Promise.all(
+          profiles.map(async (p) => {
+            const [{ count: swipeCount }, { count: matchCount }] = await Promise.all([
+              supabase
+                .from('swipes')
+                .select('*', { count: 'exact', head: true })
+                .eq('profile_id', p.id),
+              supabase
+                .from('matches')
+                .select('*', { count: 'exact', head: true })
+                .eq('student_id', p.id),
+            ]);
+            return { p, swipes: swipeCount ?? 0, matches: matchCount ?? 0 };
+          })
+        ),
+        supabase.from('follow_ups').select('student_id'),
+      ]);
 
-        const { count: matchCount } = await supabase
-          .from('matches')
-          .select('*', { count: 'exact', head: true })
-          .eq('student_id', p.id);
+      const contactedSet = new Set(
+        (followUpsRes.data ?? []).map((f) => f.student_id)
+      );
 
-        const swipes = swipeCount ?? 0;
-        const matches = matchCount ?? 0;
+      const atRisk: AtRiskStudent[] = [];
 
+      for (const { p, swipes, matches } of enriched) {
         if (matches > 0) continue;
 
         const lastActive = p.last_active_at ? new Date(p.last_active_at) : null;
@@ -96,13 +109,14 @@ export default function FollowUpPage() {
         atRisk.push({
           id: p.id,
           name: p.full_name || 'Ukendt',
+          email: p.email ?? null,
           education_line: eduLabel,
           swipes,
           matches,
           days_inactive: daysInactive,
           last_active: p.last_active_at || '',
           primary_style: `${styleIcon} ${styleLabel}`.trim(),
-          contacted: false,
+          contacted: contactedSet.has(p.id),
           risk_reason: reason,
         });
       }
@@ -120,7 +134,21 @@ export default function FollowUpPage() {
     fetchAtRiskStudents();
   }, []);
 
-  const markContacted = (id: string) => {
+  const markContacted = async (id: string) => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('follow_ups')
+      .upsert(
+        { student_id: id, contacted_by: user.id, contacted_at: new Date().toISOString() },
+        { onConflict: 'student_id' }
+      );
+    if (error) {
+      console.error('Kunne ikke gemme opfølgning:', error);
+      return;
+    }
     setStudents(prev => prev.map(s => s.id === id ? { ...s, contacted: true } : s));
   };
 
@@ -220,9 +248,13 @@ export default function FollowUpPage() {
                           </div>
                           {!student.contacted && (
                             <div className="flex gap-2">
-                              <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors">
+                              <a
+                                href={student.email ? `mailto:${student.email}?subject=${encodeURIComponent('Opfølgning på din praktiksøgning')}` : undefined}
+                                aria-disabled={!student.email}
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors aria-disabled:opacity-50 aria-disabled:pointer-events-none"
+                              >
                                 <Mail size={14} /> Send besked
-                              </button>
+                              </a>
                               <button onClick={() => markContacted(student.id)} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">
                                 <CheckCircle2 size={14} /> Markér kontaktet
                               </button>
