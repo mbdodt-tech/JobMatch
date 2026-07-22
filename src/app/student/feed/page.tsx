@@ -27,7 +27,13 @@ export default function StudentFeed() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) { router.replace('/login'); return; }
+
+      // Keep the activity timestamp fresh — drives the dashboard's "active this week"
+      await supabase
+        .from('profiles')
+        .update({ last_active_at: new Date().toISOString() })
+        .eq('id', user.id);
 
       // Send students who haven't completed onboarding to the onboarding flow
       const { data: profile } = await supabase
