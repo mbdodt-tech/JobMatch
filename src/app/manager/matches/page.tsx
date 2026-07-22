@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Loader2,
   Phone,
@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { resolveMediaUrl } from '@/lib/storage';
+import Modal from '@/components/Modal';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
 import {
   BEHAVIORAL_STYLE_LABELS,
@@ -117,29 +118,12 @@ export default function ManagerMatchesPage() {
     setShowVideoPlayer(true);
   }
 
-  useEffect(() => {
-    if (selectedMatch) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [selectedMatch]);
+  // Scroll-lock, Escape and focus handled by Modal (Radix Dialog).
 
   useEffect(() => {
     resolveMediaUrl(selectedMatch?.student.cv_url, 'cv').then(setSheetCvUrl);
     resolveMediaUrl(selectedMatch?.student.video_pitch_url, 'video').then(setSheetVideoUrl);
   }, [selectedMatch?.student.cv_url, selectedMatch?.student.video_pitch_url]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      if (showVideoPlayer) setShowVideoPlayer(false);
-      else if (selectedMatch) setSelectedMatch(null);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [showVideoPlayer, selectedMatch]);
 
   if (loading) {
     return (
@@ -253,26 +237,15 @@ export default function ManagerMatchesPage() {
       )}
 
       {/* Student detail sheet */}
-      <AnimatePresence>
+      <Modal
+        open={!!selectedMatch}
+        onOpenChange={(o) => !o && setSelectedMatch(null)}
+        title="Elevprofil"
+        variant="sheet"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+      >
         {selectedMatch && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedMatch(null)}
-          >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Elevprofil"
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <>
               <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
@@ -462,48 +435,32 @@ export default function ManagerMatchesPage() {
                   )}
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
 
       {/* Video player overlay */}
-      <AnimatePresence>
+      <Modal
+        open={showVideoPlayer && !!videoUrl}
+        onOpenChange={(o) => !o && setShowVideoPlayer(false)}
+        title="Video-pitch"
+        variant="center"
+        overlayClassName="z-[70] bg-black/90"
+        contentClassName="w-full max-w-md aspect-[9/16]"
+      >
         {showVideoPlayer && videoUrl && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Video-pitch"
-            className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4"
-            onClick={() => setShowVideoPlayer(false)}
-          >
+          <>
             <button
               onClick={() => setShowVideoPlayer(false)}
               aria-label="Luk video"
-              className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              className="absolute -top-12 right-0 w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
               <X className="w-5 h-5" aria-hidden="true" />
             </button>
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="w-full max-w-md aspect-[9/16] rounded-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <video
-                src={videoUrl}
-                controls
-                autoPlay
-                className="w-full h-full object-contain bg-black"
-              />
-            </motion.div>
-          </motion.div>
+            <video src={videoUrl} controls autoPlay className="w-full h-full object-contain bg-black rounded-2xl" />
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
     </div>
     </div>
   );

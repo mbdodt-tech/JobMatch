@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { resolveMediaUrl } from '@/lib/storage';
+import Modal from '@/components/Modal';
 import type { Profile, Store, BehavioralStyle } from '@/lib/types/database';
 import {
   BEHAVIORAL_STYLE_LABELS,
@@ -217,30 +218,12 @@ export default function ManagerFeedPage() {
     }
   }
 
-  useEffect(() => {
-    if (selectedStudent) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [selectedStudent]);
+  // Sheet/video scroll-lock, Escape and focus handled by Modal (Radix Dialog).
 
   useEffect(() => {
     resolveMediaUrl(selectedStudent?.cv_url, 'cv').then(setSheetCvUrl);
     resolveMediaUrl(selectedStudent?.video_pitch_url, 'video').then(setSheetVideoUrl);
   }, [selectedStudent?.cv_url, selectedStudent?.video_pitch_url]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      if (showVideoPlayer) setShowVideoPlayer(false);
-      else if (selectedStudent) setSelectedStudent(null);
-      else if (showMatch) setShowMatch(false);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [showVideoPlayer, selectedStudent, showMatch]);
 
   function openVideo(url: string) {
     setVideoUrl(url);
@@ -395,26 +378,15 @@ export default function ManagerFeedPage() {
       )}
 
       {/* ── Student detail bottom sheet ── */}
-      <AnimatePresence>
+      <Modal
+        open={!!selectedStudent}
+        onOpenChange={(o) => !o && setSelectedStudent(null)}
+        title="Elevprofil"
+        variant="sheet"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+      >
         {selectedStudent && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedStudent(null)}
-          >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Elevprofil"
-              className="absolute bottom-0 left-0 right-0 max-h-[90vh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <>
               <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
@@ -629,104 +601,77 @@ export default function ManagerFeedPage() {
                   )}
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
 
       {/* Video player overlay */}
-      <AnimatePresence>
+      <Modal
+        open={showVideoPlayer && !!videoUrl}
+        onOpenChange={(o) => !o && setShowVideoPlayer(false)}
+        title="Video-pitch"
+        variant="center"
+        overlayClassName="z-[70] bg-black/90"
+        contentClassName="w-full max-w-md aspect-[9/16]"
+      >
         {showVideoPlayer && videoUrl && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Video-pitch"
-            className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4"
-            onClick={() => setShowVideoPlayer(false)}
-          >
+          <>
             <button
               onClick={() => setShowVideoPlayer(false)}
               aria-label="Luk video"
-              className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              className="absolute -top-12 right-0 w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
               <X className="w-5 h-5" aria-hidden="true" />
             </button>
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="w-full max-w-md aspect-[9/16] rounded-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <video
-                src={videoUrl}
-                controls
-                autoPlay
-                className="w-full h-full object-contain bg-black"
-              />
-            </motion.div>
-          </motion.div>
+            <video src={videoUrl} controls autoPlay className="w-full h-full object-contain bg-black rounded-2xl" />
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
 
       {/* Match celebration overlay */}
-      <AnimatePresence>
-        {showMatch && matchedStudent && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            role="dialog"
-            aria-modal="true"
-            aria-live="assertive"
-            aria-label="Det er et match"
-            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
-            onClick={() => setShowMatch(false)}
-          >
+      <Modal
+        open={showMatch && !!matchedStudent}
+        onOpenChange={(o) => !o && setShowMatch(false)}
+        title="Det er et match"
+        variant="center"
+        overlayClassName="z-[100] bg-black/80 backdrop-blur-sm"
+        contentClassName="w-[calc(100vw-2rem)] max-w-sm bg-gradient-to-br from-violet-900/90 to-blue-900/90 backdrop-blur-xl rounded-3xl p-8 text-center border border-white/20 shadow-2xl glow-violet"
+        ariaLive="assertive"
+      >
+        {matchedStudent && (
+          <>
             <motion.div
-              initial={{ scale: 0, rotate: -10 }}
-              animate={{ scale: 1, rotate: 0 }}
-              exit={{ scale: 0 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="bg-gradient-to-br from-violet-900/90 to-blue-900/90 backdrop-blur-xl rounded-3xl p-8 text-center border border-white/20 shadow-2xl glow-violet max-w-sm w-full"
-              onClick={(e) => e.stopPropagation()}
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Sparkles className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-              </motion.div>
-              <h2 className="text-3xl font-extrabold text-white mb-2">
-                Det er et match!
-              </h2>
-              <p className="text-text-secondary mb-6">
-                Du og {matchedStudent.full_name} har matchet! I kan nu se hinandens kontaktoplysninger.
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => {
-                  setShowMatch(false);
-                  window.location.href = '/manager/matches';
-                }}
-                className="w-full py-3 rounded-xl btn-gradient text-white font-semibold"
-              >
-                Se match
-              </motion.button>
-              <button
-                onClick={() => setShowMatch(false)}
-                className="w-full py-3 mt-2 text-text-secondary text-sm font-medium"
-              >
-                Fortsæt med at swipe
-              </button>
+              <Sparkles className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
             </motion.div>
-          </motion.div>
+            <h2 className="text-3xl font-extrabold text-white mb-2">
+              Det er et match!
+            </h2>
+            <p className="text-text-secondary mb-6">
+              Du og {matchedStudent.full_name} har matchet! I kan nu se hinandens kontaktoplysninger.
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                setShowMatch(false);
+                window.location.href = '/manager/matches';
+              }}
+              className="w-full py-3 rounded-xl btn-gradient text-white font-semibold"
+            >
+              Se match
+            </motion.button>
+            <button
+              onClick={() => setShowMatch(false)}
+              className="w-full py-3 mt-2 text-text-secondary text-sm font-medium"
+            >
+              Fortsæt med at swipe
+            </button>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
     </div>
     </div>
   );

@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { resolveMediaUrl } from "@/lib/storage";
+import Modal from "@/components/Modal";
 import {
   EDUCATION_LINE_LABELS,
   YOUTH_EDUCATION_LABELS,
@@ -172,16 +173,7 @@ function StudentsContent() {
     resolveMediaUrl(selectedProfile?.video_pitch_url, "video").then(setSheetVideoUrl);
   }, [selectedProfile?.cv_url, selectedProfile?.video_pitch_url]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      if (showVideoPlayer) setShowVideoPlayer(false);
-      else if (selectedStudentId) closeDetail();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showVideoPlayer, selectedStudentId]);
+  // Scroll-lock, Escape and focus handled by Modal (Radix Dialog).
 
   useEffect(() => {
     async function fetchStudents() {
@@ -689,26 +681,15 @@ function StudentsContent() {
       </div>
 
       {/* ── Student detail sheet ── */}
-      <AnimatePresence>
+      <Modal
+        open={!!selectedStudentId}
+        onOpenChange={(o) => !o && closeDetail()}
+        title="Elevprofil"
+        variant="sheet"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+      >
         {selectedStudentId && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={closeDetail}
-          >
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Elevprofil"
-              className="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <>
               <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
@@ -961,48 +942,32 @@ function StudentsContent() {
                   </>
                 ) : null}
               </div>
-            </motion.div>
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
 
       {/* Video player */}
-      <AnimatePresence>
+      <Modal
+        open={showVideoPlayer && !!videoUrl}
+        onOpenChange={(o) => !o && setShowVideoPlayer(false)}
+        title="Video-pitch"
+        variant="center"
+        overlayClassName="z-[60] bg-black/90"
+        contentClassName="w-full max-w-md aspect-[9/16]"
+      >
         {showVideoPlayer && videoUrl && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Video-pitch"
-            className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4"
-            onClick={() => setShowVideoPlayer(false)}
-          >
+          <>
             <button
               onClick={() => setShowVideoPlayer(false)}
               aria-label="Luk video"
-              className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              className="absolute -top-12 right-0 w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
             >
               <X className="w-5 h-5" aria-hidden="true" />
             </button>
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="w-full max-w-md aspect-[9/16] rounded-2xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <video
-                src={videoUrl}
-                controls
-                autoPlay
-                className="w-full h-full object-contain bg-black"
-              />
-            </motion.div>
-          </motion.div>
+            <video src={videoUrl} controls autoPlay className="w-full h-full object-contain bg-black rounded-2xl" />
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
     </motion.div>
   );
 }

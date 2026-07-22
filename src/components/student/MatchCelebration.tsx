@@ -1,7 +1,8 @@
 'use client';
 
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { Briefcase, Phone, ArrowRight } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 
@@ -50,7 +51,7 @@ function ConfettiParticles() {
   if (reduceMotion || particles.length === 0) return null;
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-none">
       {particles.map((p) => (
         <motion.div
           key={p.id}
@@ -85,41 +86,26 @@ export default function MatchCelebration({
   onViewContact,
   onContinue,
 }: MatchCelebrationProps) {
-  const dialogRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (visible) dialogRef.current?.focus();
-  }, [visible]);
-
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          ref={dialogRef}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="match-title"
-          aria-live="assertive"
-          tabIndex={-1}
-          onKeyDown={(e) => { if (e.key === 'Escape') onContinue(); }}
-          className="fixed inset-0 z-[100] flex items-center justify-center outline-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {/* Background overlay */}
-          <div className="absolute inset-0 bg-[#05050A]/90 backdrop-blur-lg" />
-
-          {/* Confetti */}
-          <ConfettiParticles />
-
-          {/* Content */}
+    <Dialog.Root open={visible} onOpenChange={(o) => !o && onContinue()}>
+      <Dialog.Portal>
+        <Dialog.Overlay asChild>
           <motion.div
-            className="relative z-10 flex flex-col items-center text-center px-8 max-w-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[99] bg-[#05050A]/90 backdrop-blur-lg"
+          />
+        </Dialog.Overlay>
+
+        {/* Confetti — decorative, full-screen, above the backdrop but below the card */}
+        <ConfettiParticles />
+
+        <Dialog.Content asChild aria-live="assertive" aria-describedby={undefined}>
+          <motion.div
+            className="fixed left-1/2 top-1/2 z-[101] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center px-8 outline-none"
             initial={{ scale: 0.5, y: 50 }}
             animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.5, y: 50 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
           >
             {/* Pulsing glow ring */}
@@ -150,15 +136,16 @@ export default function MatchCelebration({
               />
             </motion.div>
 
-            {/* Match text — h2 so it doesn't collide with the feed's page h1 */}
-            <motion.h2
-              id="match-title"
-              className="text-4xl font-extrabold tracking-tight gradient-text-emerald mb-2"
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              Det er et match! 🎉
-            </motion.h2>
+            {/* Match text — Dialog.Title (rendered as h2) names the dialog */}
+            <Dialog.Title asChild>
+              <motion.h2
+                className="text-4xl font-extrabold tracking-tight gradient-text-emerald mb-2"
+                animate={{ scale: [1, 1.03, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                Det er et match! 🎉
+              </motion.h2>
+            </Dialog.Title>
 
             <p className="text-lg text-[#94A3B8] mb-2 font-medium">
               {store.name}
@@ -186,8 +173,8 @@ export default function MatchCelebration({
               </button>
             </div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

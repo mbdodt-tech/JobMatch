@@ -30,6 +30,7 @@ import {
 import * as XLSX from 'xlsx';
 import { createClient } from '@/lib/supabase/client';
 import { safeExternalHref } from '@/lib/url';
+import Modal from '@/components/Modal';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 import type { EducationLine } from '@/lib/types/database';
 import DANISH_POSTAL_CODES from '@/lib/data/danish-postal-codes';
@@ -168,16 +169,16 @@ function StoresContent() {
     fetchStores();
   }, []);
 
+  // Sheet scroll-lock, Escape and focus handled by Modal (Radix Dialog).
+  // Import wizard is not migrated, so keep its own Escape-to-close.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       if (showImportModal && !importing) setShowImportModal(false);
-      else if (selectedStoreId) closeDetail();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showImportModal, importing, selectedStoreId]);
+  }, [showImportModal, importing]);
 
   async function fetchStores() {
     const supabase = createClient();
@@ -632,26 +633,15 @@ function StoresContent() {
       )}
 
       {/* ── Store detail sheet ── */}
-      <AnimatePresence>
+      <Modal
+        open={!!selectedStoreId}
+        onOpenChange={(o) => !o && closeDetail()}
+        title="Butiksdetaljer"
+        variant="sheet"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+      >
         {selectedStoreId && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={closeDetail}
-          >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Butiksdetaljer"
-              className="absolute bottom-0 left-0 right-0 max-h-[90dvh] bg-[#0E0E18] rounded-t-3xl border-t border-white/10 overflow-y-auto"
-              onClick={e => e.stopPropagation()}
-            >
+          <>
               <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
                 <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
@@ -814,10 +804,9 @@ function StoresContent() {
                   </>
                 ) : null}
               </div>
-            </motion.div>
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
+      </Modal>
 
       {/* ── Import modal ── */}
       <AnimatePresence>
