@@ -159,38 +159,34 @@ export default function StudentOnboarding() {
         return;
       }
 
+      // CV and video are sensitive student data — stored in private buckets;
+      // only the object path is persisted and served later via signed URLs.
       let video_pitch_url: string | null = null;
       if (form.video_file) {
         const ext = form.video_file.name.split('.').pop();
-        const path = `videos/${user.id}/pitch.${ext}`;
+        const path = `${user.id}/pitch.${ext}`;
         const { error: uploadError } = await supabase.storage
-          .from('student-media')
+          .from('video-pitches')
           .upload(path, form.video_file, { upsert: true });
         if (uploadError) {
           setSubmitError(`Kunne ikke uploade video: ${uploadError.message}`);
           return;
         }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from('student-media').getPublicUrl(path);
-        video_pitch_url = publicUrl;
+        video_pitch_url = path;
       }
 
       let cv_url: string | null = null;
       if (form.cv_file) {
         const ext = form.cv_file.name.split('.').pop();
-        const path = `cvs/${user.id}/cv.${ext}`;
+        const path = `${user.id}/cv.${ext}`;
         const { error: uploadError } = await supabase.storage
-          .from('student-media')
+          .from('student-docs')
           .upload(path, form.cv_file, { upsert: true });
         if (uploadError) {
           setSubmitError(`Kunne ikke uploade CV: ${uploadError.message}`);
           return;
         }
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from('student-media').getPublicUrl(path);
-        cv_url = publicUrl;
+        cv_url = path;
       }
 
       const { error } = await supabase

@@ -17,6 +17,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { resolveMediaUrl } from '@/lib/storage';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
 import {
   BEHAVIORAL_STYLE_LABELS,
@@ -64,6 +65,8 @@ export default function ManagerMatchesPage() {
   const [selectedMatch, setSelectedMatch] = useState<MatchWithStudent | null>(null);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
+  const [sheetCvUrl, setSheetCvUrl] = useState<string | null>(null);
+  const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     loadMatches();
@@ -122,6 +125,11 @@ export default function ManagerMatchesPage() {
     }
     return () => { document.body.style.overflow = ''; };
   }, [selectedMatch]);
+
+  useEffect(() => {
+    resolveMediaUrl(selectedMatch?.student.cv_url, 'cv').then(setSheetCvUrl);
+    resolveMediaUrl(selectedMatch?.student.video_pitch_url, 'video').then(setSheetVideoUrl);
+  }, [selectedMatch?.student.cv_url, selectedMatch?.student.video_pitch_url]);
 
   if (loading) {
     return (
@@ -376,7 +384,7 @@ export default function ManagerMatchesPage() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => openVideo(selectedMatch.student.video_pitch_url!)}
+                      onClick={() => sheetVideoUrl && openVideo(sheetVideoUrl)}
                       className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
                     >
                       {selectedMatch.student.video_thumbnail_url ? (
@@ -398,10 +406,11 @@ export default function ManagerMatchesPage() {
                   <div className="mb-5">
                     <h3 className="text-sm font-medium text-text-secondary mb-1.5">CV</h3>
                     <a
-                      href={selectedMatch.student.cv_url}
+                      href={sheetCvUrl ?? undefined}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
+                      aria-disabled={!sheetCvUrl}
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors aria-disabled:opacity-50"
                     >
                       <FileText className="w-5 h-5" />
                       <span className="font-medium text-sm">Se elevens CV</span>
