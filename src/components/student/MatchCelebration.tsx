@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { Briefcase, Phone, ArrowRight } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 
@@ -20,26 +20,34 @@ interface Particle {
   size: number;
   delay: number;
   duration: number;
+  rotate: number;
+  driftX: number;
 }
 
 function ConfettiParticles() {
   const reduceMotion = useReducedMotion();
-  const colors = ['#7C3AED', '#3B82F6', '#10B981', '#F97316', '#EF4444', '#F59E0B'];
+  const [particles, setParticles] = useState<Particle[]>([]);
 
-  const particles = useMemo<Particle[]>(() =>
-    Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: -10 - Math.random() * 20,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      size: 4 + Math.random() * 8,
-      delay: Math.random() * 0.5,
-      duration: 1.5 + Math.random() * 2,
-    })),
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  []);
+  // Generate the randomised particles once, after mount — keeps Math.random()
+  // out of render (react-hooks/purity) so positions don't jump on re-render.
+  useEffect(() => {
+    const colors = ['#7C3AED', '#3B82F6', '#10B981', '#F97316', '#EF4444', '#F59E0B'];
+    setParticles(
+      Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: -10 - Math.random() * 20,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: 4 + Math.random() * 8,
+        delay: Math.random() * 0.5,
+        duration: 1.5 + Math.random() * 2,
+        rotate: Math.random() > 0.5 ? 720 : -720,
+        driftX: (Math.random() - 0.5) * 200,
+      }))
+    );
+  }, []);
 
-  if (reduceMotion) return null;
+  if (reduceMotion || particles.length === 0) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -57,8 +65,8 @@ function ConfettiParticles() {
           animate={{
             y: '110vh',
             opacity: [1, 1, 0],
-            rotate: Math.random() > 0.5 ? 720 : -720,
-            x: (Math.random() - 0.5) * 200,
+            rotate: p.rotate,
+            x: p.driftX,
           }}
           transition={{
             duration: p.duration,
