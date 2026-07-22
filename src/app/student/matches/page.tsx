@@ -170,7 +170,7 @@ export default function StudentMatches() {
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
           <span className="gradient-text">Matches</span>
         </h1>
-        <p className="text-sm text-[#64748B] mt-0.5">
+        <p className="text-sm text-[#94A3B8] mt-0.5">
           {matches.length > 0
             ? `${matches.length} match${matches.length !== 1 ? 'es' : ''} og ${liked.length} afventer`
             : 'Dine matches og likes vises her'}
@@ -301,7 +301,7 @@ export default function StudentMatches() {
                 Interesseret i ({liked.length})
               </h2>
             </div>
-            <p className="text-xs text-[#64748B] mb-3">
+            <p className="text-xs text-[#94A3B8] mb-3">
               Du har swipet højre — afventer at butikken swiper tilbage
             </p>
 
@@ -443,7 +443,7 @@ export default function StudentMatches() {
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={() => setSelectedStore(null)}
-                    className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#64748B] hover:text-white transition-colors"
+                    className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[#94A3B8] hover:text-white transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>

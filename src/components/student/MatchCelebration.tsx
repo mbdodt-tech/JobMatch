@@ -149,7 +149,7 @@ export default function MatchCelebration({
             <p className="text-lg text-[#94A3B8] mb-2 font-medium">
               {store.name}
             </p>
-            <p className="text-sm text-[#64748B] mb-8">
+            <p className="text-sm text-[#94A3B8] mb-8">
               {store.city} • {store.internship_slots} praktikpladser
             </p>
 

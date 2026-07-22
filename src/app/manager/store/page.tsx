@@ -309,7 +309,7 @@ export default function ManagerStorePage() {
                   {uploadingPdf ? (
                     <Loader2 size={18} className="text-violet-400 animate-spin" />
                   ) : (
-                    <Upload size={18} className="text-[#64748B]" />
+                    <Upload size={18} className="text-[#94A3B8]" />
                   )}
                   <span className="text-sm text-[#94A3B8] font-medium">
                     {uploadingPdf ? 'Uploader...' : 'Upload jobbeskrivelse (PDF)'}

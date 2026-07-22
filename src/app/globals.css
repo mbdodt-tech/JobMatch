@@ -19,7 +19,8 @@
   --accent-danger: #F43F5E;
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-muted: #94A3B8;  /* was #64748B — failed WCAG AA on the dark bg */
+  --text-faint: #64748B;  /* decorative only — not for informative text */
   --ring-violet: rgba(139, 92, 246, 0.35);
 }
 

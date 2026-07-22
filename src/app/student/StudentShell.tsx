@@ -60,12 +60,12 @@ export default function StudentShell({
                       className={`relative z-10 transition-colors ${
                         isActive
                           ? 'text-white'
-                          : 'text-[#64748B] hover:text-[#94A3B8]'
+                          : 'text-[#94A3B8] hover:text-[#94A3B8]'
                       }`}
                     />
                     <span
                       className={`relative z-10 text-[10px] font-medium truncate max-w-full transition-colors ${
-                        isActive ? 'text-white' : 'text-[#64748B]'
+                        isActive ? 'text-white' : 'text-[#94A3B8]'
                       }`}
                     >
                       {tab.label}

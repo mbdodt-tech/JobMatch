@@ -231,13 +231,13 @@ export default function StudentProfile() {
             {age && <span>{age} år</span>}
             {profile.education_line && (
               <>
-                <span className="text-[#64748B]">·</span>
+                <span className="text-[#94A3B8]">·</span>
                 <span>{EDUCATION_LINE_LABELS[profile.education_line]}</span>
               </>
             )}
           </div>
           {profile.youth_education && (
-            <div className="flex items-center justify-center gap-1.5 mt-1 text-xs text-[#64748B]">
+            <div className="flex items-center justify-center gap-1.5 mt-1 text-xs text-[#94A3B8]">
               <GraduationCap size={12} />
               <span>{YOUTH_EDUCATION_LABELS[profile.youth_education]}</span>
               {profile.youth_education_school && <span>— {profile.youth_education_school}</span>}
@@ -259,7 +259,7 @@ export default function StudentProfile() {
             >
               <stat.icon size={16} className={`${stat.color} mx-auto mb-1`} />
               <div className="text-lg font-bold text-[#F8FAFC]">{stat.value}</div>
-              <div className="text-[10px] text-[#64748B] uppercase tracking-wider">{stat.label}</div>
+              <div className="text-[10px] text-[#94A3B8] uppercase tracking-wider">{stat.label}</div>
             </motion.div>
           ))}
         </div>
@@ -267,7 +267,7 @@ export default function StudentProfile() {
         {/* Behavioral Styles */}
         {(profile.primary_style || profile.secondary_style) && (
           <div className="mb-6">
-            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-2">
+            <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-2">
               Adfærdsstile
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -313,8 +313,8 @@ export default function StudentProfile() {
         {/* Address */}
         <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <MapPin size={14} className="text-[#64748B]" />
-            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Adresse</h3>
+            <MapPin size={14} className="text-[#94A3B8]" />
+            <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">Adresse</h3>
           </div>
           {editing ? (
             <div className="space-y-2">
@@ -322,7 +322,7 @@ export default function StudentProfile() {
                 type="text"
                 value={formData.address || ''}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                 placeholder="Gadenavn og nummer"
               />
               <div className="flex gap-2">
@@ -330,14 +330,14 @@ export default function StudentProfile() {
                   type="text"
                   value={formData.postal_code || ''}
                   onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
-                  className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
+                  className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                   placeholder="Postnr."
                 />
                 <input
                   type="text"
                   value={formData.city || ''}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
+                  className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
                   placeholder="By"
                 />
               </div>
@@ -354,15 +354,15 @@ export default function StudentProfile() {
         {/* Work Experience */}
         <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <Briefcase size={14} className="text-[#64748B]" />
-            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Joberfaring</h3>
+            <Briefcase size={14} className="text-[#94A3B8]" />
+            <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">Joberfaring</h3>
           </div>
           {editing ? (
             <textarea
               value={formData.work_experience || ''}
               onChange={(e) => setFormData({ ...formData, work_experience: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
               placeholder="Beskriv din joberfaring..."
             />
           ) : (
@@ -380,7 +380,7 @@ export default function StudentProfile() {
                 <Shield size={14} className="text-violet-400" />
                 <h3 className="text-sm font-semibold text-[#F8FAFC]">GDPR-samtykke</h3>
               </div>
-              <p className="text-xs text-[#64748B] leading-relaxed">
+              <p className="text-xs text-[#94A3B8] leading-relaxed">
                 Tillad at erhvervscentret kan se din aktivitet og støtte din søgning
               </p>
             </div>
@@ -388,7 +388,7 @@ export default function StudentProfile() {
               {profile.gdpr_consent ? (
                 <ToggleRight size={36} className="text-green-400" />
               ) : (
-                <ToggleLeft size={36} className="text-[#64748B]" />
+                <ToggleLeft size={36} className="text-[#94A3B8]" />
               )}
             </button>
           </div>
@@ -397,8 +397,8 @@ export default function StudentProfile() {
         {/* CV Upload */}
         <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <FileText size={14} className="text-[#64748B]" />
-            <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">CV</h3>
+            <FileText size={14} className="text-[#94A3B8]" />
+            <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">CV</h3>
           </div>
           <input
             ref={cvInputRef}
@@ -440,7 +440,7 @@ export default function StudentProfile() {
               {uploading === 'cv' ? (
                 <Loader2 size={24} className="text-violet-400 animate-spin" />
               ) : (
-                <Upload size={24} className="text-[#64748B]" />
+                <Upload size={24} className="text-[#94A3B8]" />
               )}
               <p className="text-xs text-[#94A3B8] font-medium">
                 {uploading === 'cv' ? 'Uploader…' : 'Upload dit CV (PDF eller Word)'}
@@ -453,8 +453,8 @@ export default function StudentProfile() {
         <div className="p-4 rounded-2xl glass-card mb-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Camera size={14} className="text-[#64748B]" />
-              <h3 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Video-pitch</h3>
+              <Camera size={14} className="text-[#94A3B8]" />
+              <h3 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider">Video-pitch</h3>
             </div>
             {profile.video_pitch_url && (
               <button
@@ -491,7 +491,7 @@ export default function StudentProfile() {
               {uploading === 'video' ? (
                 <Loader2 size={24} className="text-violet-400 animate-spin" />
               ) : (
-                <Camera size={24} className="text-[#64748B]" />
+                <Camera size={24} className="text-[#94A3B8]" />
               )}
               <p className="text-xs text-[#94A3B8] font-medium">
                 {uploading === 'video' ? 'Uploader…' : 'Upload en video-pitch (MP4, MOV)'}

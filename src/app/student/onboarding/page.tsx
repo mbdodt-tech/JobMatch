@@ -246,7 +246,7 @@ export default function StudentOnboarding() {
                   }
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className={`text-[10px] font-medium ${i <= step ? 'text-violet-400' : 'text-[#64748B]'}`}>
+                <span className={`text-[10px] font-medium ${i <= step ? 'text-violet-400' : 'text-[#94A3B8]'}`}>
                   {s.label}
                 </span>
               </div>
@@ -366,7 +366,7 @@ function StepPersonalInfo({
             value={form.full_name}
             onChange={(e) => update('full_name', e.target.value)}
             placeholder="Fx Anders Jensen"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
           />
         </div>
 
@@ -393,7 +393,7 @@ function StepPersonalInfo({
             value={form.phone}
             onChange={(e) => update('phone', e.target.value)}
             placeholder="+45 12 34 56 78"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
           />
         </div>
 
@@ -407,7 +407,7 @@ function StepPersonalInfo({
             value={form.address}
             onChange={(e) => update('address', e.target.value)}
             placeholder="Fx Vesterbrogade 12, 2. th"
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
           />
         </div>
 
@@ -422,7 +422,7 @@ function StepPersonalInfo({
               value={form.postal_code}
               onChange={(e) => handlePostalCode(e.target.value)}
               placeholder="1620"
-              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
+              className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
             />
           </div>
           <div className="space-y-1.5">
@@ -433,7 +433,7 @@ function StepPersonalInfo({
               readOnly={form.postal_code.length === 4 && !!DANISH_POSTAL_CODES[form.postal_code]}
               onChange={(e) => update('city', e.target.value)}
               placeholder="Udfyldes automatisk"
-              className={`w-full px-4 py-3.5 rounded-2xl border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base ${
+              className={`w-full px-4 py-3.5 rounded-2xl border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base ${
                 form.postal_code.length === 4 && DANISH_POSTAL_CODES[form.postal_code]
                   ? 'bg-violet-500/10 border-violet-500/20'
                   : 'bg-white/5'
@@ -534,7 +534,7 @@ function StepEducation({
             <GraduationCap size={14} /> Skole
           </label>
           <div className="relative">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748B] pointer-events-none" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] pointer-events-none" />
             <input
               type="text"
               value={schoolSearch}
@@ -545,7 +545,7 @@ function StepEducation({
               }}
               onFocus={() => setShowDropdown(true)}
               placeholder="Søg efter din skole..."
-              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
+              className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base"
             />
             {schoolSearch && (
               <button
@@ -553,7 +553,7 @@ function StepEducation({
                   setSchoolSearch('');
                   update('youth_education_school', '');
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-white transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-white transition-colors"
               >
                 <X size={16} />
               </button>
@@ -577,7 +577,7 @@ function StepEducation({
                   >
                     <div>
                       <p className="text-sm text-[#F8FAFC]">{school.name}</p>
-                      <p className="text-xs text-[#64748B]">{school.city}</p>
+                      <p className="text-xs text-[#94A3B8]">{school.city}</p>
                     </div>
                     <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                       school.type === 'erhvervsskole'
@@ -627,9 +627,9 @@ function StepEducation({
             onChange={(e) => update('work_experience', e.target.value)}
             placeholder="Fortæl kort om dine job, praktik eller frivilligt arbejde — fx 'Deltidsjob i Netto i 1 år, kundeservice og varepåfyldning.'"
             rows={4}
-            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base resize-none"
+            className="w-full px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-[#F8FAFC] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30 transition-all text-base resize-none"
           />
-          <p className="text-xs text-[#64748B]">
+          <p className="text-xs text-[#94A3B8]">
             Ingen erfaring endnu? Det er helt fint — skriv blot hvad du brænder for.
           </p>
         </div>
@@ -873,7 +873,7 @@ function StepDiscQuiz({
 
       {/* Quiz progress */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-medium text-[#64748B]">
+        <div className="flex items-center justify-between text-xs font-medium text-[#94A3B8]">
           <span>
             Spørgsmål {current + 1} af {total}
           </span>
@@ -935,7 +935,7 @@ function StepDiscQuiz({
           {current > 0 && (
             <button
               onClick={() => setCurrent((c) => c - 1)}
-              className="text-xs font-medium text-[#64748B] hover:text-[#94A3B8] flex items-center gap-1 transition-colors"
+              className="text-xs font-medium text-[#94A3B8] hover:text-[#94A3B8] flex items-center gap-1 transition-colors"
             >
               <ChevronLeft size={14} />
               Forrige spørgsmål
@@ -1076,7 +1076,7 @@ function StepVideoGdpr({
             <p className="text-sm font-medium text-green-400">
               {form.video_file.name}
             </p>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#94A3B8]">
               {(form.video_file.size / 1024 / 1024).toFixed(1)} MB
             </p>
             <button
@@ -1090,13 +1090,13 @@ function StepVideoGdpr({
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-center gap-3">
-              <Upload size={24} className="text-[#64748B]" />
-              <Camera size={24} className="text-[#64748B]" />
+              <Upload size={24} className="text-[#94A3B8]" />
+              <Camera size={24} className="text-[#94A3B8]" />
             </div>
             <p className="text-sm text-[#94A3B8] font-medium">
               Træk en video hertil eller tryk for at uploade
             </p>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#94A3B8]">
               MP4, MOV — maks 2 minutter anbefalet
             </p>
           </div>
@@ -1137,7 +1137,7 @@ function StepVideoGdpr({
             <p className="text-sm font-medium text-green-400">
               {form.cv_file.name}
             </p>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#94A3B8]">
               {(form.cv_file.size / 1024 / 1024).toFixed(1)} MB
             </p>
             <button
@@ -1150,11 +1150,11 @@ function StepVideoGdpr({
           </div>
         ) : (
           <div className="space-y-2">
-            <Upload size={24} className="text-[#64748B] mx-auto" />
+            <Upload size={24} className="text-[#94A3B8] mx-auto" />
             <p className="text-sm text-[#94A3B8] font-medium">
               Upload dit CV (valgfrit)
             </p>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#94A3B8]">
               PDF eller Word
             </p>
           </div>

@@ -74,14 +74,14 @@ export default function StudentSettings() {
         <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
           <span className="gradient-text">Indstillinger</span> ⚙️
         </h1>
-        <p className="text-sm text-[#64748B] mt-0.5">Tilpas din oplevelse</p>
+        <p className="text-sm text-[#94A3B8] mt-0.5">Tilpas din oplevelse</p>
       </div>
 
       <div className="max-w-md mx-auto px-4 space-y-4">
         {/* Notification Section */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl glass-card overflow-hidden">
           <div className="px-4 py-3 border-b border-white/5">
-            <h2 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider flex items-center gap-2">
+            <h2 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider flex items-center gap-2">
               <Bell size={14} /> Notifikationer
             </h2>
           </div>
@@ -91,11 +91,11 @@ export default function StudentSettings() {
                 <t.icon size={18} className={t.color} />
                 <div>
                   <p className="text-sm font-medium text-[#F8FAFC]">{t.label}</p>
-                  <p className="text-xs text-[#64748B]">{t.description}</p>
+                  <p className="text-xs text-[#94A3B8]">{t.description}</p>
                 </div>
               </div>
               <button onClick={() => handleToggle(t)} className="ml-3 shrink-0">
-                {t.value ? <ToggleRight size={32} className="text-green-400" /> : <ToggleLeft size={32} className="text-[#64748B]" />}
+                {t.value ? <ToggleRight size={32} className="text-green-400" /> : <ToggleLeft size={32} className="text-[#94A3B8]" />}
               </button>
             </div>
           ))}
@@ -104,7 +104,7 @@ export default function StudentSettings() {
         {/* Privacy */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl glass-card overflow-hidden">
           <div className="px-4 py-3 border-b border-white/5">
-            <h2 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider flex items-center gap-2">
+            <h2 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider flex items-center gap-2">
               <Shield size={14} /> Privatliv & Data
             </h2>
           </div>
@@ -113,37 +113,37 @@ export default function StudentSettings() {
               <Shield size={18} className="text-violet-400" />
               <span className="text-sm text-[#F8FAFC]">GDPR-samtykke</span>
             </div>
-            <ChevronRight size={16} className="text-[#64748B]" />
+            <ChevronRight size={16} className="text-[#94A3B8]" />
           </button>
           <button className="w-full flex items-center justify-between px-4 py-4 hover:bg-white/5 transition-colors">
             <div className="flex items-center gap-3">
               <Info size={18} className="text-blue-400" />
               <span className="text-sm text-[#F8FAFC]">Privatlivspolitik</span>
             </div>
-            <ChevronRight size={16} className="text-[#64748B]" />
+            <ChevronRight size={16} className="text-[#94A3B8]" />
           </button>
         </motion.div>
 
         {/* App Info */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-2xl glass-card overflow-hidden">
           <div className="px-4 py-3 border-b border-white/5">
-            <h2 className="text-xs font-semibold text-[#64748B] uppercase tracking-wider flex items-center gap-2">
+            <h2 className="text-xs font-semibold text-[#94A3B8] uppercase tracking-wider flex items-center gap-2">
               <MonitorSmartphone size={14} /> App
             </h2>
           </div>
           <div className="flex items-center justify-between px-4 py-4 border-b border-white/5">
             <div className="flex items-center gap-3">
-              <Globe size={18} className="text-[#64748B]" />
+              <Globe size={18} className="text-[#94A3B8]" />
               <span className="text-sm text-[#94A3B8]">Version</span>
             </div>
-            <span className="text-xs text-[#64748B] font-mono">1.0.0</span>
+            <span className="text-xs text-[#94A3B8] font-mono">1.0.0</span>
           </div>
           <div className="flex items-center justify-between px-4 py-4">
             <div className="flex items-center gap-3">
-              <Moon size={18} className="text-[#64748B]" />
+              <Moon size={18} className="text-[#94A3B8]" />
               <span className="text-sm text-[#94A3B8]">Tema</span>
             </div>
-            <span className="text-xs text-[#64748B]">Mørkt (altid)</span>
+            <span className="text-xs text-[#94A3B8]">Mørkt (altid)</span>
           </div>
         </motion.div>
 
@@ -157,7 +157,7 @@ export default function StudentSettings() {
           </button>
         </motion.div>
 
-        <p className="text-center text-[10px] text-[#64748B] pt-4 pb-8">
+        <p className="text-center text-[10px] text-[#94A3B8] pt-4 pb-8">
           Jobmatch © 2026 · Lavet med 💜 i Danmark
         </p>
       </div>

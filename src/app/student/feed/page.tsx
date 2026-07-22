@@ -139,7 +139,7 @@ export default function StudentFeed() {
             <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
               <span className="gradient-text">Udforsk</span> 🔍
             </h1>
-            <p className="text-sm text-[#64748B] truncate">
+            <p className="text-sm text-[#94A3B8] truncate">
               Swipe for at finde din praktikplads
             </p>
           </div>
