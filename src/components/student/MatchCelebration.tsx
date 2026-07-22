@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useMemo } from 'react';
 import { Briefcase, Phone, ArrowRight } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 
@@ -23,6 +23,7 @@ interface Particle {
 }
 
 function ConfettiParticles() {
+  const reduceMotion = useReducedMotion();
   const colors = ['#7C3AED', '#3B82F6', '#10B981', '#F97316', '#EF4444', '#F59E0B'];
 
   const particles = useMemo<Particle[]>(() =>
@@ -37,6 +38,8 @@ function ConfettiParticles() {
     })),
   // eslint-disable-next-line react-hooks/exhaustive-deps
   []);
+
+  if (reduceMotion) return null;
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
