@@ -26,6 +26,7 @@ const roles = [
     description: 'Få overblik over matches, statistik og elevernes trivsel',
     gradient: 'from-orange-500 to-amber-400',
     href: '/login',
+    note: 'Konto oprettes af din skole',
   },
 ];
 
@@ -174,6 +175,9 @@ export default function LandingPage() {
                       <div className="flex-1 min-w-0">
                         <h3 className="text-white font-semibold text-lg">{role.title}</h3>
                         <p className="text-text-secondary text-sm mt-0.5 leading-relaxed">{role.description}</p>
+                        {role.note && (
+                          <p className="text-text-muted text-xs mt-1.5">{role.note}</p>
+                        )}
                       </div>
                       <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-white group-hover:translate-x-1 transition-all mt-1 shrink-0" />
                     </div>

@@ -165,14 +165,18 @@ export default function DashboardPage() {
         .from("matches")
         .select("*", { count: "exact", head: true });
 
-      const { count: totalRightSwipes } = await supabase
+      // Denominator is student right-swipes only (how many stores students
+      // liked), so the rate reads as "of the stores students liked, how many
+      // became a match" — not mixed with managers' swipes.
+      const { count: studentRightSwipes } = await supabase
         .from("swipes")
         .select("*", { count: "exact", head: true })
-        .eq("direction", "right");
+        .eq("direction", "right")
+        .eq("swiper_role", "student");
 
       const matchRate =
-        (totalRightSwipes ?? 0) > 0
-          ? ((totalMatches ?? 0) / (totalRightSwipes ?? 1)) * 100
+        (studentRightSwipes ?? 0) > 0
+          ? ((totalMatches ?? 0) / (studentRightSwipes ?? 1)) * 100
           : 0;
 
       setKpiData({
