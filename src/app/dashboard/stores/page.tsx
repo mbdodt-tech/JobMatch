@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { createClient } from '@/lib/supabase/client';
+import { safeExternalHref } from '@/lib/url';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 import type { EducationLine } from '@/lib/types/database';
 import DANISH_POSTAL_CODES from '@/lib/data/danish-postal-codes';
@@ -763,7 +764,7 @@ function StoresContent() {
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Jobopslag</h3>
                         <a
-                          href={selectedStore.job_description_url}
+                          href={safeExternalHref(selectedStore.job_description_url)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"
@@ -798,7 +799,7 @@ function StoresContent() {
                         )}
                         {selectedStore.website && (
                           <a
-                            href={selectedStore.website.startsWith('http') ? selectedStore.website : `https://${selectedStore.website}`}
+                            href={safeExternalHref(selectedStore.website)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/20 transition-colors"

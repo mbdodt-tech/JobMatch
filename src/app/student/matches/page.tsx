@@ -19,6 +19,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { safeExternalHref } from '@/lib/url';
 import type { Match, Store, EducationLine } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 
@@ -281,7 +282,7 @@ export default function StudentMatches() {
                         )}
                         {match.store?.website && (
                           <a
-                            href={match.store.website}
+                            href={safeExternalHref(match.store.website)}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
@@ -501,7 +502,7 @@ export default function StudentMatches() {
                   <div className="mb-5">
                     <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Jobopslag</h3>
                     <a
-                      href={selectedStore.store.job_description_url}
+                      href={safeExternalHref(selectedStore.store.job_description_url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-violet-500/15 to-blue-500/15 border border-violet-500/30 text-violet-300 hover:from-violet-500/25 hover:to-blue-500/25 transition-colors"
@@ -581,7 +582,7 @@ export default function StudentMatches() {
                     <div className="space-y-2">
                       <h3 className="text-sm font-medium text-[#94A3B8] mb-2">Links</h3>
                       <a
-                        href={selectedStore.store.website}
+                        href={safeExternalHref(selectedStore.store.website)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"

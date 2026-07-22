@@ -19,6 +19,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { safeExternalHref } from '@/lib/url';
 import type { Store, EducationLine } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 import DANISH_POSTAL_CODES from '@/lib/data/danish-postal-codes';
@@ -278,7 +279,7 @@ export default function ManagerStorePage() {
               {store.job_description_url ? (
                 <div className="flex items-center gap-2">
                   <a
-                    href={store.job_description_url}
+                    href={safeExternalHref(store.job_description_url)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center gap-2 py-2.5 px-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium hover:bg-green-500/20 transition-colors"

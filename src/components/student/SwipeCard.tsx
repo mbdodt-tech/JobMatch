@@ -4,6 +4,7 @@ import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motio
 import { MapPin, Users, Briefcase, FileText, ExternalLink, Heart, X } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS as EDU_LABELS } from '@/lib/types/database';
+import { safeExternalHref } from '@/lib/url';
 
 interface SwipeCardProps {
   store: Store;
@@ -144,7 +145,7 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
           {/* Job description PDF link */}
           {store.job_description_url && (
             <a
-              href={store.job_description_url}
+              href={safeExternalHref(store.job_description_url)}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
