@@ -172,6 +172,12 @@ function StoresContent() {
   const [uploadingChainAd, setUploadingChainAd] = useState<string | null>(null);
   const [chainAdError, setChainAdError] = useState('');
 
+  const [newMgrName, setNewMgrName] = useState('');
+  const [newMgrEmail, setNewMgrEmail] = useState('');
+  const [newMgrPassword, setNewMgrPassword] = useState('');
+  const [creatingManager, setCreatingManager] = useState(false);
+  const [managerError, setManagerError] = useState('');
+
   useEffect(() => {
     fetchStores();
   }, []);
@@ -402,6 +408,36 @@ function StoresContent() {
       .select('id, full_name, email')
       .eq('role', 'store_manager');
     setManagers(data || []);
+  }
+
+  async function createNewManager() {
+    if (!newMgrName.trim() || !newMgrEmail.trim() || !newMgrPassword) return;
+    setManagerError('');
+    setCreatingManager(true);
+    try {
+      const supabase = createClient();
+      const { data: newId, error } = await supabase.rpc('admin_create_store_manager', {
+        p_email: newMgrEmail.trim(),
+        p_full_name: newMgrName.trim(),
+        p_password: newMgrPassword,
+      });
+      if (error) {
+        setManagerError(error.message);
+        return;
+      }
+      const created: ManagerOption = {
+        id: newId as string,
+        full_name: newMgrName.trim(),
+        email: newMgrEmail.trim().toLowerCase(),
+      };
+      setManagers(prev => [...prev, created]);
+      setSelectedManagerId(created.id);
+      setNewMgrName('');
+      setNewMgrEmail('');
+      setNewMgrPassword('');
+    } finally {
+      setCreatingManager(false);
+    }
   }
 
   async function createNewChain() {
@@ -1062,13 +1098,11 @@ function StoresContent() {
                         Vælg butikschef for de importerede butikker
                       </label>
                       {managers.length === 0 ? (
-                        <div className="p-6 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center">
-                          <AlertCircle className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-                          <p className="text-sm text-amber-300">Ingen butikschefer fundet</p>
-                          <p className="text-xs text-text-muted mt-1">Der skal oprettes mindst én butikschefkonto først</p>
-                        </div>
+                        <p className="text-sm text-text-muted mb-1">
+                          Ingen butikschefer endnu — opret den første herunder.
+                        </p>
                       ) : (
-                        <div className="space-y-2">
+                        <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                           {managers.map(m => (
                             <button
                               key={m.id}
@@ -1090,6 +1124,56 @@ function StoresContent() {
                           ))}
                         </div>
                       )}
+                    </div>
+
+                    {/* Create a brand-new manager account (a fresh chain has none yet) */}
+                    <div className="pt-3 border-t border-white/10">
+                      <p className="text-sm text-text-secondary mb-2 font-medium">
+                        Eller opret ny butikschef
+                      </p>
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          value={newMgrName}
+                          onChange={e => setNewMgrName(e.target.value)}
+                          placeholder="Fulde navn"
+                          aria-label="Butikschefens fulde navn"
+                          className="w-full !py-3 !rounded-xl text-sm"
+                        />
+                        <input
+                          type="email"
+                          value={newMgrEmail}
+                          onChange={e => setNewMgrEmail(e.target.value)}
+                          placeholder="email@kaede.dk"
+                          aria-label="Butikschefens email"
+                          className="w-full !py-3 !rounded-xl text-sm"
+                        />
+                        <input
+                          type="text"
+                          value={newMgrPassword}
+                          onChange={e => setNewMgrPassword(e.target.value)}
+                          placeholder="Midlertidig adgangskode (min. 8 tegn)"
+                          aria-label="Midlertidig adgangskode"
+                          className="w-full !py-3 !rounded-xl text-sm"
+                        />
+                        {managerError && (
+                          <p className="text-xs text-rose-300 flex items-center gap-1.5" role="alert">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                            {managerError}
+                          </p>
+                        )}
+                        <button
+                          onClick={createNewManager}
+                          disabled={creatingManager || !newMgrName.trim() || !newMgrEmail.trim() || newMgrPassword.length < 8}
+                          className="w-full py-3 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-300 font-medium text-sm hover:bg-violet-500/25 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        >
+                          {creatingManager ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : <Plus className="w-4 h-4" aria-hidden="true" />}
+                          Opret butikschef
+                        </button>
+                        <p className="text-[11px] text-text-muted">
+                          Giv chefen emailen og den midlertidige adgangskode — de logger ind med den.
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex gap-3 mt-4">
