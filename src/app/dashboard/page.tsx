@@ -189,52 +189,117 @@ function daysBetween(a: Date, b: Date): number {
   return Math.floor(Math.abs(b.getTime() - a.getTime()) / 86400000);
 }
 
+function initials(name: string | null): string {
+  const parts = (name ?? "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  return parts
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
+// PostgREST caps a single select at 1000 rows — page until exhausted so
+// swipe/match-derived numbers don't silently undercount.
+async function fetchAll<T>(
+  makeQuery: (from: number, to: number) => PromiseLike<{ data: unknown; error: unknown }>
+): Promise<T[]> {
+  const pageSize = 1000;
+  const all: T[] = [];
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await makeQuery(from, from + pageSize - 1);
+    if (error) throw error;
+    const rows = (data as T[]) ?? [];
+    all.push(...rows);
+    if (rows.length < pageSize) return all;
+  }
+}
+
+interface OrgStats {
+  total_students: number;
+  missing_gdpr: number;
+}
+
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const [students, setStudents] = useState<StudentRow[]>([]);
   const [stores, setStores] = useState<StoreRow[]>([]);
   const [swipes, setSwipes] = useState<SwipeRow[]>([]);
   const [matches, setMatches] = useState<MatchRow[]>([]);
-  const [confirming, setConfirming] = useState<string | null>(null);
+  const [orgStats, setOrgStats] = useState<OrgStats | null>(null);
+  const [confirming, setConfirming] = useState<Set<string>>(new Set());
+  const [agreementError, setAgreementError] = useState("");
 
   useEffect(() => {
     async function fetchDashboardData() {
+      setLoading(true);
+      setLoadError(false);
       const supabase = createClient();
-      const [studentsRes, storesRes, swipesRes, matchesRes] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select(
-            "id, full_name, education_line, education_lines, onboarding_completed, last_active_at, created_at, gdpr_consent, video_pitch_url, cv_url"
-          )
-          .eq("role", "student"),
-        supabase
-          .from("stores")
-          .select("id, name, city, education_lines, internship_slots, is_active, job_description_url"),
-        supabase
-          .from("swipes")
-          .select("profile_id, store_id, swiper_role, direction, created_at"),
-        supabase
-          .from("matches")
-          .select("id, student_id, store_id, matched_at, agreement_confirmed_at"),
-      ]);
+      try {
+        const [studentRows, storeRows, swipeRows, matchRows, statsRes] = await Promise.all([
+          fetchAll<StudentRow>((from, to) =>
+            supabase
+              .from("profiles")
+              .select(
+                "id, full_name, education_line, education_lines, onboarding_completed, last_active_at, created_at, gdpr_consent, video_pitch_url, cv_url"
+              )
+              .eq("role", "student")
+              .order("id")
+              .range(from, to)
+          ),
+          fetchAll<StoreRow>((from, to) =>
+            supabase
+              .from("stores")
+              .select("id, name, city, education_lines, internship_slots, is_active, job_description_url")
+              .order("id")
+              .range(from, to)
+          ),
+          fetchAll<SwipeRow>((from, to) =>
+            supabase
+              .from("swipes")
+              .select("profile_id, store_id, swiper_role, direction, created_at")
+              .order("created_at")
+              .range(from, to)
+          ),
+          fetchAll<MatchRow>((from, to) =>
+            supabase
+              .from("matches")
+              .select("id, student_id, store_id, matched_at, agreement_confirmed_at")
+              .order("matched_at")
+              .range(from, to)
+          ),
+          supabase.rpc("get_admin_org_stats"),
+        ]);
 
-      setStudents((studentsRes.data as StudentRow[]) ?? []);
-      setStores((storesRes.data as StoreRow[]) ?? []);
-      setSwipes((swipesRes.data as SwipeRow[]) ?? []);
-      setMatches((matchesRes.data as MatchRow[]) ?? []);
-      setLoading(false);
+        setStudents(studentRows);
+        setStores(storeRows);
+        setSwipes(swipeRows);
+        setMatches(matchRows);
+        setOrgStats((statsRes.data as OrgStats | null) ?? null);
+      } catch (err) {
+        console.error("Kunne ikke hente dashboard-data:", err);
+        setLoadError(true);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchDashboardData();
-  }, []);
+  }, [reloadKey]);
 
   async function confirmAgreement(matchId: string, undo: boolean) {
-    setConfirming(matchId);
+    setConfirming((prev) => new Set(prev).add(matchId));
+    setAgreementError("");
     try {
       const supabase = createClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        window.location.href = "/login";
+        return;
+      }
 
       const patch = undo
         ? { agreement_confirmed_at: null, agreement_confirmed_by: null }
@@ -243,6 +308,7 @@ export default function DashboardPage() {
       const { error } = await supabase.from("matches").update(patch).eq("id", matchId);
       if (error) {
         console.error("Kunne ikke opdatere aftale:", error);
+        setAgreementError("Kunne ikke gemme aftalen. Prøv igen.");
         return;
       }
       setMatches((prev) =>
@@ -253,7 +319,11 @@ export default function DashboardPage() {
         )
       );
     } finally {
-      setConfirming(null);
+      setConfirming((prev) => {
+        const next = new Set(prev);
+        next.delete(matchId);
+        return next;
+      });
     }
   }
 
@@ -347,10 +417,14 @@ export default function DashboardPage() {
         return daysBetween(new Date(s.created_at), new Date(first));
       })
       .sort((a, b) => a - b);
-    const medianDays =
-      toMatchDays.length === 0
-        ? null
-        : toMatchDays[Math.floor((toMatchDays.length - 1) / 2)];
+    let medianDays: number | null = null;
+    if (toMatchDays.length > 0) {
+      const mid = Math.floor(toMatchDays.length / 2);
+      medianDays =
+        toMatchDays.length % 2 === 1
+          ? toMatchDays[mid]
+          : Math.round(((toMatchDays[mid - 1] + toMatchDays[mid]) / 2) * 10) / 10;
+    }
 
     // ── Action: follow-up queue ──
     const followUp = onboarded
@@ -370,6 +444,8 @@ export default function DashboardPage() {
     const pendingByStore = new Map<string, { count: number; oldest: Date }>();
     for (const s of studentRight) {
       if (managerSwipeKeys.has(`${s.profile_id}:${s.store_id}`)) continue;
+      // Deactivated stores can't respond — not actionable
+      if (!storeById.get(s.store_id)?.is_active) continue;
       const at = new Date(s.created_at);
       const cur = pendingByStore.get(s.store_id);
       if (!cur) pendingByStore.set(s.store_id, { count: 1, oldest: at });
@@ -433,11 +509,14 @@ export default function DashboardPage() {
     const missingVideo = onboarded.filter((s) => !s.video_pitch_url).length;
     const missingCv = onboarded.filter((s) => !s.cv_url).length;
     const storesMissingJob = activeStores.filter((s) => !s.job_description_url).length;
-    const missingGdpr = students.filter((s) => !s.gdpr_consent).length;
+    // RLS hides non-consenting students from the client — only the
+    // SECURITY DEFINER stats RPC can count them truthfully.
+    const missingGdpr = orgStats ? orgStats.missing_gdpr : null;
 
     return {
       kpi: {
-        totalStudents: students.length,
+        // The RPC sees past RLS (true org totals); visible rows are the fallback
+        totalStudents: orgStats?.total_students ?? students.length,
         activeThisWeek: activeThisWeek.length,
         totalMatches: matches.length,
         agreements: agreements.length,
@@ -454,12 +533,38 @@ export default function DashboardPage() {
       popular,
       quality: { missingVideo, missingCv, storesMissingJob, missingGdpr },
     };
-  }, [students, stores, swipes, matches]);
+  }, [students, stores, swipes, matches, orgStats]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+      <div
+        className="flex items-center justify-center min-h-[60dvh]"
+        role="status"
+        aria-label="Indlæser dashboard"
+      >
+        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" aria-hidden="true" />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60dvh] gap-4 text-center px-6">
+        <AlertTriangle className="w-10 h-10 text-rose-400" aria-hidden="true" />
+        <div>
+          <p className="text-lg font-bold text-[var(--text-primary)]">
+            Kunne ikke hente dashboard-data
+          </p>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
+            Tjek din forbindelse og prøv igen.
+          </p>
+        </div>
+        <button
+          onClick={() => setReloadKey((k) => k + 1)}
+          className="px-6 py-3 rounded-xl btn-gradient text-white font-semibold text-sm"
+        >
+          Prøv igen
+        </button>
       </div>
     );
   }
@@ -496,7 +601,7 @@ export default function DashboardPage() {
           href="/dashboard/students"
         />
         <KpiCard
-          label="Aktive denne uge"
+          label="Aktive seneste 7 dage"
           value={view.kpi.activeThisWeek}
           icon={Activity}
           accentColor="bg-emerald-500"
@@ -557,11 +662,7 @@ export default function DashboardPage() {
                   className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors"
                 >
                   <div className="w-9 h-9 rounded-full bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-xs font-bold text-rose-300 shrink-0">
-                    {(s.full_name ?? "?")
-                      .split(" ")
-                      .map((n) => n[0])
-                      .slice(0, 2)
-                      .join("")}
+                    {initials(s.full_name)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
@@ -688,11 +789,7 @@ export default function DashboardPage() {
                   className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors"
                 >
                   <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-[var(--text-secondary)] shrink-0">
-                    {(s.full_name ?? "?")
-                      .split(" ")
-                      .map((n) => n[0])
-                      .slice(0, 2)
-                      .join("")}
+                    {initials(s.full_name)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
@@ -754,7 +851,7 @@ export default function DashboardPage() {
           </h2>
           <p className="text-xs text-[var(--text-muted)] mb-5">
             {view.medianDays !== null
-              ? `Median: ${view.medianDays} dage fra onboarding til første match`
+              ? `Median: ${view.medianDays.toLocaleString("da-DK")} dage fra oprettelse til første match`
               : "Ingen matches endnu"}
           </p>
           <div className="flex items-end gap-2 h-32">
@@ -788,6 +885,12 @@ export default function DashboardPage() {
         icon={FileCheck2}
         iconClass="bg-teal-500/15 text-teal-400"
       >
+        {agreementError && (
+          <div className="mb-3 flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+            <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" />
+            {agreementError}
+          </div>
+        )}
         {view.matchList.length === 0 ? (
           <p className="text-sm text-[var(--text-muted)] py-4 text-center">
             Ingen matches endnu
@@ -830,7 +933,7 @@ export default function DashboardPage() {
                 {m.agreement_confirmed_at ? (
                   <button
                     onClick={() => confirmAgreement(m.id, true)}
-                    disabled={confirming === m.id}
+                    disabled={confirming.has(m.id)}
                     aria-label="Fortryd bekræftelse"
                     title="Fortryd bekræftelse"
                     className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text-muted)] hover:text-amber-400 transition-colors shrink-0 disabled:opacity-50"
@@ -840,10 +943,10 @@ export default function DashboardPage() {
                 ) : (
                   <button
                     onClick={() => confirmAgreement(m.id, false)}
-                    disabled={confirming === m.id}
+                    disabled={confirming.has(m.id)}
                     className="px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-colors shrink-0 disabled:opacity-50"
                   >
-                    {confirming === m.id ? "Gemmer…" : "Bekræft aftale"}
+                    {confirming.has(m.id) ? "Gemmer…" : "Bekræft aftale"}
                   </button>
                 )}
               </div>
@@ -915,7 +1018,10 @@ export default function DashboardPage() {
               { icon: Video, label: "Elever uden video", value: view.quality.missingVideo },
               { icon: FileText, label: "Elever uden CV", value: view.quality.missingCv },
               { icon: Store, label: "Butikker uden jobopslag", value: view.quality.storesMissingJob },
-              { icon: Users, label: "Uden GDPR-samtykke", value: view.quality.missingGdpr },
+              // Only trustworthy via the RLS-bypassing stats RPC
+              ...(view.quality.missingGdpr !== null
+                ? [{ icon: Users, label: "Uden GDPR-samtykke", value: view.quality.missingGdpr }]
+                : []),
             ].map((q) => (
               <div
                 key={q.label}
