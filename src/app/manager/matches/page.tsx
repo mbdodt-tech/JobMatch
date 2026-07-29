@@ -15,7 +15,9 @@ import {
   MapPin,
   Briefcase,
   Calendar,
+  MessageCircle,
 } from 'lucide-react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { resolveMediaUrl } from '@/lib/storage';
 import Modal from '@/components/Modal';
@@ -67,6 +69,7 @@ export default function ManagerMatchesPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const [sheetCvUrl, setSheetCvUrl] = useState<string | null>(null);
   const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
+  const [unreadByMatch, setUnreadByMatch] = useState<Record<string, number>>({});
 
   useEffect(() => {
     loadMatches();
@@ -110,6 +113,20 @@ export default function ManagerMatchesPage() {
             student: m.student as unknown as Profile,
           }))
       );
+
+      if (matchData.length > 0) {
+        const { data: unread } = await supabase
+          .from('messages')
+          .select('match_id')
+          .in('match_id', matchData.map((m) => m.id))
+          .neq('sender_id', user.id)
+          .is('read_at', null);
+        const counts: Record<string, number> = {};
+        for (const row of (unread as { match_id: string }[]) ?? []) {
+          counts[row.match_id] = (counts[row.match_id] ?? 0) + 1;
+        }
+        setUnreadByMatch(counts);
+      }
     }
     setLoading(false);
   }
@@ -216,6 +233,13 @@ export default function ManagerMatchesPage() {
                     <Heart className="w-3 h-3" />
                     Match
                   </div>
+
+                  {(unreadByMatch[match.id] ?? 0) > 0 && (
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 px-2 py-1 rounded-full bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-bold">
+                      <MessageCircle className="w-3 h-3" aria-hidden="true" />
+                      {unreadByMatch[match.id]}
+                    </div>
+                  )}
 
                   <div className="absolute bottom-0 left-0 right-0 p-3 min-w-0">
                     <p className="text-white font-bold truncate">
@@ -410,6 +434,13 @@ export default function ManagerMatchesPage() {
                 {/* Contact */}
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium text-text-secondary mb-2">Kontaktoplysninger</h3>
+                  <Link
+                    href={`/manager/chat/${selectedMatch.id}`}
+                    className="flex items-center gap-3 p-3.5 rounded-xl btn-gradient text-white hover:brightness-110 transition-all"
+                  >
+                    <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                    <span className="font-semibold text-sm">Skriv til eleven</span>
+                  </Link>
                   {selectedMatch.student.phone && (
                     <a
                       href={`tel:${selectedMatch.student.phone}`}

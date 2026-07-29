@@ -19,12 +19,16 @@ export default function ManagerShell({
 }) {
   const pathname = usePathname();
 
+  // Chat needs the bottom edge for its composer
+  const isChat = pathname?.startsWith('/manager/chat');
+
   return (
     <div className="min-h-[100dvh] bg-[#05050A] flex flex-col">
       {/* Page content */}
-      <main className="flex-1 pb-28">{children}</main>
+      <main className={`flex-1 ${isChat ? '' : 'pb-28'}`}>{children}</main>
 
       {/* Floating glass dock */}
+      {!isChat && (
       <nav className="fixed bottom-4 left-4 right-4 z-50 safe-bottom">
         <div className="max-w-md mx-auto glass-strong rounded-full shadow-2xl flex items-center justify-around px-2 py-2">
           {tabs.map((tab) => {
@@ -66,6 +70,7 @@ export default function ManagerShell({
           })}
         </div>
       </nav>
+      )}
     </div>
   );
 }

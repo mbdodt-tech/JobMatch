@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import {
   Phone,
   Mail,
@@ -17,6 +18,7 @@ import {
   GraduationCap,
   Users,
   ChevronDown,
+  MessageCircle,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { safeExternalHref } from '@/lib/url';
@@ -64,7 +66,8 @@ export default function StudentMatches() {
   const [liked, setLiked] = useState<LikedStore[]>([]);
   const [disliked, setDisliked] = useState<LikedStore[]>([]);
   const [showDisliked, setShowDisliked] = useState(false);
-  const [selectedStore, setSelectedStore] = useState<{ store: Store; matched: boolean } | null>(null);
+  const [selectedStore, setSelectedStore] = useState<{ store: Store; matched: boolean; matchId?: string } | null>(null);
+  const [unreadByMatch, setUnreadByMatch] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
@@ -100,6 +103,20 @@ export default function StudentMatches() {
 
       const matchList = (matchesRes.data as unknown as MatchWithStore[]) || [];
       setMatches(matchList);
+
+      if (matchList.length > 0) {
+        const { data: unread } = await supabase
+          .from('messages')
+          .select('match_id')
+          .in('match_id', matchList.map((m) => m.id))
+          .neq('sender_id', user.id)
+          .is('read_at', null);
+        const counts: Record<string, number> = {};
+        for (const row of (unread as { match_id: string }[]) ?? []) {
+          counts[row.match_id] = (counts[row.match_id] ?? 0) + 1;
+        }
+        setUnreadByMatch(counts);
+      }
 
       type SwipeRow = { id: string; store_id: string; created_at: string; store: Store };
       const matchedStoreIds = new Set(matchList.map((m) => m.store_id));
@@ -216,7 +233,7 @@ export default function StudentMatches() {
                       hidden: { opacity: 0, y: 20, scale: 0.95 },
                       visible: { opacity: 1, y: 0, scale: 1 },
                     }}
-                    onClick={() => match.store && setSelectedStore({ store: match.store, matched: true })}
+                    onClick={() => match.store && setSelectedStore({ store: match.store, matched: true, matchId: match.id })}
                     className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-emerald-500/25 shadow-lg shadow-black/40 cursor-pointer active:scale-[0.98] transition-transform"
                   >
                     <StoreCardMedia store={match.store} />
@@ -246,6 +263,19 @@ export default function StudentMatches() {
                       </p>
 
                       <div className="flex items-center gap-1.5 pt-0.5">
+                        <Link
+                          href={`/student/chat/${match.id}`}
+                          onClick={(e) => e.stopPropagation()}
+                          aria-label={`Chat med ${match.store?.name ?? 'butikken'}`}
+                          className="relative w-8 h-8 rounded-full backdrop-blur-md bg-violet-500/25 border border-violet-400/40 flex items-center justify-center text-violet-200 hover:bg-violet-500/40 transition-colors active:scale-95"
+                        >
+                          <MessageCircle size={13} aria-hidden="true" />
+                          {(unreadByMatch[match.id] ?? 0) > 0 && (
+                            <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
+                              {unreadByMatch[match.id]}
+                            </span>
+                          )}
+                        </Link>
                         {match.store?.phone && (
                           <a
                             href={`tel:${match.store.phone}`}
@@ -533,6 +563,15 @@ export default function StudentMatches() {
                 {selectedStore.matched ? (
                   <div className="space-y-2">
                     <h3 className="text-sm font-medium text-[#94A3B8] mb-2">Kontakt</h3>
+                    {selectedStore.matchId && (
+                      <Link
+                        href={`/student/chat/${selectedStore.matchId}`}
+                        className="flex items-center gap-3 p-3.5 rounded-xl btn-gradient text-white hover:brightness-110 transition-all"
+                      >
+                        <MessageCircle className="w-5 h-5" aria-hidden="true" />
+                        <span className="font-semibold text-sm">Skriv til butikken</span>
+                      </Link>
+                    )}
                     {selectedStore.store.phone && (
                       <a
                         href={`tel:${selectedStore.store.phone}`}

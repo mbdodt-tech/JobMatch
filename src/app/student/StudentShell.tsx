@@ -19,8 +19,9 @@ export default function StudentShell({
 }) {
   const pathname = usePathname();
 
-  // Hide bottom bar on onboarding
-  const isOnboarding = pathname?.startsWith('/student/onboarding');
+  // Hide bottom bar on onboarding and in chat (composer needs the bottom edge)
+  const isOnboarding =
+    pathname?.startsWith('/student/onboarding') || pathname?.startsWith('/student/chat');
 
   return (
     <div className="min-h-dvh bg-[#05050A] text-[#F8FAFC] font-[Inter]">
