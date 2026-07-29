@@ -361,6 +361,7 @@ export default function ManagerFeedPage() {
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('left')}
             disabled={swiping}
+            aria-label="Afvis"
             className="w-[72px] h-[72px] rounded-full bg-white/5 backdrop-blur-xl border border-rose-500/30 flex items-center justify-center hover:bg-rose-500/10 hover:glow-red transition-all disabled:opacity-50"
           >
             <X className="w-8 h-8 text-rose-400" />
@@ -371,6 +372,7 @@ export default function ManagerFeedPage() {
             whileTap={{ scale: 0.9 }}
             onClick={() => handleSwipe('right')}
             disabled={swiping}
+            aria-label="Synes godt om"
             className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center glow-green disabled:opacity-50"
           >
             <Heart className="w-9 h-9 text-white" />
