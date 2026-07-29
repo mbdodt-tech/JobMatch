@@ -101,7 +101,9 @@ export default function ManagerFeedPage() {
         .from('stores')
         .select('*')
         .eq('manager_id', user.id)
-        .single();
+        .order('created_at')
+        .limit(1)
+        .maybeSingle();
 
       if (!storeData) return;
       setStore(storeData);

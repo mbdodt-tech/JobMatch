@@ -87,12 +87,6 @@ interface StoreDetail {
   chain_job_description_url: string | null;
 }
 
-interface ManagerOption {
-  id: string;
-  full_name: string;
-  email: string;
-}
-
 interface ImportRow {
   name: string;
   address: string;
@@ -104,6 +98,8 @@ interface ImportRow {
   education_lines: string;
   internship_slots: number;
   description: string;
+  manager_name: string;
+  manager_email: string;
   valid: boolean;
   error: string;
 }
@@ -160,11 +156,11 @@ function StoresContent() {
   const [importChainId, setImportChainId] = useState<string>('');
   const [newChainName, setNewChainName] = useState('');
   const [creatingChain, setCreatingChain] = useState(false);
-  const [selectedManagerId, setSelectedManagerId] = useState('');
-  const [managers, setManagers] = useState<ManagerOption[]>([]);
+  const [importTempPassword, setImportTempPassword] = useState('');
+  const [importError, setImportError] = useState('');
   const [importRows, setImportRows] = useState<ImportRow[]>([]);
   const [importing, setImporting] = useState(false);
-  const [importResult, setImportResult] = useState<{ success: number; failed: number } | null>(null);
+  const [importResult, setImportResult] = useState<{ success: number; failed: number; createdManagers: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const chainAdInputRef = useRef<HTMLInputElement>(null);
@@ -172,11 +168,6 @@ function StoresContent() {
   const [uploadingChainAd, setUploadingChainAd] = useState<string | null>(null);
   const [chainAdError, setChainAdError] = useState('');
 
-  const [newMgrName, setNewMgrName] = useState('');
-  const [newMgrEmail, setNewMgrEmail] = useState('');
-  const [newMgrPassword, setNewMgrPassword] = useState('');
-  const [creatingManager, setCreatingManager] = useState(false);
-  const [managerError, setManagerError] = useState('');
 
   useEffect(() => {
     fetchStores();
@@ -393,51 +384,15 @@ function StoresContent() {
     });
   }
 
-  async function openImportModal() {
+  function openImportModal() {
     setShowImportModal(true);
     setImportStep(1);
     setImportChainId('');
     setNewChainName('');
-    setSelectedManagerId('');
     setImportRows([]);
     setImportResult(null);
-
-    const supabase = createClient();
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, full_name, email')
-      .eq('role', 'store_manager');
-    setManagers(data || []);
-  }
-
-  async function createNewManager() {
-    if (!newMgrName.trim() || !newMgrEmail.trim() || !newMgrPassword) return;
-    setManagerError('');
-    setCreatingManager(true);
-    try {
-      const supabase = createClient();
-      const { data: newId, error } = await supabase.rpc('admin_create_store_manager', {
-        p_email: newMgrEmail.trim(),
-        p_full_name: newMgrName.trim(),
-        p_password: newMgrPassword,
-      });
-      if (error) {
-        setManagerError(error.message);
-        return;
-      }
-      const created: ManagerOption = {
-        id: newId as string,
-        full_name: newMgrName.trim(),
-        email: newMgrEmail.trim().toLowerCase(),
-      };
-      setManagers(prev => [...prev, created]);
-      setSelectedManagerId(created.id);
-      setNewMgrName('');
-      setNewMgrEmail('');
-      setNewMgrPassword('');
-    } finally {
-      setCreatingManager(false);
-    }
+    setImportTempPassword('');
+    setImportError('');
   }
 
   async function createNewChain() {
@@ -465,6 +420,8 @@ function StoresContent() {
         Adresse: 'Strøget 1',
         Postnummer: '1000',
         By: 'København K',
+        Butikschef: 'Anne Jensen',
+        'Butikschef email': 'anne@kaede.dk',
         Telefon: '12345678',
         Email: 'butik@example.dk',
         Hjemmeside: 'www.example.dk',
@@ -476,6 +433,7 @@ function StoresContent() {
     const ws = XLSX.utils.json_to_sheet(templateData);
     const colWidths = [
       { wch: 20 }, { wch: 25 }, { wch: 12 }, { wch: 15 },
+      { wch: 18 }, { wch: 24 },
       { wch: 12 }, { wch: 25 }, { wch: 20 }, { wch: 30 },
       { wch: 14 }, { wch: 40 },
     ];
@@ -508,11 +466,18 @@ function StoresContent() {
         const eduRaw = String(row['Uddannelseslinjer'] || row['education_lines'] || '').trim();
         const slots = parseInt(String(row['Praktikpladser'] || row['internship_slots'] || row['Antal pladser'] || '1'), 10) || 1;
         const description = String(row['Beskrivelse'] || row['description'] || '').trim();
+        const managerName = String(row['Butikschef'] || row['Chef'] || row['Butikschef navn'] || row['manager'] || '').trim();
+        const managerEmail = String(
+          row['Butikschef email'] || row['Butikschef-email'] || row['Chefens email'] || row['manager_email'] || ''
+        ).trim();
 
         const errors: string[] = [];
         if (!name) errors.push('Mangler butiksnavn');
         if (!address) errors.push('Mangler adresse');
         if (!postalCode) errors.push('Mangler postnummer');
+        if (!managerName) errors.push('Mangler butikschef');
+        if (!managerEmail) errors.push('Mangler butikschef email');
+        else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(managerEmail)) errors.push('Ugyldig butikschef email');
 
         return {
           name,
@@ -525,6 +490,8 @@ function StoresContent() {
           education_lines: eduRaw,
           internship_slots: slots,
           description: description === 'undefined' ? '' : description,
+          manager_name: managerName,
+          manager_email: managerEmail,
           valid: errors.length === 0,
           error: errors.join(', '),
         };
@@ -538,19 +505,64 @@ function StoresContent() {
   }
 
   async function executeImport() {
-    if (!selectedManagerId || !importChainId) return;
+    if (!importChainId) return;
     setImporting(true);
+    setImportError('');
 
     const supabase = createClient();
     const validRows = importRows.filter(r => r.valid);
+
+    // Resolve managers from the sheet: reuse existing accounts by email,
+    // create the rest with the shared temporary password.
+    const emails = [...new Set(validRows.map(r => r.manager_email.toLowerCase()))];
+    const managerIdByEmail = new Map<string, string>();
+
+    const { data: existingManagers } = await supabase
+      .from('profiles')
+      .select('id, email')
+      .eq('role', 'store_manager')
+      .in('email', emails);
+    for (const m of existingManagers ?? []) {
+      managerIdByEmail.set((m.email ?? '').toLowerCase(), m.id);
+    }
+
+    const newEmails = emails.filter(e => !managerIdByEmail.has(e));
+    if (newEmails.length > 0 && importTempPassword.length < 8) {
+      setImportError(
+        `Arket indeholder ${newEmails.length} nye butikschefer — angiv en midlertidig adgangskode på mindst 8 tegn.`
+      );
+      setImporting(false);
+      return;
+    }
+
+    let createdManagers = 0;
+    for (const managerEmail of newEmails) {
+      const managerName =
+        validRows.find(r => r.manager_email.toLowerCase() === managerEmail)?.manager_name || managerEmail;
+      const { data: newId, error } = await supabase.rpc('admin_create_store_manager', {
+        p_email: managerEmail,
+        p_full_name: managerName,
+        p_password: importTempPassword,
+      });
+      if (!error && newId) {
+        managerIdByEmail.set(managerEmail, newId as string);
+        createdManagers++;
+      }
+    }
+
     let success = 0;
     let failed = 0;
 
     for (const row of validRows) {
+      const managerId = managerIdByEmail.get(row.manager_email.toLowerCase());
+      if (!managerId) {
+        failed++;
+        continue;
+      }
       const eduLines = parseEducationLines(row.education_lines);
 
       const { error } = await supabase.from('stores').insert({
-        manager_id: selectedManagerId,
+        manager_id: managerId,
         chain_id: importChainId,
         name: row.name,
         address: row.address,
@@ -572,7 +584,7 @@ function StoresContent() {
       }
     }
 
-    setImportResult({ success, failed });
+    setImportResult({ success, failed, createdManagers });
     setImporting(false);
 
     if (success > 0) {
@@ -995,9 +1007,8 @@ function StoresContent() {
                     </h2>
                     <p className="text-xs text-text-secondary mt-0.5">
                       {importStep === 1 && 'Vælg eller opret en kæde'}
-                      {importStep === 2 && 'Vælg ansvarlig butikschef'}
-                      {importStep === 3 && 'Upload Excel-fil med butikker'}
-                      {importStep === 4 && 'Bekræft og importér'}
+                      {importStep === 2 && 'Upload Excel-fil med butikker og butikschefer'}
+                      {importStep === 3 && 'Bekræft og importér'}
                     </p>
                   </div>
                   {!importing && (
@@ -1009,7 +1020,7 @@ function StoresContent() {
 
                 {/* Step indicator */}
                 <div className="flex items-center px-6 pb-4">
-                  {[1, 2, 3, 4].map(step => (
+                  {[1, 2, 3].map(step => (
                     <div key={step} className={`flex items-center ${step > 1 ? 'flex-1' : ''}`}>
                       {step > 1 && (
                         <div className={`h-px flex-1 mx-2 transition-colors ${step <= importStep ? 'bg-gradient-to-r from-violet-500 to-blue-500' : 'bg-white/10'}`} />
@@ -1090,112 +1101,8 @@ function StoresContent() {
                   </div>
                 )}
 
-                {/* Step 2: Manager selection */}
+                {/* Step 2: File upload (stores + managers in one sheet) */}
                 {importStep === 2 && (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm text-text-secondary block mb-2">
-                        Vælg butikschef for de importerede butikker
-                      </label>
-                      {managers.length === 0 ? (
-                        <p className="text-sm text-text-muted mb-1">
-                          Ingen butikschefer endnu — opret den første herunder.
-                        </p>
-                      ) : (
-                        <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                          {managers.map(m => (
-                            <button
-                              key={m.id}
-                              onClick={() => setSelectedManagerId(m.id)}
-                              className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left ${
-                                selectedManagerId === m.id
-                                  ? 'bg-violet-500/20 border-violet-500/30 text-violet-300'
-                                  : 'bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10'
-                              }`}
-                            >
-                              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold shrink-0">
-                                {m.full_name?.charAt(0)?.toUpperCase() || '?'}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="font-medium text-sm truncate">{m.full_name}</p>
-                                <p className="text-xs opacity-60 truncate">{m.email}</p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Create a brand-new manager account (a fresh chain has none yet) */}
-                    <div className="pt-3 border-t border-white/10">
-                      <p className="text-sm text-text-secondary mb-2 font-medium">
-                        Eller opret ny butikschef
-                      </p>
-                      <div className="space-y-2">
-                        <input
-                          type="text"
-                          value={newMgrName}
-                          onChange={e => setNewMgrName(e.target.value)}
-                          placeholder="Fulde navn"
-                          aria-label="Butikschefens fulde navn"
-                          className="w-full !py-3 !rounded-xl text-sm"
-                        />
-                        <input
-                          type="email"
-                          value={newMgrEmail}
-                          onChange={e => setNewMgrEmail(e.target.value)}
-                          placeholder="email@kaede.dk"
-                          aria-label="Butikschefens email"
-                          className="w-full !py-3 !rounded-xl text-sm"
-                        />
-                        <input
-                          type="text"
-                          value={newMgrPassword}
-                          onChange={e => setNewMgrPassword(e.target.value)}
-                          placeholder="Midlertidig adgangskode (min. 8 tegn)"
-                          aria-label="Midlertidig adgangskode"
-                          className="w-full !py-3 !rounded-xl text-sm"
-                        />
-                        {managerError && (
-                          <p className="text-xs text-rose-300 flex items-center gap-1.5" role="alert">
-                            <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                            {managerError}
-                          </p>
-                        )}
-                        <button
-                          onClick={createNewManager}
-                          disabled={creatingManager || !newMgrName.trim() || !newMgrEmail.trim() || newMgrPassword.length < 8}
-                          className="w-full py-3 rounded-xl bg-violet-500/15 border border-violet-500/30 text-violet-300 font-medium text-sm hover:bg-violet-500/25 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                          {creatingManager ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> : <Plus className="w-4 h-4" aria-hidden="true" />}
-                          Opret butikschef
-                        </button>
-                        <p className="text-[11px] text-text-muted">
-                          Giv chefen emailen og den midlertidige adgangskode — de logger ind med den.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3 mt-4">
-                      <button
-                        onClick={() => setImportStep(1)}
-                        className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-[var(--text-secondary)] font-medium text-sm hover:bg-white/10 transition-colors"
-                      >
-                        Tilbage
-                      </button>
-                      <button
-                        onClick={() => setImportStep(3)}
-                        disabled={!selectedManagerId}
-                        className="flex-1 py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                      >
-                        Næste
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3: File upload */}
-                {importStep === 3 && (
                   <div className="space-y-4">
                     <button
                       onClick={downloadTemplate}
@@ -1204,6 +1111,11 @@ function StoresContent() {
                       <Download className="w-4 h-4" />
                       Download Excel-skabelon
                     </button>
+                    <p className="text-xs text-text-muted -mt-2">
+                      Arket skal have kolonnerne <span className="text-text-secondary font-medium">Butikschef</span> og{' '}
+                      <span className="text-text-secondary font-medium">Butikschef email</span> — chef-kontiene oprettes
+                      automatisk ved import (eksisterende emails genbruges).
+                    </p>
 
                     <div
                       onClick={() => fileInputRef.current?.click()}
@@ -1237,7 +1149,7 @@ function StoresContent() {
                               <tr className="bg-white/5 text-text-muted">
                                 <th className="px-3 py-2 text-left">Butiksnavn</th>
                                 <th className="px-3 py-2 text-left">Adresse</th>
-                                <th className="px-3 py-2 text-left">Postnr.</th>
+                                <th className="px-3 py-2 text-left">Butikschef</th>
                                 <th className="px-3 py-2 text-left">Status</th>
                               </tr>
                             </thead>
@@ -1245,8 +1157,13 @@ function StoresContent() {
                               {importRows.map((row, i) => (
                                 <tr key={i} className={`border-t border-white/5 ${row.valid ? '' : 'bg-rose-500/5'}`}>
                                   <td className="px-3 py-2 text-white truncate max-w-[120px]">{row.name || '—'}</td>
-                                  <td className="px-3 py-2 text-text-secondary truncate max-w-[140px]">{row.address || '—'}</td>
-                                  <td className="px-3 py-2 text-text-secondary">{row.postal_code || '—'}</td>
+                                  <td className="px-3 py-2 text-text-secondary truncate max-w-[120px]">{row.address || '—'}</td>
+                                  <td className="px-3 py-2 text-text-secondary truncate max-w-[140px]">
+                                    {row.manager_name || '—'}
+                                    {row.manager_email && (
+                                      <span className="block text-[10px] opacity-60 truncate">{row.manager_email}</span>
+                                    )}
+                                  </td>
                                   <td className="px-3 py-2">
                                     {row.valid ? (
                                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -1264,15 +1181,34 @@ function StoresContent() {
                       </div>
                     )}
 
+                    {importRows.length > 0 && (
+                      <div className="pt-1">
+                        <label htmlFor="import-temp-password" className="text-sm text-text-secondary block mb-1.5">
+                          Midlertidig adgangskode til nye butikschefer
+                        </label>
+                        <input
+                          id="import-temp-password"
+                          type="text"
+                          value={importTempPassword}
+                          onChange={e => setImportTempPassword(e.target.value)}
+                          placeholder="Min. 8 tegn — fx Kaede2026!"
+                          className="w-full !py-3 !rounded-xl text-sm"
+                        />
+                        <p className="text-[11px] text-text-muted mt-1">
+                          Bruges kun til chefer, der ikke findes i forvejen. Giv dem emailen + koden, så kan de logge ind.
+                        </p>
+                      </div>
+                    )}
+
                     <div className="flex gap-3 mt-4">
                       <button
-                        onClick={() => setImportStep(2)}
+                        onClick={() => setImportStep(1)}
                         className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-[var(--text-secondary)] font-medium text-sm hover:bg-white/10 transition-colors"
                       >
                         Tilbage
                       </button>
                       <button
-                        onClick={() => setImportStep(4)}
+                        onClick={() => setImportStep(3)}
                         disabled={validImportCount === 0}
                         className="flex-1 py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
                       >
@@ -1282,8 +1218,8 @@ function StoresContent() {
                   </div>
                 )}
 
-                {/* Step 4: Confirm */}
-                {importStep === 4 && !importResult && (
+                {/* Step 3: Confirm */}
+                {importStep === 3 && !importResult && (
                   <div className="space-y-4">
                     <div className="rounded-xl bg-white/5 border border-white/10 p-5 space-y-3">
                       <div className="flex items-center justify-between">
@@ -1293,9 +1229,9 @@ function StoresContent() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-text-secondary">Ansvarlig</span>
+                        <span className="text-sm text-text-secondary">Butikschefer i arket</span>
                         <span className="text-sm text-white font-medium">
-                          {managers.find(m => m.id === selectedManagerId)?.full_name || '—'}
+                          {new Set(importRows.filter(r => r.valid).map(r => r.manager_email.toLowerCase())).size}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -1310,9 +1246,16 @@ function StoresContent() {
                       )}
                     </div>
 
+                    {importError && (
+                      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+                        <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        {importError}
+                      </div>
+                    )}
+
                     <div className="flex gap-3 mt-4">
                       <button
-                        onClick={() => setImportStep(3)}
+                        onClick={() => setImportStep(2)}
                         disabled={importing}
                         className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-[var(--text-secondary)] font-medium text-sm hover:bg-white/10 transition-colors disabled:opacity-40"
                       >
@@ -1347,10 +1290,19 @@ function StoresContent() {
                       <h3 className="text-lg font-bold text-white">Import fuldført</h3>
                       <p className="text-sm text-text-secondary mt-1">
                         <span className="text-emerald-400 font-semibold">{importResult.success}</span> butikker oprettet
+                        {importResult.createdManagers > 0 && (
+                          <> · <span className="text-violet-300 font-semibold">{importResult.createdManagers}</span> nye butikschef-konti</>
+                        )}
                         {importResult.failed > 0 && (
                           <> · <span className="text-rose-400 font-semibold">{importResult.failed}</span> fejlede</>
                         )}
                       </p>
+                      {importResult.createdManagers > 0 && (
+                        <p className="text-xs text-text-muted mt-2 max-w-sm mx-auto">
+                          Husk at give de nye butikschefer deres email og den midlertidige adgangskode — de logger ind
+                          og finder deres butik under &quot;Min butik&quot;.
+                        </p>
+                      )}
                     </div>
                     <button
                       onClick={() => setShowImportModal(false)}

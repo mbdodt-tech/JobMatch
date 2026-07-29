@@ -84,7 +84,9 @@ export default function ManagerMatchesPage() {
       .from('stores')
       .select('id')
       .eq('manager_id', user.id)
-      .single();
+      .order('created_at')
+      .limit(1)
+      .maybeSingle();
 
     if (!store) {
       setLoading(false);
