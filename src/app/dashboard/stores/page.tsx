@@ -55,6 +55,7 @@ interface ChainDisplay {
   name: string;
   logo_url: string | null;
   website: string | null;
+  job_description_url: string | null;
   stores: StoreDisplay[];
   totalSlots: number;
   totalMatches: number;
@@ -83,6 +84,7 @@ interface StoreDetail {
   matches: number;
   swipes_received: number;
   chain_name: string | null;
+  chain_job_description_url: string | null;
 }
 
 interface ManagerOption {
@@ -165,6 +167,11 @@ function StoresContent() {
   const [importResult, setImportResult] = useState<{ success: number; failed: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const chainAdInputRef = useRef<HTMLInputElement>(null);
+  const [chainAdTarget, setChainAdTarget] = useState<string | null>(null);
+  const [uploadingChainAd, setUploadingChainAd] = useState<string | null>(null);
+  const [chainAdError, setChainAdError] = useState('');
+
   useEffect(() => {
     fetchStores();
   }, []);
@@ -185,7 +192,7 @@ function StoresContent() {
 
     const [storesRes, chainsRes] = await Promise.all([
       supabase.from('stores').select('id, name, city, address, postal_code, education_lines, internship_slots, is_active, manager_id, chain_id'),
-      supabase.from('store_chains').select('id, name, logo_url, website'),
+      supabase.from('store_chains').select('id, name, logo_url, website, job_description_url'),
     ]);
 
     const stores = storesRes.data || [];
@@ -237,6 +244,7 @@ function StoresContent() {
         name: c.name,
         logo_url: c.logo_url,
         website: c.website,
+        job_description_url: c.job_description_url ?? null,
         stores: [],
         totalSlots: 0,
         totalMatches: 0,
@@ -279,7 +287,7 @@ function StoresContent() {
       supabase.from('swipes').select('*', { count: 'exact', head: true }).eq('store_id', storeId).eq('direction', 'right'),
       supabase.from('matches').select('*', { count: 'exact', head: true }).eq('store_id', storeId),
       store.chain_id
-        ? supabase.from('store_chains').select('name').eq('id', store.chain_id).single()
+        ? supabase.from('store_chains').select('name, job_description_url').eq('id', store.chain_id).single()
         : Promise.resolve(null),
     ]);
 
@@ -306,6 +314,7 @@ function StoresContent() {
       matches: matchRes.count ?? 0,
       swipes_received: swipeRes.count ?? 0,
       chain_name: chainRes?.data?.name || null,
+      chain_job_description_url: chainRes?.data?.job_description_url || null,
     });
 
     setStoreLoading(false);
@@ -314,6 +323,59 @@ function StoresContent() {
   function closeDetail() {
     setSelectedStoreId(null);
     setSelectedStore(null);
+  }
+
+  async function handleChainAdFile(files: FileList | null) {
+    const file = files?.[0];
+    const chainId = chainAdTarget;
+    setChainAdTarget(null);
+    if (!file || !chainId) return;
+
+    if (file.type !== 'application/pdf') {
+      setChainAdError('Kædens jobopslag skal være en PDF.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setChainAdError('PDF\'en må højst fylde 10 MB.');
+      return;
+    }
+
+    setChainAdError('');
+    setUploadingChainAd(chainId);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { window.location.href = '/login'; return; }
+
+      // Public bucket path pattern <folder>/<uid>/<file> satisfies the
+      // existing student-media insert/update policies.
+      const path = `chain-docs/${user.id}/${chainId}.pdf`;
+      const { error: uploadError } = await supabase.storage
+        .from('student-media')
+        .upload(path, file, { upsert: true });
+      if (uploadError) {
+        setChainAdError(`Upload fejlede: ${uploadError.message}`);
+        return;
+      }
+
+      const { data } = supabase.storage.from('student-media').getPublicUrl(path);
+      const url = `${data.publicUrl}?t=${Date.now()}`;
+
+      const { error: dbError } = await supabase
+        .from('store_chains')
+        .update({ job_description_url: url })
+        .eq('id', chainId);
+      if (dbError) {
+        setChainAdError(`Kunne ikke gemme: ${dbError.message}`);
+        return;
+      }
+
+      setChains(prev =>
+        prev.map(c => (c.id === chainId ? { ...c, job_description_url: url } : c))
+      );
+    } finally {
+      setUploadingChainAd(null);
+    }
   }
 
   function toggleChain(chainId: string) {
@@ -349,7 +411,7 @@ function StoresContent() {
     const { data } = await supabase
       .from('store_chains')
       .insert({ name: newChainName.trim() })
-      .select('id, name, logo_url, website')
+      .select('id, name, logo_url, website, job_description_url')
       .single();
 
     if (data) {
@@ -561,30 +623,81 @@ function StoresContent() {
         </div>
       ) : (
         <>
+          {/* Hidden shared input for chain job-ad uploads */}
+          <input
+            ref={chainAdInputRef}
+            type="file"
+            accept=".pdf,application/pdf"
+            className="hidden"
+            aria-label="Upload kædens jobopslag"
+            onChange={(e) => {
+              handleChainAdFile(e.target.files);
+              e.target.value = '';
+            }}
+          />
+          {chainAdError && (
+            <motion.div variants={itemVariants} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+              <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
+              {chainAdError}
+            </motion.div>
+          )}
+
           {/* Chain sections */}
           {filteredChains.map(chain => (
             <motion.div key={chain.id} variants={itemVariants} className="rounded-2xl glass-card overflow-hidden">
-              <button
-                onClick={() => toggleChain(chain.id)}
-                className="w-full flex items-center gap-4 p-5 hover:bg-white/[0.04] transition-colors text-left"
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
-                  {chain.logo_url ? (
-                    <img src={chain.logo_url} alt={chain.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <Building2 className="w-5 h-5 text-violet-400" />
+              <div className="w-full flex items-center gap-2 pr-5 hover:bg-white/[0.04] transition-colors">
+                <button
+                  onClick={() => toggleChain(chain.id)}
+                  className="flex-1 min-w-0 flex items-center gap-4 p-5 text-left"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+                    {chain.logo_url ? (
+                      <img src={chain.logo_url} alt={chain.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Building2 className="w-5 h-5 text-violet-400" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-[var(--text-primary)] text-lg truncate">{chain.name}</h3>
+                    <p className="text-sm text-[var(--text-secondary)]">
+                      {chain.stores.length} butik{chain.stores.length !== 1 ? 'ker' : ''} · {chain.totalSlots} pladser · {chain.totalMatches} matches
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-[var(--text-muted)]">
+                    {expandedChains.has(chain.id) ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+                  </div>
+                </button>
+
+                {/* Chain-wide job posting (fallback for stores without their own) */}
+                <div className="shrink-0 flex items-center gap-1.5">
+                  {chain.job_description_url && (
+                    <a
+                      href={safeExternalHref(chain.job_description_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/25 text-violet-300 text-xs font-semibold hover:bg-violet-500/20 transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" aria-hidden="true" />
+                      Kædens jobopslag
+                    </a>
                   )}
+                  <button
+                    onClick={() => {
+                      setChainAdTarget(chain.id);
+                      chainAdInputRef.current?.click();
+                    }}
+                    disabled={uploadingChainAd === chain.id}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-[var(--text-secondary)] text-xs font-semibold hover:bg-white/10 transition-colors disabled:opacity-50"
+                  >
+                    {uploadingChainAd === chain.id ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+                    )}
+                    {chain.job_description_url ? 'Skift opslag' : 'Upload jobopslag'}
+                  </button>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-bold text-[var(--text-primary)] text-lg truncate">{chain.name}</h3>
-                  <p className="text-sm text-[var(--text-secondary)]">
-                    {chain.stores.length} butik{chain.stores.length !== 1 ? 'ker' : ''} · {chain.totalSlots} pladser · {chain.totalMatches} matches
-                  </p>
-                </div>
-                <div className="shrink-0 text-[var(--text-muted)]">
-                  {expandedChains.has(chain.id) ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-                </div>
-              </button>
+              </div>
 
               <AnimatePresence>
                 {expandedChains.has(chain.id) && (
@@ -750,17 +863,22 @@ function StoresContent() {
                       </div>
                     </div>
 
-                    {selectedStore.job_description_url && (
+                    {(selectedStore.job_description_url || selectedStore.chain_job_description_url) && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Jobopslag</h3>
                         <a
-                          href={safeExternalHref(selectedStore.job_description_url)}
+                          href={safeExternalHref(selectedStore.job_description_url || selectedStore.chain_job_description_url)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
                         >
                           <FileText className="w-5 h-5" />
-                          <span className="font-medium text-sm">Se jobopslag (PDF)</span>
+                          <span className="font-medium text-sm">
+                            Se jobopslag (PDF)
+                            {!selectedStore.job_description_url && (
+                              <span className="text-text-muted font-normal"> — kædens fælles opslag</span>
+                            )}
+                          </span>
                           <ExternalLink className="w-4 h-4 ml-auto" />
                         </a>
                       </div>

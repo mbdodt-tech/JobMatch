@@ -142,10 +142,10 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
             </span>
           </div>
 
-          {/* Job description PDF link */}
-          {store.job_description_url && (
+          {/* Job description PDF link — store's own wins, else the chain's shared posting */}
+          {(store.job_description_url || store.chain?.job_description_url) && (
             <a
-              href={safeExternalHref(store.job_description_url)}
+              href={safeExternalHref(store.job_description_url || store.chain?.job_description_url)}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}

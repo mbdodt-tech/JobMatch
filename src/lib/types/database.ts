@@ -121,6 +121,9 @@ export interface StoreChain {
   name: string;
   logo_url: string | null;
   website: string | null;
+  // Shared job posting used by every store in the chain until the store
+  // uploads its own (the store's own always wins)
+  job_description_url: string | null;
   admin_user_id: string | null;
   created_at: string;
 }

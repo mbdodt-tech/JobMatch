@@ -78,20 +78,20 @@ export default function StudentMatches() {
       const [matchesRes, swipesRes, leftSwipesRes] = await Promise.all([
         supabase
           .from('matches')
-          .select('*, store:stores(*)')
+          .select('*, store:stores(*, chain:store_chains(job_description_url))')
           .eq('student_id', user.id)
           .eq('status', 'active')
           .order('matched_at', { ascending: false }),
         supabase
           .from('swipes')
-          .select('id, store_id, created_at, store:stores(*)')
+          .select('id, store_id, created_at, store:stores(*, chain:store_chains(job_description_url))')
           .eq('profile_id', user.id)
           .eq('swiper_role', 'student')
           .eq('direction', 'right')
           .order('created_at', { ascending: false }),
         supabase
           .from('swipes')
-          .select('id, store_id, created_at, store:stores(*)')
+          .select('id, store_id, created_at, store:stores(*, chain:store_chains(job_description_url))')
           .eq('profile_id', user.id)
           .eq('swiper_role', 'student')
           .eq('direction', 'left')
@@ -472,12 +472,12 @@ export default function StudentMatches() {
                   </div>
                 </div>
 
-                {/* Job posting PDF — the main event */}
-                {selectedStore.store.job_description_url && (
+                {/* Job posting PDF — the store's own wins, else the chain's shared posting */}
+                {(selectedStore.store.job_description_url || selectedStore.store.chain?.job_description_url) && (
                   <div className="mb-5">
                     <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Jobopslag</h3>
                     <a
-                      href={safeExternalHref(selectedStore.store.job_description_url)}
+                      href={safeExternalHref(selectedStore.store.job_description_url || selectedStore.store.chain?.job_description_url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-violet-500/15 to-blue-500/15 border border-violet-500/30 text-violet-300 hover:from-violet-500/25 hover:to-blue-500/25 transition-colors"

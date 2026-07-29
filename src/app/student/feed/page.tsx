@@ -61,10 +61,10 @@ export default function StudentFeed() {
 
       const swipedIds = swipes?.map((s) => s.store_id) || [];
 
-      // Fetch active stores not yet swiped
+      // Fetch active stores not yet swiped (incl. chain fallback job posting)
       let query = supabase
         .from('stores')
-        .select('*')
+        .select('*, chain:store_chains(job_description_url)')
         .eq('is_active', true)
         .order('created_at', { ascending: false })
         .limit(20);
