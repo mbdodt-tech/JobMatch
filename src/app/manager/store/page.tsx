@@ -55,6 +55,9 @@ export default function ManagerStorePage() {
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const jobDescInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [videoError, setVideoError] = useState('');
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadStore();
@@ -122,6 +125,55 @@ export default function ManagerStorePage() {
     }
   }
 
+  async function handleVideoUpload(file: File) {
+    setVideoError('');
+    const okTypes = ['video/mp4', 'video/webm', 'video/quicktime'];
+    if (!okTypes.includes(file.type)) {
+      setVideoError('Videoen skal være MP4, WebM eller MOV.');
+      return;
+    }
+    if (file.size > 100 * 1024 * 1024) {
+      setVideoError('Videoen må højst fylde 100 MB.');
+      return;
+    }
+
+    setUploadingVideo(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'mp4';
+      const path = `store-videos/${user.id}/intro.${ext}`;
+      const { error } = await supabase.storage
+        .from('student-media')
+        .upload(path, file, { upsert: true });
+
+      if (error) {
+        setVideoError(`Upload fejlede: ${error.message}`);
+        return;
+      }
+
+      const { data } = supabase.storage.from('student-media').getPublicUrl(path);
+      const url = `${data.publicUrl}?t=${Date.now()}`;
+      setStore((prev) => ({ ...prev, video_url: url }));
+
+      if (store.id) {
+        await supabase.from('stores').update({ video_url: url }).eq('id', store.id);
+      }
+    } finally {
+      setUploadingVideo(false);
+    }
+  }
+
+  async function removeVideo() {
+    setStore((prev) => ({ ...prev, video_url: null }));
+    if (store.id) {
+      const supabase = createClient();
+      await supabase.from('stores').update({ video_url: null }).eq('id', store.id);
+    }
+  }
+
   async function removeJobDesc() {
     setStore((prev) => ({ ...prev, job_description_url: null }));
     if (store.id) {
@@ -159,6 +211,7 @@ export default function ManagerStorePage() {
       logo_url: store.logo_url || null,
       cover_image_url: store.cover_image_url || null,
       job_description_url: store.job_description_url || null,
+      video_url: store.video_url || null,
     };
 
     if (isNew) {
@@ -324,6 +377,73 @@ export default function ManagerStorePage() {
               )}
               {uploadError && (
                 <p className="text-xs text-red-400 mt-1.5">{uploadError}</p>
+              )}
+            </div>
+
+            {/* Store intro video */}
+            <div>
+              <label htmlFor="store-video" className="block text-sm font-medium text-text-secondary mb-1.5">
+                Butiksvideo — &quot;En dag hos os&quot; (valgfrit)
+              </label>
+              <input
+                id="store-video"
+                ref={videoInputRef}
+                type="file"
+                accept=".mp4,.webm,.mov,video/mp4,video/webm,video/quicktime"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleVideoUpload(f);
+                  e.target.value = '';
+                }}
+              />
+              {store.video_url ? (
+                <div className="space-y-2">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-black/50">
+                    <video src={store.video_url} className="w-full h-full object-cover" controls />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => videoInputRef.current?.click()}
+                      disabled={uploadingVideo}
+                      className="flex-1 py-2.5 px-3 rounded-xl bg-white/5 border border-white/10 text-[#94A3B8] text-sm font-medium hover:bg-white/10 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
+                    >
+                      {uploadingVideo ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                      Skift video
+                    </button>
+                    <button
+                      type="button"
+                      onClick={removeVideo}
+                      aria-label="Fjern video"
+                      className="py-2.5 px-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium hover:bg-red-500/20 transition-colors flex items-center gap-1"
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => videoInputRef.current?.click()}
+                  disabled={uploadingVideo}
+                  className="w-full py-4 rounded-xl bg-white/5 border border-dashed border-white/10 flex items-center justify-center gap-2 hover:border-violet-500/40 hover:bg-violet-500/5 transition-colors disabled:opacity-50"
+                >
+                  {uploadingVideo ? (
+                    <Loader2 size={18} className="text-violet-400 animate-spin" />
+                  ) : (
+                    <Upload size={18} className="text-[#94A3B8]" />
+                  )}
+                  <span className="text-sm text-[#94A3B8] font-medium">
+                    {uploadingVideo ? 'Uploader…' : 'Upload en kort video af butikken (maks 100 MB)'}
+                  </span>
+                </button>
+              )}
+              <p className="text-xs text-[#94A3B8] mt-1.5">
+                Vis stemningen i butikken — det er jeres stærkeste kort over for eleverne.
+              </p>
+              {videoError && (
+                <p className="text-xs text-red-400 mt-1.5">{videoError}</p>
               )}
             </div>
           </div>

@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import type { Store, Match } from '@/lib/types/database';
 import SwipeCard from '@/components/student/SwipeCard';
 import MatchCelebration from '@/components/student/MatchCelebration';
+import Modal from '@/components/Modal';
 
 export default function StudentFeed() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function StudentFeed() {
     storeId: string;
     matched: boolean;
   } | null>(null);
+  const [storeVideoUrl, setStoreVideoUrl] = useState<string | null>(null);
 
   const supabase = createClient();
 
@@ -229,6 +231,7 @@ export default function StudentFeed() {
                   onSwipe={handleSwipe}
                   isTop={i === 0}
                   index={i}
+                  onPlayVideo={setStoreVideoUrl}
                 />
               ))}
             </AnimatePresence>
@@ -279,6 +282,29 @@ export default function StudentFeed() {
           </motion.button>
         </div>
       )}
+
+      {/* Store intro video */}
+      <Modal
+        open={!!storeVideoUrl}
+        onOpenChange={(o) => !o && setStoreVideoUrl(null)}
+        title="Butiksvideo"
+        variant="center"
+        overlayClassName="z-[70] bg-black/90"
+        contentClassName="w-full max-w-md aspect-[9/16]"
+      >
+        {storeVideoUrl && (
+          <>
+            <button
+              onClick={() => setStoreVideoUrl(null)}
+              aria-label="Luk video"
+              className="absolute -top-12 right-0 w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            >
+              <X className="w-5 h-5" aria-hidden="true" />
+            </button>
+            <video src={storeVideoUrl} controls autoPlay className="w-full h-full object-contain bg-black rounded-2xl" />
+          </>
+        )}
+      </Modal>
 
       {/* Match celebration */}
       {matchedStore && (

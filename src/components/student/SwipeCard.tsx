@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
-import { MapPin, Users, Briefcase, FileText, ExternalLink, Heart, X } from 'lucide-react';
+import { MapPin, Users, Briefcase, FileText, ExternalLink, Heart, X, Play } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS as EDU_LABELS } from '@/lib/types/database';
 import { safeExternalHref } from '@/lib/url';
@@ -11,11 +11,12 @@ interface SwipeCardProps {
   onSwipe: (direction: 'left' | 'right') => void;
   isTop: boolean;
   index: number;
+  onPlayVideo?: (url: string) => void;
 }
 
 const SWIPE_THRESHOLD = 120;
 
-export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardProps) {
+export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }: SwipeCardProps) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-300, 0, 300], [-18, 0, 18]);
   const opacity = useTransform(x, [-300, -100, 0, 100, 300], [0.5, 1, 1, 1, 0.5]);
@@ -95,6 +96,19 @@ export default function SwipeCard({ store, onSwipe, isTop, index }: SwipeCardPro
 
         {/* Scrim for readable text */}
         <div className="absolute inset-0 card-scrim" />
+
+        {/* "En dag hos os" video */}
+        {store.video_url && onPlayVideo && (
+          <button
+            onPointerDownCapture={(e) => e.stopPropagation()}
+            onClick={() => onPlayVideo(store.video_url!)}
+            aria-label={`Se video fra ${store.name}`}
+            className="absolute top-4 right-4 z-20 flex items-center gap-2 px-3.5 py-2 rounded-full bg-black/50 backdrop-blur-lg border border-white/20 text-white text-xs font-medium hover:bg-black/60 transition-colors"
+          >
+            <Play className="w-3.5 h-3.5" aria-hidden="true" />
+            Se video
+          </button>
+        )}
 
         {/* Distance chip */}
         {store.distance_km !== undefined && (

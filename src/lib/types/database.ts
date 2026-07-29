@@ -178,6 +178,7 @@ export interface Store {
   internship_slots: number;
   logo_url: string | null;
   cover_image_url: string | null;
+  video_url: string | null;
   phone: string | null;
   email: string | null;
   website: string | null;

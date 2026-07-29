@@ -23,6 +23,7 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { safeExternalHref } from '@/lib/url';
 import Modal from '@/components/Modal';
+import { Play } from 'lucide-react';
 import type { Match, Store, EducationLine } from '@/lib/types/database';
 import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
 
@@ -68,6 +69,7 @@ export default function StudentMatches() {
   const [showDisliked, setShowDisliked] = useState(false);
   const [selectedStore, setSelectedStore] = useState<{ store: Store; matched: boolean; matchId?: string } | null>(null);
   const [unreadByMatch, setUnreadByMatch] = useState<Record<string, number>>({});
+  const [storeVideoUrl, setStoreVideoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
@@ -519,6 +521,22 @@ export default function StudentMatches() {
                   </div>
                 )}
 
+                {/* Store intro video */}
+                {selectedStore.store.video_url && (
+                  <div className="mb-5">
+                    <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Butiksvideo</h3>
+                    <button
+                      onClick={() => setStoreVideoUrl(selectedStore.store.video_url)}
+                      className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors"
+                    >
+                      <span className="w-9 h-9 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center shrink-0">
+                        <Play className="w-4 h-4 text-violet-300" aria-hidden="true" />
+                      </span>
+                      <span className="font-medium text-sm">Se &quot;En dag hos os&quot;</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* Description */}
                 {selectedStore.store.description && (
                   <div className="mb-5">
@@ -608,6 +626,29 @@ export default function StudentMatches() {
                   )
                 )}
               </div>
+          </>
+        )}
+      </Modal>
+
+      {/* Store intro video player */}
+      <Modal
+        open={!!storeVideoUrl}
+        onOpenChange={(o) => !o && setStoreVideoUrl(null)}
+        title="Butiksvideo"
+        variant="center"
+        overlayClassName="z-[70] bg-black/90"
+        contentClassName="w-full max-w-md aspect-[9/16]"
+      >
+        {storeVideoUrl && (
+          <>
+            <button
+              onClick={() => setStoreVideoUrl(null)}
+              aria-label="Luk video"
+              className="absolute -top-12 right-0 w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+            >
+              <X className="w-5 h-5" aria-hidden="true" />
+            </button>
+            <video src={storeVideoUrl} controls autoPlay className="w-full h-full object-contain bg-black rounded-2xl" />
           </>
         )}
       </Modal>
