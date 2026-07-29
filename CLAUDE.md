@@ -127,6 +127,11 @@ Password for all: `Test1234!`
 **Store managers:** lars@magasin.dk, anne@matas.dk, peter@ikea.dk
 **School admin:** admin@cphbusiness.dk
 
+**Matching-scenario (seeded July 2026, multi-select arrays populated):**
+- Students: noah@, alma@, william@, ella@, lucas@, karla@ (all @test.jobmatch.dk, onboarded)
+- Managers/stores: mette@bilka.dk (Bilka One Fields), jonas@normal.dk (NORMAL Nørrebrogade), sara@elgiganten.dk (Elgiganten Fields), thomas@dsv.dk (DSV Air & Sea Kastrup), camilla@bestseller.dk (BESTSELLER Showroom København)
+- Built-in story: Noah×NORMAL, William×DSV, Ella×BESTSELLER are matched; Alma + Karla await manager swipes (visible in manager feeds); Lucas is at-risk (6 right-swipes, 0 matches, inactive 10 days, rejected by Bilka)
+
 ## Do / Don't
 - ✅ Always merge to `main` and push when changes are done (Vercel deploys automatically)
 - ✅ Check `types/database.ts` before writing new queries — types must match the DB schema
