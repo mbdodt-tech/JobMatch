@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Users, CheckCircle2, Store, Settings } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 const tabs = [
   { href: '/manager/feed', label: 'Elever', icon: Users },
@@ -68,6 +69,7 @@ export default function ManagerShell({
               </Link>
             );
           })}
+          <NotificationBell />
         </div>
       </nav>
       )}

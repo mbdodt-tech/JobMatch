@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Home, MessageCircle, User, Settings } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 const tabs = [
   { href: '/student/feed', label: 'Hjem', icon: Home },
@@ -74,6 +75,7 @@ export default function StudentShell({
                   </Link>
                 );
               })}
+              <NotificationBell />
             </div>
           </div>
         </nav>
