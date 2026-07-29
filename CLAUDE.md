@@ -60,6 +60,7 @@
 - `/login` and `/signup` — auth pages (emerald/teal theme)
 - `/student/feed` — swipe card stack (Tinder-style)
 - `/student/matches` — matches + liked stores (awaiting match)
+- `/student/chat/[matchId]` + `/manager/chat/[matchId]` — in-app chat per match (messages table, realtime)
 - `/student/profile` — editable profile page
 - `/student/settings` — notifications, account settings
 - `/student/onboarding` — 4-step onboarding (personal info → education → behavioral test → video/GDPR)
