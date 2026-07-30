@@ -39,14 +39,19 @@
 - Prefer `window.location.href` over `router.push()` for post-auth navigation (prevents loading spinner stuck on mobile)
 - Use `100dvh` instead of `100vh` for proper mobile viewport handling
 
-### Design principles
-- **Dark theme only** — background `#0A0A0F`, text `#F8FAFC`, muted `#64748B`
+### Design principles — "Varm" (logo-duo)
+- **Light theme only** — background `#FAF7F1` (cream), ink `#211F1A`, secondary `#6E6759`, muted `#8B8471`
+- **Primary teal** (from the logo's mint card): solid fills `#0E8578` (hover `#0B6B60`), text/icons on light `#0B6B60`, tint `#E1F2EF` + border `#C4E4DE`, dots `#0F9B8E`
+- **Secondary violet** (from the logo's violet card): text `#4E50C4`, tint `#EEEEFC` + border `#DBDBF8`, solid `#5D5FE0` sparingly — used for "awaiting/info" states and education chips
+- **Coral accent** `#EE5B3A` — hearts/likes only; unread badges stay `rose-500`
+- **Cards** — `bg-white border border-[#EAE4D8] varm-card-shadow`; inner boxes `bg-[#FAF7F1] border-[#EAE4D8]`
+- **NO gradients, glow, glassmorphism or gradient-text.** Single exception: photo-less cover fallback `linear-gradient(135deg,#14A899,#0E7C86,#5D5FA8)` (the logo's own sweep)
+- **No emoji in headings** (fine in body/notification text)
+- Photos keep `card-scrim` + white text on top; video lightboxes stay black
 - **Mobile-first** — max-w-md for phone screens, responsive breakpoints for dashboard
-- **Glassmorphism cards** — `bg-white/5 backdrop-blur-xl border border-white/10`
-- **Gradient accents** — purple-to-blue for student UI, emerald-to-teal for auth pages, green for matches
 - **Framer Motion** for page transitions, card animations, and micro-interactions
 - **All text must stay inside its container** — use `min-w-0`, `truncate`, `break-words`, `flex-wrap` as needed
-- Input fields: `rounded-2xl`, `py-4`, `text-base` for comfortable mobile tapping
+- Input fields: `rounded-2xl`, `py-4`, `text-base`, `bg-[#FAF7F1] border-[#EAE4D8]`, focus ring `#0E8578`
 
 ### Communication
 - **Respond in Danish** to the user unless they switch to English
@@ -57,7 +62,7 @@
 ## Architecture map
 
 ### App routes (`src/app/`)
-- `/login` and `/signup` — auth pages (emerald/teal theme)
+- `/login` and `/signup` — auth pages
 - `/student/feed` — swipe card stack (Tinder-style)
 - `/student/matches` — matches + liked stores (awaiting match)
 - `/student/chat/[matchId]` + `/manager/chat/[matchId]` — in-app chat per match (messages table, realtime)
