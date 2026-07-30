@@ -118,8 +118,8 @@ export default function NotificationBell() {
         aria-label={unread > 0 ? `Notifikationer, ${unread} ulæste` : 'Notifikationer'}
         className="relative flex flex-col items-center justify-center gap-0.5 px-4 py-2 rounded-full min-w-0"
       >
-        <Bell size={20} className="text-[#94A3B8] hover:text-white transition-colors" aria-hidden="true" />
-        <span className="text-[10px] font-medium text-[#94A3B8]">Aktivitet</span>
+        <Bell size={20} className="text-[#8B8471] hover:text-[#211F1A] transition-colors" aria-hidden="true" />
+        <span className="text-[10px] font-medium text-[#8B8471]">Aktivitet</span>
         {unread > 0 && (
           <span className="absolute top-0.5 right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
             {unread > 9 ? '9+' : unread}
@@ -132,18 +132,18 @@ export default function NotificationBell() {
         onOpenChange={setOpen}
         title="Notifikationer"
         variant="sheet"
-        contentClassName="max-h-[75dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+        contentClassName="max-h-[75dvh] overflow-y-auto bg-white rounded-t-3xl border-t border-[#EAE4D8]"
       >
-        <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
-          <div className="w-10 h-1 rounded-full bg-white/20" />
+        <div className="sticky top-0 z-10 bg-white flex justify-center py-3 rounded-t-3xl">
+          <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
         </div>
         <div className="px-5 pb-8 max-w-md mx-auto w-full">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-white">Aktivitet</h2>
+            <h2 className="text-lg font-bold text-[#211F1A]">Aktivitet</h2>
             {unread > 0 && (
               <button
                 onClick={markAllRead}
-                className="flex items-center gap-1.5 text-xs font-medium text-violet-300 hover:text-violet-200 transition-colors"
+                className="flex items-center gap-1.5 text-xs font-medium text-[#0B6B60] hover:opacity-80 transition-opacity"
               >
                 <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" />
                 Markér alle som læst
@@ -153,12 +153,12 @@ export default function NotificationBell() {
 
           {loading ? (
             <div className="flex justify-center py-10" role="status" aria-label="Indlæser notifikationer">
-              <Loader2 className="w-6 h-6 text-violet-400 animate-spin" aria-hidden="true" />
+              <Loader2 className="w-6 h-6 text-[#0B6B60] animate-spin" aria-hidden="true" />
             </div>
           ) : items.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-3xl mb-2">🔔</p>
-              <p className="text-sm text-[#94A3B8]">
+              <p className="text-sm text-[#6E6759]">
                 Ingen aktivitet endnu — her lander dine matches og beskeder.
               </p>
             </div>
@@ -169,31 +169,31 @@ export default function NotificationBell() {
                   key={n.id}
                   onClick={() => openNotification(n)}
                   className={`w-full flex items-start gap-3 p-3 rounded-xl text-left transition-colors ${
-                    n.read_at ? 'hover:bg-white/[0.04]' : 'bg-violet-500/10 hover:bg-violet-500/15'
+                    n.read_at ? 'hover:bg-[#FAF7F1]' : 'bg-[#E1F2EF] hover:bg-[#D3EAE5]'
                   }`}
                 >
                   <div
                     className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 border ${
                       n.type === 'match'
-                        ? 'bg-emerald-500/15 border-emerald-500/30'
-                        : 'bg-violet-500/15 border-violet-500/25'
+                        ? 'bg-[#E1F2EF] border-[#C4E4DE]'
+                        : 'bg-[#EEEEFC] border-[#DBDBF8]'
                     }`}
                   >
                     {n.type === 'match' ? (
-                      <Heart className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                      <Heart className="w-4 h-4 text-[#0B6B60]" aria-hidden="true" />
                     ) : (
-                      <MessageCircle className="w-4 h-4 text-violet-300" aria-hidden="true" />
+                      <MessageCircle className="w-4 h-4 text-[#4E50C4]" aria-hidden="true" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm truncate ${n.read_at ? 'text-[#94A3B8]' : 'text-white font-semibold'}`}>
+                    <p className={`text-sm truncate ${n.read_at ? 'text-[#6E6759]' : 'text-[#211F1A] font-semibold'}`}>
                       {n.title}
                     </p>
                     {n.body && (
-                      <p className="text-xs text-[#94A3B8] truncate mt-0.5">{n.body}</p>
+                      <p className="text-xs text-[#6E6759] truncate mt-0.5">{n.body}</p>
                     )}
                   </div>
-                  <span className="text-[10px] text-[#94A3B8] shrink-0 mt-0.5">{timeAgo(n.created_at)}</span>
+                  <span className="text-[10px] text-[#8B8471] shrink-0 mt-0.5">{timeAgo(n.created_at)}</span>
                 </button>
               ))}
             </div>

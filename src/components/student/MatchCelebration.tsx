@@ -32,7 +32,7 @@ function ConfettiParticles() {
   // Generate the randomised particles once, after mount — keeps Math.random()
   // out of render (react-hooks/purity) so positions don't jump on re-render.
   useEffect(() => {
-    const colors = ['#7C3AED', '#3B82F6', '#10B981', '#F97316', '#EF4444', '#F59E0B'];
+    const colors = ['#0F9B8E', '#5D5FE0', '#EE5B3A', '#FFFFFF'];
     setParticles(
       Array.from({ length: 50 }, (_, i) => ({
         id: i,
@@ -94,7 +94,7 @@ export default function MatchCelebration({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[99] bg-[#05050A]/90 backdrop-blur-lg"
+            className="fixed inset-0 z-[99] bg-black/70 backdrop-blur-lg"
           />
         </Dialog.Overlay>
 
@@ -103,7 +103,7 @@ export default function MatchCelebration({
 
         <Dialog.Content asChild aria-live="assertive" aria-describedby={undefined}>
           <motion.div
-            className="fixed left-1/2 top-1/2 z-[101] w-full max-w-sm -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center px-8 outline-none"
+            className="fixed left-1/2 top-1/2 z-[101] w-[calc(100%-2.5rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center px-8 py-10 rounded-3xl bg-white border border-[#EAE4D8] varm-card-shadow outline-none"
             initial={{ scale: 0.5, y: 50 }}
             animate={{ scale: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
@@ -114,8 +114,8 @@ export default function MatchCelebration({
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-500 p-0.5 glow-green">
-                <div className="w-full h-full rounded-3xl bg-[#12121E] flex items-center justify-center overflow-hidden">
+              <div className="w-28 h-28 rounded-3xl bg-[#0E8578] p-0.5">
+                <div className="w-full h-full rounded-3xl bg-white flex items-center justify-center overflow-hidden">
                   {store.logo_url ? (
                     <img
                       src={store.logo_url}
@@ -123,14 +123,14 @@ export default function MatchCelebration({
                       className="w-full h-full object-contain p-3"
                     />
                   ) : (
-                    <Briefcase size={40} className="text-emerald-400" />
+                    <Briefcase size={40} className="text-[#0B6B60]" />
                   )}
                 </div>
               </div>
 
               {/* Glow */}
               <motion.div
-                className="absolute inset-0 rounded-3xl bg-emerald-500/20 blur-xl -z-10"
+                className="absolute inset-0 rounded-3xl bg-[#0F9B8E]/25 blur-xl -z-10"
                 animate={{ opacity: [0.3, 0.7, 0.3] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
@@ -139,18 +139,18 @@ export default function MatchCelebration({
             {/* Match text — Dialog.Title (rendered as h2) names the dialog */}
             <Dialog.Title asChild>
               <motion.h2
-                className="text-4xl font-extrabold tracking-tight gradient-text-emerald mb-2"
+                className="text-4xl font-extrabold tracking-tight text-[#211F1A] mb-2"
                 animate={{ scale: [1, 1.03, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               >
-                Det er et match! 🎉
+                Det er et match!
               </motion.h2>
             </Dialog.Title>
 
-            <p className="text-lg text-[#94A3B8] mb-2 font-medium">
+            <p className="text-lg text-[#6E6759] mb-2 font-medium">
               {store.name}
             </p>
-            <p className="text-sm text-[#94A3B8] mb-8">
+            <p className="text-sm text-[#8B8471] mb-8">
               {store.city} • {store.internship_slots} praktikpladser
             </p>
 
@@ -158,7 +158,7 @@ export default function MatchCelebration({
             <div className="w-full space-y-3">
               <button
                 onClick={onViewContact}
-                className="w-full py-4 rounded-2xl btn-gradient-emerald text-white font-semibold text-base flex items-center justify-center gap-2 active:scale-[0.98]"
+                className="w-full py-4 rounded-2xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-base flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
               >
                 <Phone size={18} />
                 Se kontaktinfo
@@ -166,7 +166,7 @@ export default function MatchCelebration({
 
               <button
                 onClick={onContinue}
-                className="w-full py-4 rounded-2xl glass text-[#94A3B8] font-medium text-base flex items-center justify-center gap-2 hover:bg-white/10 transition-colors active:scale-[0.98]"
+                className="w-full py-4 rounded-2xl bg-white border border-[#EAE4D8] text-[#211F1A] font-medium text-base flex items-center justify-center gap-2 hover:bg-[#FAF7F1] transition-colors active:scale-[0.98]"
               >
                 Fortsæt
                 <ArrowRight size={18} />

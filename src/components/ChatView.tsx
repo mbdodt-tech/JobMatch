@@ -181,22 +181,22 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
   if (loading) {
     return (
       <div
-        className="min-h-dvh aurora-bg aurora-bg-subtle flex items-center justify-center"
+        className="min-h-dvh bg-[#FAF7F1] flex items-center justify-center"
         role="status"
         aria-label="Indlæser chat"
       >
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" aria-hidden="true" />
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" aria-hidden="true" />
       </div>
     );
   }
 
   if (notFound) {
     return (
-      <div className="min-h-dvh aurora-bg aurora-bg-subtle flex flex-col items-center justify-center gap-4 px-6 text-center">
-        <AlertCircle className="w-10 h-10 text-rose-400" aria-hidden="true" />
-        <p className="text-white font-semibold">Chatten findes ikke</p>
-        <p className="text-sm text-[#94A3B8]">Den findes kun for aktive matches, du selv er en del af.</p>
-        <Link href={backHref} className="mt-2 px-6 py-3 rounded-xl btn-gradient text-white font-semibold text-sm">
+      <div className="min-h-dvh bg-[#FAF7F1] flex flex-col items-center justify-center gap-4 px-6 text-center">
+        <AlertCircle className="w-10 h-10 text-[#B3412A]" aria-hidden="true" />
+        <p className="text-[#211F1A] font-semibold">Chatten findes ikke</p>
+        <p className="text-sm text-[#6E6759]">Den findes kun for aktive matches, du selv er en del af.</p>
+        <Link href={backHref} className="mt-2 px-6 py-3 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-sm transition-colors">
           Tilbage
         </Link>
       </div>
@@ -204,35 +204,35 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
   }
 
   return (
-    <div className="h-dvh aurora-bg aurora-bg-subtle flex flex-col">
+    <div className="h-dvh bg-[#FAF7F1] flex flex-col">
       {/* Header */}
-      <div className="shrink-0 safe-top backdrop-blur-xl bg-[#05050A]/80 border-b border-white/10">
+      <div className="shrink-0 safe-top bg-white border-b border-[#EAE4D8]">
         <div className="max-w-md mx-auto flex items-center gap-3 px-3 py-3">
           <Link
             href={backHref}
             aria-label="Tilbage til matches"
-            className="w-11 h-11 rounded-full flex items-center justify-center text-[#94A3B8] hover:text-white hover:bg-white/5 transition-colors shrink-0"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] hover:bg-[#FAF7F1] transition-colors shrink-0"
           >
             <ChevronLeft className="w-6 h-6" aria-hidden="true" />
           </Link>
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-[#E1F2EF] flex items-center justify-center shrink-0">
             {counterpart?.imageUrl ? (
               <img
                 src={counterpart.imageUrl}
                 alt=""
-                className={`w-full h-full ${counterpart.isStore ? 'object-contain bg-white/10 p-1' : 'object-cover'}`}
+                className={`w-full h-full ${counterpart.isStore ? 'object-contain bg-white p-1' : 'object-cover'}`}
               />
             ) : counterpart?.isStore ? (
-              <StoreIcon className="w-5 h-5 text-white/80" aria-hidden="true" />
+              <StoreIcon className="w-5 h-5 text-[#0B6B60]" aria-hidden="true" />
             ) : (
-              <span className="text-base font-bold text-white">
+              <span className="text-base font-bold text-[#0B6B60]">
                 {counterpart?.name?.charAt(0)?.toUpperCase() || '?'}
               </span>
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="text-white font-bold truncate">{counterpart?.name}</h1>
-            <p className="text-[11px] text-[#94A3B8]">I har matchet — sig hej! 👋</p>
+            <h1 className="text-[#211F1A] font-bold truncate">{counterpart?.name}</h1>
+            <p className="text-[11px] text-[#6E6759]">I har matchet — sig hej! 👋</p>
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
           {messages.length === 0 && (
             <div className="text-center py-16 px-6">
               <p className="text-4xl mb-3">💬</p>
-              <p className="text-sm text-[#94A3B8]">
+              <p className="text-sm text-[#6E6759]">
                 Ingen beskeder endnu. Skriv den første — fx hvornår I kan mødes til en snak.
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
             return (
               <div key={msg.id}>
                 {newDay && (
-                  <p className="text-center text-[10px] font-medium uppercase tracking-wider text-[#94A3B8] py-2">
+                  <p className="text-center text-[10px] font-medium uppercase tracking-wider text-[#8B8471] py-2">
                     {formatDay(msg.created_at)}
                   </p>
                 )}
@@ -268,12 +268,12 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
                   <div
                     className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words ${
                       mine
-                        ? 'bg-gradient-to-br from-violet-600 to-blue-600 text-white rounded-br-md'
-                        : 'glass text-[#F8FAFC] rounded-bl-md'
+                        ? 'bg-[#0E8578] text-white rounded-br-md'
+                        : 'bg-white border border-[#EAE4D8] varm-card-shadow text-[#211F1A] rounded-bl-md'
                     }`}
                   >
                     <p className="whitespace-pre-wrap">{msg.content}</p>
-                    <p className={`text-[10px] mt-1 ${mine ? 'text-white/60' : 'text-[#94A3B8]'}`}>
+                    <p className={`text-[10px] mt-1 ${mine ? 'text-white/60' : 'text-[#8B8471]'}`}>
                       {formatTime(msg.created_at)}
                     </p>
                   </div>
@@ -285,9 +285,9 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
       </div>
 
       {/* Composer */}
-      <div className="shrink-0 backdrop-blur-xl bg-[#05050A]/80 border-t border-white/10 safe-bottom">
+      <div className="shrink-0 bg-white border-t border-[#EAE4D8] safe-bottom">
         {sendError && (
-          <p className="max-w-md mx-auto px-4 pt-2 text-xs text-rose-300 flex items-center gap-1.5" role="alert">
+          <p className="max-w-md mx-auto px-4 pt-2 text-xs text-[#B3412A] flex items-center gap-1.5" role="alert">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             {sendError}
           </p>
@@ -305,13 +305,13 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
             }}
             placeholder="Skriv en besked…"
             aria-label="Skriv en besked"
-            className="flex-1 !py-3.5 !rounded-2xl text-base"
+            className="flex-1 !py-3.5 !rounded-2xl text-base bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all"
           />
           <button
             onClick={handleSend}
             disabled={sending || !draft.trim()}
             aria-label="Send besked"
-            className="w-12 h-12 rounded-full btn-gradient flex items-center justify-center shrink-0 disabled:opacity-40"
+            className="w-12 h-12 rounded-full bg-[#0E8578] hover:bg-[#0B6B60] transition-colors flex items-center justify-center shrink-0 disabled:opacity-40"
           >
             {sending ? (
               <Loader2 className="w-5 h-5 text-white animate-spin" aria-hidden="true" />
