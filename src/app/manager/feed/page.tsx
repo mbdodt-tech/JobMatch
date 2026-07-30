@@ -78,11 +78,18 @@ export default function ManagerFeedPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const [sheetCvUrl, setSheetCvUrl] = useState<string | null>(null);
   const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ id: number; kind: 'like' | 'pass'; name: string } | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-200, 0, 200], [-15, 0, 15]);
-  const rightOpacity = useTransform(x, [0, 100], [0, 1]);
-  const leftOpacity = useTransform(x, [-100, 0], [1, 0]);
+  const rightOpacity = useTransform(x, [0, 25, 90], [0, 0.3, 1]);
+  const leftOpacity = useTransform(x, [-90, -25, 0], [1, 0.3, 0]);
 
   useEffect(() => {
     loadData();
@@ -167,6 +174,7 @@ export default function ManagerFeedPage() {
         direction,
       });
 
+      let matched = false;
       if (direction === 'right') {
         const { data: studentSwipe } = await supabase
           .from('swipes')
@@ -199,10 +207,18 @@ export default function ManagerFeedPage() {
 
             setMatchedStudent(student);
             setShowMatch(true);
+            matched = true;
           }
         }
       }
 
+      if (!matched) {
+        setToast({
+          id: Date.now(),
+          kind: direction === 'right' ? 'like' : 'pass',
+          name: student.full_name ?? 'eleven',
+        });
+      }
       setCurrentIndex((prev) => prev + 1);
       x.set(0);
       setSwiping(false);
@@ -211,10 +227,11 @@ export default function ManagerFeedPage() {
   );
 
   function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
-    const threshold = 100;
-    if (info.offset.x > threshold) {
+    const threshold = 80;
+    const flick = 500;
+    if (info.offset.x > threshold || info.velocity.x > flick) {
       handleSwipe('right');
-    } else if (info.offset.x < -threshold) {
+    } else if (info.offset.x < -threshold || info.velocity.x < -flick) {
       handleSwipe('left');
     }
   }
@@ -258,6 +275,38 @@ export default function ManagerFeedPage() {
 
   return (
     <div className="bg-[#FAF7F1] min-h-[100dvh]">
+    {/* Swipe confirmation toast */}
+    <div aria-live="polite" className="fixed top-4 inset-x-4 z-[60] flex justify-center pointer-events-none">
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key={toast.id}
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+            className="flex items-center gap-2.5 max-w-full px-4 py-2.5 rounded-full bg-white border border-[#EAE4D8] varm-dock-shadow"
+          >
+            {toast.kind === 'like' ? (
+              <span className="w-7 h-7 rounded-full bg-[#FCEAE3] flex items-center justify-center shrink-0">
+                <Heart size={14} className="text-[#EE5B3A] fill-[#EE5B3A]/40" />
+              </span>
+            ) : (
+              <span className="w-7 h-7 rounded-full bg-[#FAF7F1] border border-[#EAE4D8] flex items-center justify-center shrink-0">
+                <X size={14} className="text-[#6E6759]" />
+              </span>
+            )}
+            <span className="text-sm font-medium text-[#211F1A] truncate">
+              {toast.kind === 'like' ? (
+                <>Du likede <span className="font-bold">{toast.name}</span></>
+              ) : (
+                <>Du fravalgte <span className="font-bold">{toast.name}</span></>
+              )}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
     <div className="max-w-md mx-auto px-4 pt-6 pb-4">
       {/* Header */}
       <motion.div

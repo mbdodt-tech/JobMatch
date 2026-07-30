@@ -552,7 +552,7 @@ function StepEducation({
                           : [...form.youth_educations, key],
                       )
                     }
-                    className={`relative py-3 px-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97] ${
+                    className={`relative py-3 px-1.5 rounded-xl text-[13px] font-medium min-w-0 whitespace-normal break-words leading-snug transition-all active:scale-[0.97] ${
                       selected
                         ? 'bg-[#EEEEFC] border-[#DBDBF8] text-[#4E50C4] border'
                         : 'bg-white border border-[#EAE4D8] text-[#6E6759] hover:bg-[#FAF7F1]'
@@ -657,7 +657,7 @@ function StepEducation({
                           : [...form.education_lines, key],
                       )
                     }
-                    className={`relative py-3 px-3 pr-7 rounded-xl text-sm font-medium transition-all text-left active:scale-[0.97] ${
+                    className={`relative py-3 px-3 pr-7 rounded-xl text-[13px] font-medium min-w-0 whitespace-normal break-words leading-snug transition-all text-left active:scale-[0.97] ${
                       selected
                         ? 'bg-[#E1F2EF] border-[#C4E4DE] text-[#0B6B60] border'
                         : 'bg-white border border-[#EAE4D8] text-[#6E6759] hover:bg-[#FAF7F1]'

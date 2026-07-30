@@ -25,8 +25,23 @@ export default function StudentFeed() {
     matched: boolean;
   } | null>(null);
   const [storeVideoUrl, setStoreVideoUrl] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    id: number;
+    kind: 'like' | 'pass' | 'undo';
+    name: string;
+  } | null>(null);
 
   const supabase = createClient();
+
+  const showToast = (kind: 'like' | 'pass' | 'undo', name: string) => {
+    setToast({ id: Date.now(), kind, name });
+  };
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   // Fetch stores that haven't been swiped yet
   const fetchStores = useCallback(async () => {
@@ -132,6 +147,9 @@ export default function StudentFeed() {
       }
       if (swipeData) {
         setLastSwipe({ swipeId: swipeData.id, index: currentIndex, storeId: store.id, matched });
+        if (!matched) {
+          showToast(direction === 'right' ? 'like' : 'pass', store.name);
+        }
       }
       setCurrentIndex((prev) => prev + 1);
     } finally {
@@ -164,6 +182,7 @@ export default function StudentFeed() {
       setShowMatch(false);
       setCurrentIndex(lastSwipe.index);
       setLastSwipe(null);
+      showToast('undo', stores[lastSwipe.index]?.name ?? '');
     } finally {
       setSwiping(false);
     }
@@ -174,6 +193,47 @@ export default function StudentFeed() {
 
   return (
     <div className="min-h-dvh bg-[#FAF7F1]">
+      {/* Swipe confirmation toast */}
+      <div aria-live="polite" className="fixed top-4 inset-x-4 z-[60] flex justify-center pointer-events-none">
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              key={toast.id}
+              initial={{ opacity: 0, y: -16, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -12, scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 32 }}
+              className="flex items-center gap-2.5 max-w-full px-4 py-2.5 rounded-full bg-white border border-[#EAE4D8] varm-dock-shadow"
+            >
+              {toast.kind === 'like' && (
+                <span className="w-7 h-7 rounded-full bg-[#FCEAE3] flex items-center justify-center shrink-0">
+                  <Heart size={14} className="text-[#EE5B3A] fill-[#EE5B3A]/40" />
+                </span>
+              )}
+              {toast.kind === 'pass' && (
+                <span className="w-7 h-7 rounded-full bg-[#FAF7F1] border border-[#EAE4D8] flex items-center justify-center shrink-0">
+                  <X size={14} className="text-[#6E6759]" />
+                </span>
+              )}
+              {toast.kind === 'undo' && (
+                <span className="w-7 h-7 rounded-full bg-[#E1F2EF] flex items-center justify-center shrink-0">
+                  <RotateCcw size={14} className="text-[#0B6B60]" />
+                </span>
+              )}
+              <span className="text-sm font-medium text-[#211F1A] truncate">
+                {toast.kind === 'like' && (
+                  <>Du likede <span className="font-bold">{toast.name}</span></>
+                )}
+                {toast.kind === 'pass' && (
+                  <>Du fravalgte <span className="font-bold">{toast.name}</span></>
+                )}
+                {toast.kind === 'undo' && 'Swipe fortrudt'}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       {/* Header */}
       <div className="relative z-10 px-4 pt-6 pb-3 max-w-md mx-auto">
         <div className="flex items-center justify-between">

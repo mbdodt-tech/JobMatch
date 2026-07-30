@@ -14,21 +14,23 @@ interface SwipeCardProps {
   onPlayVideo?: (url: string) => void;
 }
 
-const SWIPE_THRESHOLD = 120;
+const SWIPE_THRESHOLD = 80;
+const FLICK_VELOCITY = 500;
 
 export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }: SwipeCardProps) {
   const x = useMotionValue(0);
   const rotate = useTransform(x, [-300, 0, 300], [-18, 0, 18]);
   const opacity = useTransform(x, [-300, -100, 0, 100, 300], [0.5, 1, 1, 1, 0.5]);
 
-  // Overlay opacities
-  const rejectOpacity = useTransform(x, [-150, -50, 0], [0.6, 0.2, 0]);
-  const acceptOpacity = useTransform(x, [0, 50, 150], [0, 0.2, 0.6]);
+  // Overlay opacities — react early so the drag gives immediate feedback
+  const rejectOpacity = useTransform(x, [-110, -25, 0], [0.95, 0.3, 0]);
+  const acceptOpacity = useTransform(x, [0, 25, 110], [0, 0.3, 0.95]);
 
   const handleDragEnd = (_: unknown, info: PanInfo) => {
-    if (info.offset.x > SWIPE_THRESHOLD) {
+    // A short flick counts as much as a long drag
+    if (info.offset.x > SWIPE_THRESHOLD || info.velocity.x > FLICK_VELOCITY) {
       onSwipe('right');
-    } else if (info.offset.x < -SWIPE_THRESHOLD) {
+    } else if (info.offset.x < -SWIPE_THRESHOLD || info.velocity.x < -FLICK_VELOCITY) {
       onSwipe('left');
     }
   };
@@ -78,16 +80,16 @@ export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }:
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-center justify-center">
+            <div className="w-full h-full bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-start justify-center">
               {store.logo_url ? (
                 <img
                   src={store.logo_url}
                   alt={store.name}
-                  className="w-28 h-28 rounded-3xl object-contain bg-white p-3 -translate-y-10"
+                  className="w-24 h-24 rounded-3xl object-contain bg-white p-3 mt-[14%]"
                 />
               ) : (
-                <div className="w-28 h-28 rounded-3xl bg-white/10 flex items-center justify-center -translate-y-10">
-                  <Briefcase size={48} className="text-white/90" />
+                <div className="w-24 h-24 rounded-3xl bg-white/10 flex items-center justify-center mt-[14%]">
+                  <Briefcase size={42} className="text-white/80" />
                 </div>
               )}
             </div>
