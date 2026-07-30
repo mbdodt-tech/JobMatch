@@ -48,15 +48,15 @@ function StoreCardMedia({ store }: { store: Store | null }) {
     );
   }
   return (
-    <div className="absolute inset-0 bg-gradient-to-br from-violet-600/30 via-blue-600/20 to-[#0B0B14] flex items-center justify-center">
+    <div className="absolute inset-0 bg-gradient-to-b from-[#0E6B4F] to-[#07402E] flex items-center justify-center">
       {store?.logo_url ? (
         <img
           src={store.logo_url}
           alt={store.name}
-          className="w-16 h-16 rounded-2xl object-contain bg-white/5 p-2 -translate-y-6"
+          className="w-16 h-16 rounded-2xl object-contain bg-white p-2 -translate-y-6"
         />
       ) : (
-        <Briefcase size={36} className="text-white/30 -translate-y-6" />
+        <Briefcase size={36} className="text-white/50 -translate-y-6" />
       )}
     </div>
   );
@@ -168,9 +168,9 @@ export default function StudentMatches() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh aurora-bg aurora-bg-subtle flex flex-col items-center justify-center gap-3">
-        <Loader2 size={32} className="text-violet-400 animate-spin" />
-        <p className="text-sm text-[#94A3B8]">Henter dine matches...</p>
+      <div className="min-h-dvh bg-[#FAF7F1] flex flex-col items-center justify-center gap-3">
+        <Loader2 size={32} className="text-[#0C5B43] animate-spin" />
+        <p className="text-sm text-[#6E6759]">Henter dine matches...</p>
       </div>
     );
   }
@@ -178,13 +178,13 @@ export default function StudentMatches() {
   const isEmpty = matches.length === 0 && liked.length === 0;
 
   return (
-    <div className="min-h-dvh aurora-bg aurora-bg-subtle pb-32">
+    <div className="min-h-dvh bg-[#FAF7F1] pb-32">
       {/* Header */}
       <div className="px-4 pt-6 pb-4 max-w-md mx-auto">
-        <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-          <span className="gradient-text">Matches</span>
+        <h1 className="text-2xl font-extrabold tracking-tight text-[#211F1A]">
+          Matches
         </h1>
-        <p className="text-sm text-[#94A3B8] mt-0.5">
+        <p className="text-sm text-[#6E6759] mt-0.5">
           {matches.length > 0
             ? `${matches.length} match${matches.length !== 1 ? 'es' : ''} og ${liked.length} afventer`
             : 'Dine matches og likes vises her'}
@@ -199,13 +199,13 @@ export default function StudentMatches() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-20 gap-4 text-center"
           >
-            <div className="w-20 h-20 rounded-full glass glow-violet flex items-center justify-center">
-              <Sparkles size={32} className="text-violet-400" />
+            <div className="w-20 h-20 rounded-full bg-[#E5F0EA] flex items-center justify-center">
+              <Sparkles size={32} className="text-[#0C5B43]" />
             </div>
-            <h2 className="text-xl font-bold text-[#F8FAFC]">
+            <h2 className="text-xl font-bold text-[#211F1A]">
               Ingen matches endnu
             </h2>
-            <p className="text-sm text-[#94A3B8] max-w-xs">
+            <p className="text-sm text-[#6E6759] max-w-xs">
               Swipe til højre på butikker du er interesseret i. Når en butik også swiper på dig, får du et match!
             </p>
           </motion.div>
@@ -215,8 +215,8 @@ export default function StudentMatches() {
         {matches.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-emerald-400" />
-              <h2 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
+              <div className="w-2 h-2 rounded-full bg-[#0C5B43]" />
+              <h2 className="text-sm font-bold text-[#0C5B43] uppercase tracking-wider">
                 Matches ({matches.length})
               </h2>
             </div>
@@ -236,15 +236,15 @@ export default function StudentMatches() {
                       visible: { opacity: 1, y: 0, scale: 1 },
                     }}
                     onClick={() => match.store && setSelectedStore({ store: match.store, matched: true, matchId: match.id })}
-                    className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-emerald-500/25 shadow-lg shadow-black/40 cursor-pointer active:scale-[0.98] transition-transform"
+                    className="relative aspect-[3/4] rounded-3xl overflow-hidden varm-card-shadow cursor-pointer active:scale-[0.98] transition-transform"
                   >
                     <StoreCardMedia store={match.store} />
                     <div className="absolute inset-0 card-scrim" />
 
                     {/* Match badge */}
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 backdrop-blur-md bg-emerald-500/20 border border-emerald-400/30 rounded-full px-2.5 py-0.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-[10px] font-medium text-emerald-300 uppercase tracking-wider">
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-0.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#0C5B43]" />
+                      <span className="text-[10px] font-semibold text-[#0C5B43] uppercase tracking-wider">
                         Match
                       </span>
                     </div>
@@ -269,7 +269,7 @@ export default function StudentMatches() {
                           href={`/student/chat/${match.id}`}
                           onClick={(e) => e.stopPropagation()}
                           aria-label={`Chat med ${match.store?.name ?? 'butikken'}`}
-                          className="relative w-8 h-8 rounded-full backdrop-blur-md bg-violet-500/25 border border-violet-400/40 flex items-center justify-center text-violet-200 hover:bg-violet-500/40 transition-colors active:scale-95"
+                          className="relative w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0C5B43] hover:bg-white transition-colors active:scale-95"
                         >
                           <MessageCircle size={13} aria-hidden="true" />
                           {(unreadByMatch[match.id] ?? 0) > 0 && (
@@ -282,7 +282,7 @@ export default function StudentMatches() {
                           <a
                             href={`tel:${match.store.phone}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-8 h-8 rounded-full backdrop-blur-md bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 hover:bg-emerald-500/35 transition-colors active:scale-95"
+                            className="w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0C5B43] hover:bg-white transition-colors active:scale-95"
                             title="Ring op"
                           >
                             <Phone size={13} />
@@ -292,7 +292,7 @@ export default function StudentMatches() {
                           <a
                             href={`mailto:${match.store.email}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-8 h-8 rounded-full backdrop-blur-md bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 hover:bg-blue-500/35 transition-colors active:scale-95"
+                            className="w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#6E6759] hover:bg-white transition-colors active:scale-95"
                             title="Send mail"
                           >
                             <Mail size={13} />
@@ -304,7 +304,7 @@ export default function StudentMatches() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="w-8 h-8 rounded-full backdrop-blur-md bg-white/15 border border-white/20 flex items-center justify-center text-white/70 hover:bg-white/25 transition-colors active:scale-95"
+                            className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-[#6E6759] hover:bg-white transition-colors active:scale-95"
                             title="Besøg website"
                           >
                             <ExternalLink size={13} />
@@ -323,12 +323,12 @@ export default function StudentMatches() {
         {liked.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-violet-400" />
-              <h2 className="text-sm font-bold text-violet-400 uppercase tracking-wider">
+              <div className="w-2 h-2 rounded-full bg-[#EE5B3A]" />
+              <h2 className="text-sm font-bold text-[#C64A2C] uppercase tracking-wider">
                 Interesseret i ({liked.length})
               </h2>
             </div>
-            <p className="text-xs text-[#94A3B8] mb-3">
+            <p className="text-xs text-[#6E6759] mb-3">
               Du har swipet højre — afventer at butikken swiper tilbage
             </p>
 
@@ -347,15 +347,15 @@ export default function StudentMatches() {
                       visible: { opacity: 1, y: 0, scale: 1 },
                     }}
                     onClick={() => setSelectedStore({ store: item.store, matched: false })}
-                    className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-violet-500/20 shadow-lg shadow-black/40 cursor-pointer active:scale-[0.98] transition-transform"
+                    className="relative aspect-[3/4] rounded-3xl overflow-hidden varm-card-shadow cursor-pointer active:scale-[0.98] transition-transform"
                   >
                     <StoreCardMedia store={item.store} />
                     <div className="absolute inset-0 card-scrim" />
 
                     {/* Awaiting badge */}
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 backdrop-blur-md bg-violet-500/20 border border-violet-400/30 rounded-full px-2.5 py-0.5">
-                      <Clock size={10} className="text-violet-300" />
-                      <span className="text-[10px] font-medium text-violet-300 uppercase tracking-wider">
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-0.5">
+                      <Clock size={10} className="text-[#C64A2C]" />
+                      <span className="text-[10px] font-semibold text-[#C64A2C] uppercase tracking-wider">
                         Afventer
                       </span>
                     </div>
@@ -372,7 +372,7 @@ export default function StudentMatches() {
                         </span>
                       </div>
                       <div className="flex items-center gap-1 text-[10px] text-white/50">
-                        <Heart size={10} className="text-violet-300 shrink-0" />
+                        <Heart size={10} className="text-[#F5876C] shrink-0" />
                         <span className="truncate">Liked {formatDate(item.swiped_at)}</span>
                       </div>
                     </div>
@@ -390,13 +390,13 @@ export default function StudentMatches() {
               onClick={() => setShowDisliked((v) => !v)}
               className="flex items-center gap-2 mb-3 w-full text-left"
             >
-              <div className="w-2 h-2 rounded-full bg-slate-500" />
-              <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+              <div className="w-2 h-2 rounded-full bg-[#8B8471]" />
+              <h2 className="text-sm font-bold text-[#8B8471] uppercase tracking-wider">
                 Fravalgt ({disliked.length})
               </h2>
               <ChevronDown
                 size={16}
-                className={`text-slate-500 transition-transform ${showDisliked ? 'rotate-180' : ''}`}
+                className={`text-[#8B8471] transition-transform ${showDisliked ? 'rotate-180' : ''}`}
               />
             </button>
 
@@ -410,14 +410,14 @@ export default function StudentMatches() {
                   <div
                     key={item.swipe_id}
                     onClick={() => setSelectedStore({ store: item.store, matched: false })}
-                    className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-white/10 shadow-lg shadow-black/40 cursor-pointer active:scale-[0.98] transition-transform opacity-70 hover:opacity-100"
+                    className="relative aspect-[3/4] rounded-3xl overflow-hidden varm-card-shadow cursor-pointer active:scale-[0.98] transition-transform opacity-60 hover:opacity-100 saturate-50 hover:saturate-100"
                   >
                     <StoreCardMedia store={item.store} />
                     <div className="absolute inset-0 card-scrim" />
 
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 backdrop-blur-md bg-white/10 border border-white/15 rounded-full px-2.5 py-0.5">
-                      <X size={10} className="text-slate-300" />
-                      <span className="text-[10px] font-medium text-slate-300 uppercase tracking-wider">
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-white/90 rounded-full px-2.5 py-0.5">
+                      <X size={10} className="text-[#6E6759]" />
+                      <span className="text-[10px] font-medium text-[#6E6759] uppercase tracking-wider">
                         Fravalgt
                       </span>
                     </div>
@@ -450,12 +450,12 @@ export default function StudentMatches() {
         onOpenChange={(o) => !o && setSelectedStore(null)}
         title="Butiksdetaljer"
         variant="sheet"
-        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-white rounded-t-3xl border-t border-[#EAE4D8]"
       >
         {selectedStore && (
           <>
-              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
-                <div className="w-10 h-1 rounded-full bg-white/20" />
+              <div className="sticky top-0 z-10 bg-white flex justify-center py-3 rounded-t-3xl">
+                <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
               </div>
 
               <div className="px-6 pb-10">
@@ -463,7 +463,7 @@ export default function StudentMatches() {
                   <button
                     onClick={() => setSelectedStore(null)}
                     aria-label="Luk"
-                    className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-[#94A3B8] hover:text-white transition-colors"
+                    className="w-11 h-11 rounded-full bg-[#FAF7F1] flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] transition-colors"
                   >
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -471,22 +471,22 @@ export default function StudentMatches() {
 
                 {/* Logo + name */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E5F0EA] flex items-center justify-center shrink-0">
                     {selectedStore.store.logo_url ? (
                       <img
                         src={selectedStore.store.logo_url}
                         alt={selectedStore.store.name}
-                        className="w-full h-full object-contain bg-white/10 p-2"
+                        className="w-full h-full object-contain bg-white p-2"
                       />
                     ) : (
-                      <Briefcase className="w-8 h-8 text-white/70" />
+                      <Briefcase className="w-8 h-8 text-[#0C5B43]" />
                     )}
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-xl font-bold text-white truncate">
+                    <h2 className="text-xl font-bold text-[#211F1A] truncate">
                       {selectedStore.store.name}
                     </h2>
-                    <div className="flex items-center gap-1 text-[#94A3B8] text-sm mt-0.5">
+                    <div className="flex items-center gap-1 text-[#6E6759] text-sm mt-0.5">
                       <MapPin size={13} className="shrink-0" />
                       <span className="truncate">
                         {selectedStore.store.address}, {selectedStore.store.postal_code}{' '}
@@ -494,9 +494,9 @@ export default function StudentMatches() {
                       </span>
                     </div>
                     {selectedStore.matched && (
-                      <div className="inline-flex items-center gap-1 mt-2 backdrop-blur-md bg-emerald-500/20 border border-emerald-400/30 rounded-full px-2.5 py-0.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-[10px] font-medium text-emerald-300 uppercase tracking-wider">
+                      <div className="inline-flex items-center gap-1 mt-2 bg-[#E5F0EA] rounded-full px-2.5 py-0.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#0C5B43]" />
+                        <span className="text-[10px] font-semibold text-[#0C5B43] uppercase tracking-wider">
                           Match
                         </span>
                       </div>
@@ -507,12 +507,12 @@ export default function StudentMatches() {
                 {/* Job posting PDF — the store's own wins, else the chain's shared posting */}
                 {(selectedStore.store.job_description_url || selectedStore.store.chain?.job_description_url) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Jobopslag</h3>
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Jobopslag</h3>
                     <a
                       href={safeExternalHref(selectedStore.store.job_description_url || selectedStore.store.chain?.job_description_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-violet-500/15 to-blue-500/15 border border-violet-500/30 text-violet-300 hover:from-violet-500/25 hover:to-blue-500/25 transition-colors"
+                      className="flex items-center gap-3 p-4 rounded-xl bg-[#E5F0EA] border border-[#CFE3D8] text-[#0C5B43] hover:bg-[#DBEAE1] transition-colors"
                     >
                       <FileText className="w-5 h-5 shrink-0" />
                       <span className="font-semibold text-sm">Se jobopslag fra butikken</span>
@@ -524,13 +524,13 @@ export default function StudentMatches() {
                 {/* Store intro video */}
                 {selectedStore.store.video_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Butiksvideo</h3>
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Butiksvideo</h3>
                     <button
                       onClick={() => setStoreVideoUrl(selectedStore.store.video_url)}
-                      className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors"
+                      className="w-full flex items-center gap-3 p-4 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                     >
-                      <span className="w-9 h-9 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center shrink-0">
-                        <Play className="w-4 h-4 text-violet-300" aria-hidden="true" />
+                      <span className="w-9 h-9 rounded-full bg-[#E5F0EA] flex items-center justify-center shrink-0">
+                        <Play className="w-4 h-4 text-[#0C5B43]" aria-hidden="true" />
                       </span>
                       <span className="font-medium text-sm">Se &quot;En dag hos os&quot;</span>
                     </button>
@@ -540,8 +540,8 @@ export default function StudentMatches() {
                 {/* Description */}
                 {selectedStore.store.description && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Om butikken</h3>
-                    <p className="text-white text-sm leading-relaxed bg-white/5 rounded-xl p-4 border border-white/5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Om butikken</h3>
+                    <p className="text-[#211F1A] text-sm leading-relaxed bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
                       {selectedStore.store.description}
                     </p>
                   </div>
@@ -550,12 +550,12 @@ export default function StudentMatches() {
                 {/* Education lines */}
                 {selectedStore.store.education_lines?.length > 0 && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Uddannelseslinjer</h3>
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Uddannelseslinjer</h3>
                     <div className="flex flex-wrap gap-1.5">
                       {selectedStore.store.education_lines.map((line) => (
                         <span
                           key={line}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-violet-500/15 border border-violet-500/30 text-violet-300"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-[#E5F0EA] border border-[#CFE3D8] text-[#0C5B43]"
                         >
                           <GraduationCap size={12} />
                           {EDUCATION_LINE_LABELS[line as EducationLine] || line}
@@ -567,9 +567,9 @@ export default function StudentMatches() {
 
                 {/* Internship slots */}
                 <div className="mb-5">
-                  <h3 className="text-sm font-medium text-[#94A3B8] mb-1.5">Praktikpladser</h3>
-                  <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                    <Users className="w-4 h-4 text-violet-400 shrink-0" />
+                  <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Praktikpladser</h3>
+                  <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                    <Users className="w-4 h-4 text-[#0C5B43] shrink-0" />
                     <span>
                       {selectedStore.store.internship_slots || 1}{' '}
                       {(selectedStore.store.internship_slots || 1) === 1 ? 'plads' : 'pladser'}
@@ -580,11 +580,11 @@ export default function StudentMatches() {
                 {/* Contact — matches only */}
                 {selectedStore.matched ? (
                   <div className="space-y-2">
-                    <h3 className="text-sm font-medium text-[#94A3B8] mb-2">Kontakt</h3>
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-2">Kontakt</h3>
                     {selectedStore.matchId && (
                       <Link
                         href={`/student/chat/${selectedStore.matchId}`}
-                        className="flex items-center gap-3 p-3.5 rounded-xl btn-gradient text-white hover:brightness-110 transition-all"
+                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0C5B43] hover:bg-[#094A36] text-white transition-colors"
                       >
                         <MessageCircle className="w-5 h-5" aria-hidden="true" />
                         <span className="font-semibold text-sm">Skriv til butikken</span>
@@ -593,7 +593,7 @@ export default function StudentMatches() {
                     {selectedStore.store.phone && (
                       <a
                         href={`tel:${selectedStore.store.phone}`}
-                        className="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E5F0EA] border border-[#CFE3D8] text-[#0C5B43] hover:bg-[#DBEAE1] transition-colors"
                       >
                         <Phone className="w-5 h-5" />
                         <span className="font-medium text-sm">Ring: {selectedStore.store.phone}</span>
@@ -602,7 +602,7 @@ export default function StudentMatches() {
                     {selectedStore.store.email && (
                       <a
                         href={`mailto:${selectedStore.store.email}`}
-                        className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                       >
                         <Mail className="w-5 h-5" />
                         <span className="font-medium text-sm">Email: {selectedStore.store.email}</span>
@@ -612,12 +612,12 @@ export default function StudentMatches() {
                 ) : (
                   selectedStore.store.website && (
                     <div className="space-y-2">
-                      <h3 className="text-sm font-medium text-[#94A3B8] mb-2">Links</h3>
+                      <h3 className="text-sm font-medium text-[#6E6759] mb-2">Links</h3>
                       <a
                         href={safeExternalHref(selectedStore.store.website)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3.5 rounded-xl bg-white/5 border border-white/10 text-white/80 hover:bg-white/10 transition-colors"
+                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                       >
                         <ExternalLink className="w-5 h-5" />
                         <span className="font-medium text-sm">Besøg website</span>

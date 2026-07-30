@@ -68,7 +68,7 @@ export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }:
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
       {/* Card */}
-      <div className="relative h-full rounded-[28px] overflow-hidden bg-[#12121E] border border-white/10 shadow-2xl shadow-violet-500/10">
+      <div className="relative h-full rounded-[28px] overflow-hidden bg-[#0C5B43] varm-card-shadow">
         {/* Full-bleed cover */}
         <div className="absolute inset-0">
           {store.cover_image_url ? (
@@ -78,16 +78,16 @@ export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }:
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-violet-600/40 via-blue-600/25 to-[#0B0B14] flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-b from-[#0E6B4F] to-[#07402E] flex items-center justify-center">
               {store.logo_url ? (
                 <img
                   src={store.logo_url}
                   alt={store.name}
-                  className="w-28 h-28 rounded-3xl object-contain bg-white/5 p-3 -translate-y-10"
+                  className="w-28 h-28 rounded-3xl object-contain bg-white p-3 -translate-y-10"
                 />
               ) : (
-                <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center glow-violet -translate-y-10">
-                  <Briefcase size={48} className="text-white" />
+                <div className="w-28 h-28 rounded-3xl bg-white/10 flex items-center justify-center -translate-y-10">
+                  <Briefcase size={48} className="text-white/90" />
                 </div>
               )}
             </div>
@@ -177,21 +177,21 @@ export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }:
           <>
             {/* Reject overlay (red) */}
             <motion.div
-              className="absolute inset-0 rounded-[28px] bg-rose-500/25 flex items-center justify-center pointer-events-none"
+              className="absolute inset-0 rounded-[28px] bg-black/30 flex items-center justify-center pointer-events-none"
               style={{ opacity: rejectOpacity }}
             >
-              <div className="rotate-[-20deg] border-4 border-rose-400 rounded-3xl p-5 bg-rose-500/20 backdrop-blur-sm glow-red">
-                <X size={56} strokeWidth={3} className="text-rose-300" />
+              <div className="rotate-[-16deg] rounded-3xl p-5 bg-white/90">
+                <X size={56} strokeWidth={3} className="text-[#211F1A]" />
               </div>
             </motion.div>
 
-            {/* Accept overlay (green) */}
+            {/* Accept overlay (coral) */}
             <motion.div
-              className="absolute inset-0 rounded-[28px] bg-emerald-500/25 flex items-center justify-center pointer-events-none"
+              className="absolute inset-0 rounded-[28px] bg-[#EE5B3A]/30 flex items-center justify-center pointer-events-none"
               style={{ opacity: acceptOpacity }}
             >
-              <div className="rotate-[20deg] border-4 border-emerald-400 rounded-3xl p-5 bg-emerald-500/20 backdrop-blur-sm glow-green">
-                <Heart size={56} strokeWidth={3} className="text-emerald-300 fill-emerald-300/40" />
+              <div className="rotate-[16deg] rounded-3xl p-5 bg-white/90">
+                <Heart size={56} strokeWidth={3} className="text-[#EE5B3A] fill-[#EE5B3A]/30" />
               </div>
             </motion.div>
           </>

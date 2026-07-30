@@ -173,21 +173,21 @@ export default function StudentFeed() {
   const isEmpty = currentIndex >= stores.length && !loading;
 
   return (
-    <div className="min-h-dvh aurora-bg aurora-bg-subtle aurora-animated">
+    <div className="min-h-dvh bg-[#FAF7F1]">
       {/* Header */}
       <div className="relative z-10 px-4 pt-6 pb-3 max-w-md mx-auto">
         <div className="flex items-center justify-between">
           <div className="min-w-0">
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
-              <span className="gradient-text">Udforsk</span> 🔍
+            <h1 className="text-2xl font-extrabold tracking-tight text-[#211F1A]">
+              Udforsk
             </h1>
-            <p className="text-sm text-[#94A3B8] truncate">
+            <p className="text-sm text-[#6E6759] truncate">
               Swipe for at finde din praktikplads
             </p>
           </div>
-          <div className="flex items-center gap-1 glass rounded-full px-3 py-1.5 shrink-0">
-            <Sparkles size={14} className="text-violet-400" />
-            <span className="text-xs font-medium text-[#94A3B8]">
+          <div className="flex items-center gap-1.5 bg-white border border-[#EAE4D8] rounded-full px-3 py-1.5 shrink-0">
+            <Sparkles size={14} className="text-[#0C5B43]" />
+            <span className="text-xs font-medium text-[#6E6759]">
               {stores.length - currentIndex} tilbage
             </span>
           </div>
@@ -199,8 +199,8 @@ export default function StudentFeed() {
         <div className="relative" style={{ height: 'calc(100dvh - 340px)', minHeight: 340 }}>
           {loading ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
-              <Loader2 size={36} className="text-violet-400 animate-spin" />
-              <p className="text-[#94A3B8] text-sm">Henter virksomheder…</p>
+              <Loader2 size={36} className="text-[#0C5B43] animate-spin" />
+              <p className="text-[#6E6759] text-sm">Henter virksomheder…</p>
             </div>
           ) : isEmpty ? (
             <motion.div
@@ -208,16 +208,18 @@ export default function StudentFeed() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center h-full gap-4 text-center px-8"
             >
-              <div className="text-6xl">🎯</div>
-              <h2 className="text-xl font-bold text-[#F8FAFC]">
+              <div className="w-20 h-20 rounded-full bg-[#E5F0EA] flex items-center justify-center">
+                <Sparkles size={32} className="text-[#0C5B43]" />
+              </div>
+              <h2 className="text-xl font-bold text-[#211F1A]">
                 Ingen flere lige nu
               </h2>
-              <p className="text-sm text-[#94A3B8]">
+              <p className="text-sm text-[#6E6759]">
                 Du har set alle tilgængelige virksomheder. Kom tilbage senere for nye muligheder!
               </p>
               <button
                 onClick={fetchStores}
-                className="mt-4 px-6 py-3 rounded-2xl btn-gradient text-white font-semibold text-sm active:scale-[0.98]"
+                className="mt-4 px-6 py-3 rounded-2xl bg-[#0C5B43] hover:bg-[#094A36] text-white font-semibold text-sm active:scale-[0.98] transition-colors"
               >
                 Opdater listen
               </button>
@@ -247,11 +249,11 @@ export default function StudentFeed() {
             onClick={handleUndo}
             disabled={swiping || !lastSwipe}
             aria-label="Fortryd sidste swipe"
-            className="w-12 h-12 rounded-full glass ring-1 ring-amber-500/30 flex items-center justify-center shadow-lg hover:bg-amber-500/10 hover:ring-amber-500/50 transition-colors group disabled:opacity-30 disabled:pointer-events-none"
+            className="w-12 h-12 rounded-full bg-white border border-[#EAE4D8] varm-card-shadow flex items-center justify-center hover:bg-[#FAF7F1] transition-colors group disabled:opacity-30 disabled:pointer-events-none"
           >
             <RotateCcw
               size={20}
-              className="text-amber-400 group-hover:text-amber-300 transition-colors"
+              className="text-[#8B8471] group-hover:text-[#6E6759] transition-colors"
             />
           </motion.button>
 
@@ -260,11 +262,11 @@ export default function StudentFeed() {
             onClick={() => handleSwipe('left')}
             disabled={swiping}
             aria-label="Afvis"
-            className="w-16 h-16 rounded-full glass ring-1 ring-rose-500/30 flex items-center justify-center shadow-lg hover:bg-rose-500/10 hover:ring-rose-500/50 transition-colors group disabled:opacity-50"
+            className="w-16 h-16 rounded-full bg-white border border-[#EAE4D8] varm-card-shadow flex items-center justify-center hover:bg-[#FAF7F1] transition-colors group disabled:opacity-50"
           >
             <X
               size={28}
-              className="text-rose-400 group-hover:text-rose-300 transition-colors"
+              className="text-[#6E6759] group-hover:text-[#211F1A] transition-colors"
             />
           </motion.button>
 
@@ -273,7 +275,7 @@ export default function StudentFeed() {
             onClick={() => handleSwipe('right')}
             disabled={swiping}
             aria-label="Synes godt om"
-            className="w-18 h-18 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 ring-1 ring-white/10 flex items-center justify-center glow-green hover:brightness-110 transition-all group disabled:opacity-50"
+            className="w-18 h-18 rounded-full bg-[#EE5B3A] hover:bg-[#DC4E2E] varm-card-shadow flex items-center justify-center transition-colors group disabled:opacity-50"
           >
             <Heart
               size={32}

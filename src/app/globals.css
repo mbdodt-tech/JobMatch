@@ -298,3 +298,16 @@ h1, h2, h3 {
     scroll-behavior: auto !important;
   }
 }
+
+/* =============================================================
+   "Varm" prototype (retning A) — light, Danish, single accent
+   Scoped utilities used by login + student feed + matches while
+   the rest of the app still runs Aurora.
+   ============================================================= */
+
+.varm-card-shadow {
+  box-shadow: 0 1px 2px rgba(33, 31, 26, 0.05), 0 10px 30px rgba(33, 31, 26, 0.07);
+}
+.varm-dock-shadow {
+  box-shadow: 0 2px 8px rgba(33, 31, 26, 0.06), 0 12px 32px rgba(33, 31, 26, 0.12);
+}
