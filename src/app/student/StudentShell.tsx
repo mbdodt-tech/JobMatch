@@ -24,16 +24,8 @@ export default function StudentShell({
   const isOnboarding =
     pathname?.startsWith('/student/onboarding') || pathname?.startsWith('/student/chat');
 
-  // "Varm" prototype pages run the light theme; the rest still run Aurora
-  const varm =
-    pathname?.startsWith('/student/feed') || pathname?.startsWith('/student/matches');
-
   return (
-    <div
-      className={`min-h-dvh font-[Inter] ${
-        varm ? 'bg-[#FAF7F1] text-[#211F1A]' : 'bg-[#05050A] text-[#F8FAFC]'
-      }`}
-    >
+    <div className="min-h-dvh font-[Inter] bg-[#FAF7F1] text-[#211F1A]">
       {/* Main content area */}
       <main className={isOnboarding ? '' : 'pb-32'}>
         {children}
@@ -45,13 +37,7 @@ export default function StudentShell({
           className="fixed left-4 right-4 z-50"
           style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}
         >
-          <div
-            className={`max-w-md mx-auto rounded-full ${
-              varm
-                ? 'bg-white border border-[#EAE4D8] varm-dock-shadow'
-                : 'glass-strong shadow-2xl shadow-black/50'
-            }`}
-          >
+          <div className="max-w-md mx-auto rounded-full bg-white border border-[#EAE4D8] varm-dock-shadow">
             <div className="flex items-center justify-around px-2 py-2">
               {tabs.map((tab) => {
                 const isActive =
@@ -67,27 +53,19 @@ export default function StudentShell({
                     {isActive && (
                       <motion.div
                         layoutId="activeTab"
-                        className={`absolute inset-0 rounded-full ${
-                          varm
-                            ? 'bg-[#0E8578]'
-                            : 'bg-gradient-to-r from-violet-500 to-blue-500 glow-violet'
-                        }`}
+                        className="absolute inset-0 rounded-full bg-[#0E8578]"
                         transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                       />
                     )}
                     <tab.icon
                       size={20}
                       className={`relative z-10 transition-colors ${
-                        isActive
-                          ? 'text-white'
-                          : varm
-                            ? 'text-[#8B8471]'
-                            : 'text-[#94A3B8] hover:text-[#94A3B8]'
+                        isActive ? 'text-white' : 'text-[#8B8471]'
                       }`}
                     />
                     <span
                       className={`relative z-10 text-[10px] font-medium truncate max-w-full transition-colors ${
-                        isActive ? 'text-white' : varm ? 'text-[#8B8471]' : 'text-[#94A3B8]'
+                        isActive ? 'text-white' : 'text-[#8B8471]'
                       }`}
                     >
                       {tab.label}
