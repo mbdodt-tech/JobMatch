@@ -10,21 +10,27 @@ const roles = [
     title: 'Elev',
     icon: GraduationCap,
     description: 'Find den perfekte praktikplads der matcher din stil og dine interesser',
-    gradient: 'from-violet-500 to-blue-500',
+    accent: 'bg-[#0F9B8E]',
+    iconBox: 'bg-[#E1F2EF] border border-[#C4E4DE]',
+    iconColor: 'text-[#0B6B60]',
     href: '/signup',
   },
   {
     title: 'Butikschef',
     icon: Store,
     description: 'Find motiverede elever der passer perfekt til din butik',
-    gradient: 'from-blue-500 to-cyan-400',
+    accent: 'bg-[#5D5FE0]',
+    iconBox: 'bg-[#EEEEFC] border border-[#DBDBF8]',
+    iconColor: 'text-[#4E50C4]',
     href: '/signup',
   },
   {
     title: 'Erhvervscenter',
     icon: Building2,
     description: 'Få overblik over matches, statistik og elevernes trivsel',
-    gradient: 'from-orange-500 to-amber-400',
+    accent: 'bg-[#EAE4D8]',
+    iconBox: 'bg-[#FAF7F1] border border-[#EAE4D8]',
+    iconColor: 'text-[#6E6759]',
     href: '/login',
     note: 'Konto oprettes af din skole',
   },
@@ -55,7 +61,7 @@ const itemVariants = {
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden aurora-bg aurora-animated">
+    <div className="relative min-h-[100dvh] overflow-hidden bg-[#FAF7F1]">
       {/* Content */}
       <div className="relative z-10">
         {/* Header */}
@@ -66,12 +72,12 @@ export default function LandingPage() {
           className="flex items-center justify-between px-6 py-5"
         >
           <div className="flex items-center gap-2">
-            <Logo variant="icon" className="w-8 h-8 rounded-xl glow-violet" />
-            <span className="text-lg font-bold text-white tracking-tight">Jobmatch</span>
+            <Logo variant="icon" className="w-8 h-8 rounded-xl" />
+            <span className="text-lg font-bold text-[#211F1A] tracking-tight">Jobmatch</span>
           </div>
           <Link
             href="/login"
-            className="text-sm font-medium text-text-secondary hover:text-white transition-colors px-4 py-2 rounded-full border border-white/10 hover:border-white/20"
+            className="text-sm font-medium text-[#6E6759] hover:text-[#211F1A] transition-colors px-4 py-2 rounded-full bg-white border border-[#EAE4D8] hover:border-[#0E8578]/40"
           >
             Log ind
           </Link>
@@ -85,32 +91,23 @@ export default function LandingPage() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
             <motion.div
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-sm text-text-secondary mb-6"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#EAE4D8] varm-card-shadow text-sm text-[#6E6759] mb-6"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+              <Sparkles className="w-3.5 h-3.5 text-[#0B6B60]" />
               Praktik-matching til den nye generation
             </motion.div>
 
             <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.1] mb-4">
-              <span className="text-white">Find din</span>
+              <span className="text-[#211F1A]">Find din</span>
               <br />
-              <motion.span
-                className="gradient-text"
-                animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-                style={{ backgroundSize: '200% auto' }}
-              >
-                drømmepraktik
-              </motion.span>
+              <span className="text-[#0B6B60]">drømmepraktik</span>
             </h1>
 
             <motion.p
-              className="text-text-secondary text-base leading-relaxed max-w-xs mx-auto"
+              className="text-[#6E6759] text-base leading-relaxed max-w-xs mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -130,7 +127,7 @@ export default function LandingPage() {
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="relative group px-8 py-4 rounded-full btn-gradient text-white font-semibold text-lg overflow-hidden"
+                className="relative group px-8 py-4 rounded-full bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-lg overflow-hidden transition-colors"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Kom i gang
@@ -152,7 +149,7 @@ export default function LandingPage() {
           >
             <motion.h2
               variants={itemVariants}
-              className="text-xl font-bold text-center text-white mb-6"
+              className="text-xl font-bold text-center text-[#211F1A] mb-6"
             >
               Hvem er du?
             </motion.h2>
@@ -163,23 +160,23 @@ export default function LandingPage() {
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative p-5 rounded-2xl glass-card glass-card-hover cursor-pointer overflow-hidden"
+                    className="group relative p-5 rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow hover:border-[#0E8578]/40 transition-colors cursor-pointer overflow-hidden"
                   >
-                    {/* Gradient accent */}
-                    <div className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r ${role.gradient} opacity-50 group-hover:opacity-100 transition-opacity`} />
+                    {/* Accent line */}
+                    <div className={`absolute top-0 left-0 w-full h-0.5 ${role.accent} opacity-50 group-hover:opacity-100 transition-opacity`} />
 
                     <div className="flex items-start gap-4">
-                      <div className={`shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center shadow-lg`}>
-                        <role.icon className="w-6 h-6 text-white" />
+                      <div className={`shrink-0 w-12 h-12 rounded-xl ${role.iconBox} flex items-center justify-center`}>
+                        <role.icon className={`w-6 h-6 ${role.iconColor}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-semibold text-lg">{role.title}</h3>
-                        <p className="text-text-secondary text-sm mt-0.5 leading-relaxed">{role.description}</p>
+                        <h3 className="text-[#211F1A] font-semibold text-lg">{role.title}</h3>
+                        <p className="text-[#6E6759] text-sm mt-0.5 leading-relaxed">{role.description}</p>
                         {role.note && (
-                          <p className="text-text-muted text-xs mt-1.5">{role.note}</p>
+                          <p className="text-[#8B8471] text-xs mt-1.5">{role.note}</p>
                         )}
                       </div>
-                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-white group-hover:translate-x-1 transition-all mt-1 shrink-0" />
+                      <ArrowRight className="w-5 h-5 text-[#8B8471] group-hover:text-[#0B6B60] group-hover:translate-x-1 transition-all mt-1 shrink-0" />
                     </div>
                   </motion.div>
                 </Link>
@@ -198,7 +195,7 @@ export default function LandingPage() {
           >
             <motion.h2
               variants={itemVariants}
-              className="text-xl font-bold text-center text-white mb-8"
+              className="text-xl font-bold text-center text-[#211F1A] mb-8"
             >
               Så nemt er det
             </motion.h2>
@@ -211,18 +208,18 @@ export default function LandingPage() {
                   className="flex items-start gap-4"
                 >
                   <div className="relative shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-600/20 to-blue-600/20 border border-violet-500/30 flex items-center justify-center">
-                      <step.icon className="w-5 h-5 text-violet-400" />
+                    <div className="w-12 h-12 rounded-full bg-[#E1F2EF] border border-[#C4E4DE] flex items-center justify-center">
+                      <step.icon className="w-5 h-5 text-[#0B6B60]" />
                     </div>
                     {i < steps.length - 1 && (
-                      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-px h-6 bg-gradient-to-b from-violet-500/30 to-transparent" />
+                      <div className="absolute top-12 left-1/2 -translate-x-1/2 w-px h-6 bg-[#EAE4D8]" />
                     )}
                   </div>
                   <div className="pt-1">
-                    <h3 className="text-white font-semibold">
+                    <h3 className="text-[#211F1A] font-semibold">
                       {step.number}. {step.title}
                     </h3>
-                    <p className="text-text-secondary text-sm mt-0.5">{step.description}</p>
+                    <p className="text-[#6E6759] text-sm mt-0.5">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -234,7 +231,7 @@ export default function LandingPage() {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-8 py-3.5 rounded-full btn-gradient text-white font-semibold"
+                  className="px-8 py-3.5 rounded-full bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold transition-colors"
                 >
                   Start nu — det er gratis ✨
                 </motion.button>
@@ -245,7 +242,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <footer className="px-6 pb-8 text-center">
-          <p className="text-text-muted text-xs">
+          <p className="text-[#8B8471] text-xs">
             © 2026 Jobmatch · Lavet med 💜 i Danmark
           </p>
         </footer>

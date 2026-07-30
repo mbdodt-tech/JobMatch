@@ -7,7 +7,7 @@
    ============================================================= */
 
 :root {
-  --bg-primary: #05050A;
+  --bg-primary: #FAF7F1;
   --bg-secondary: #0B0B14;
   --bg-elevated: #12121E;
   --bg-sheet: #0E0E18;
@@ -17,7 +17,7 @@
   --accent-warm: #F97316;
   --accent-success: #10B981;
   --accent-danger: #F43F5E;
-  --text-primary: #F8FAFC;
+  --text-primary: #211F1A;
   --text-secondary: #6E6759;
   --text-muted: #8B8471;
   --text-faint: #A8A294;  /* decorative only — not for informative text */
@@ -25,7 +25,7 @@
 }
 
 body {
-  background: var(--bg-primary);
+  background: #FAF7F1;
   color: var(--text-primary);
   font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
@@ -40,8 +40,8 @@ h1, h2, h3 {
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.7); }
+::-webkit-scrollbar-thumb { background: rgba(14, 133, 120, 0.35); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(14, 133, 120, 0.6); }
 
 /* =============================================================
    Aurora backgrounds — layered radial gradients + slow drift

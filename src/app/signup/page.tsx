@@ -145,7 +145,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] aurora-bg aurora-bg-emerald aurora-animated flex flex-col items-center justify-center px-5 relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-[#FAF7F1] flex flex-col items-center justify-center px-5 relative overflow-hidden">
       <div className="relative z-10 w-full max-w-md">
         {/* Progress indicator */}
         <motion.div
@@ -158,8 +158,8 @@ export default function SignupPage() {
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
                   step >= s
-                    ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white glow-green'
-                    : 'glass text-text-muted'
+                    ? 'bg-[#0E8578] text-white'
+                    : 'bg-white border border-[#EAE4D8] text-[#8B8471]'
                 }`}
               >
                 {s}
@@ -167,7 +167,7 @@ export default function SignupPage() {
               {s < 2 && (
                 <div
                   className={`w-14 h-0.5 rounded-full transition-colors duration-300 ${
-                    step > 1 ? 'bg-emerald-500' : 'bg-white/10'
+                    step > 1 ? 'bg-[#0E8578]' : 'bg-[#EAE4D8]'
                   }`}
                 />
               )}
@@ -176,7 +176,7 @@ export default function SignupPage() {
         </motion.div>
 
         {/* Card */}
-        <div className="p-6 sm:p-8 rounded-3xl glass-card overflow-hidden">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#EAE4D8] varm-card-shadow overflow-hidden">
           {/* Logo */}
           <motion.div
             initial={{ scale: 0 }}
@@ -184,7 +184,7 @@ export default function SignupPage() {
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             className="flex justify-center mb-6"
           >
-            <Logo variant="icon" className="animate-float w-16 h-16 rounded-2xl glow-green" />
+            <Logo variant="icon" className="w-16 h-16 rounded-2xl" />
           </motion.div>
 
           {confirmationSent ? (
@@ -194,23 +194,23 @@ export default function SignupPage() {
               className="text-center"
               aria-live="polite"
             >
-              <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
-                <Mail className="w-7 h-7 text-emerald-400" />
+              <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-[#E1F2EF] border border-[#C4E4DE] flex items-center justify-center">
+                <Mail className="w-7 h-7 text-[#0B6B60]" />
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                Tjek din <span className="gradient-text-emerald">indbakke</span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#211F1A]">
+                Tjek din <span className="text-[#0B6B60]">indbakke</span>
               </h1>
-              <p className="text-text-secondary text-base mt-3 leading-relaxed">
+              <p className="text-[#6E6759] text-base mt-3 leading-relaxed">
                 Vi har sendt et bekræftelses-link til{' '}
-                <span className="text-white font-medium break-all">{email}</span>.
+                <span className="text-[#211F1A] font-medium break-all">{email}</span>.
                 Klik på linket for at aktivere din konto — derefter logger du ind.
               </p>
-              <p className="text-text-muted text-sm mt-4">
+              <p className="text-[#8B8471] text-sm mt-4">
                 Ingen mail? Kig i spam-mappen.
               </p>
               <Link
                 href="/login"
-                className="mt-8 inline-flex w-full items-center justify-center py-4 rounded-2xl btn-gradient-emerald text-white font-semibold text-base"
+                className="mt-8 inline-flex w-full items-center justify-center py-4 rounded-2xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-base transition-colors"
               >
                 Gå til log ind
               </Link>
@@ -228,10 +228,10 @@ export default function SignupPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-center mb-8">
-                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-                    Kom i <span className="gradient-text-emerald">gang</span>
+                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#211F1A]">
+                    Kom i <span className="text-[#0B6B60]">gang</span>
                   </h1>
-                  <p className="text-text-secondary text-base mt-2">Hvem er du?</p>
+                  <p className="text-[#6E6759] text-base mt-2">Hvem er du?</p>
                 </div>
 
                 <div className="space-y-4">
@@ -240,19 +240,23 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => goToStep2('student')}
-                    className="w-full p-5 rounded-2xl glass-card hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/10 transition-all text-left group"
+                    className={`w-full p-5 rounded-2xl bg-white varm-card-shadow transition-all text-left group border ${
+                      role === 'student'
+                        ? 'border-[#0E8578] ring-2 ring-[#0E8578]/25 bg-[#E1F2EF]'
+                        : 'border-[#EAE4D8] hover:border-[#0E8578]/40'
+                    }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 glow-green flex items-center justify-center shrink-0">
-                        <GraduationCap className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-7 h-7 text-[#0B6B60]" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-bold text-lg">Elev</h3>
-                        <p className="text-text-secondary text-sm mt-0.5">
+                        <h3 className="text-[#211F1A] font-bold text-lg">Elev</h3>
+                        <p className="text-[#6E6759] text-sm mt-0.5">
                           Jeg leder efter en praktikplads
                         </p>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="w-5 h-5 text-[#8B8471] group-hover:text-[#0B6B60] group-hover:translate-x-1 transition-all" />
                     </div>
                   </motion.button>
 
@@ -261,26 +265,30 @@ export default function SignupPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => goToStep2('store_manager')}
-                    className="w-full p-5 rounded-2xl glass-card hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/10 transition-all text-left group"
+                    className={`w-full p-5 rounded-2xl bg-white varm-card-shadow transition-all text-left group border ${
+                      role === 'store_manager'
+                        ? 'border-[#0E8578] ring-2 ring-[#0E8578]/25 bg-[#E1F2EF]'
+                        : 'border-[#EAE4D8] hover:border-[#0E8578]/40'
+                    }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/30">
-                        <Store className="w-7 h-7 text-white" />
+                      <div className="w-14 h-14 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] flex items-center justify-center shrink-0">
+                        <Store className="w-7 h-7 text-[#4E50C4]" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-bold text-lg">Butikschef</h3>
-                        <p className="text-text-secondary text-sm mt-0.5">
+                        <h3 className="text-[#211F1A] font-bold text-lg">Butikschef</h3>
+                        <p className="text-[#6E6759] text-sm mt-0.5">
                           Jeg leder efter en praktikant
                         </p>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-text-muted group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="w-5 h-5 text-[#8B8471] group-hover:text-[#0B6B60] group-hover:translate-x-1 transition-all" />
                     </div>
                   </motion.button>
                 </div>
 
-                <p className="text-center text-sm text-text-secondary mt-8">
+                <p className="text-center text-sm text-[#6E6759] mt-8">
                   Har du allerede en konto?{' '}
-                  <Link href="/login" className="font-semibold gradient-text-emerald hover:opacity-80 transition-opacity">
+                  <Link href="/login" className="font-semibold text-[#0B6B60] hover:opacity-80 transition-opacity">
                     Log ind
                   </Link>
                 </p>
@@ -298,18 +306,18 @@ export default function SignupPage() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-center mb-8">
-                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-                    Næsten i <span className="gradient-text-emerald">mål</span>
+                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#211F1A]">
+                    Næsten i <span className="text-[#0B6B60]">mål</span>
                   </h1>
-                  <p className="text-text-secondary text-base mt-2">Udfyld dine oplysninger</p>
+                  <p className="text-[#6E6759] text-base mt-2">Udfyld dine oplysninger</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {/* Full Name */}
                   <div>
-                    <label htmlFor="signup-name" className="block text-sm font-semibold text-text-secondary mb-2">Fulde navn</label>
+                    <label htmlFor="signup-name" className="block text-sm font-semibold text-[#211F1A] mb-2">Fulde navn</label>
                     <div className="relative">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8B8471] pointer-events-none" />
                       <input
                         id="signup-name"
                         type="text"
@@ -317,16 +325,16 @@ export default function SignupPage() {
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Dit fulde navn"
                         required
-                        className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
+                        className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all text-base"
                       />
                     </div>
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label htmlFor="signup-email" className="block text-sm font-semibold text-text-secondary mb-2">Email</label>
+                    <label htmlFor="signup-email" className="block text-sm font-semibold text-[#211F1A] mb-2">Email</label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8B8471] pointer-events-none" />
                       <input
                         id="signup-email"
                         type="email"
@@ -334,16 +342,16 @@ export default function SignupPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="din@email.dk"
                         required
-                        className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
+                        className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all text-base"
                       />
                     </div>
                   </div>
 
                   {/* Password */}
                   <div>
-                    <label htmlFor="signup-password" className="block text-sm font-semibold text-text-secondary mb-2">Adgangskode</label>
+                    <label htmlFor="signup-password" className="block text-sm font-semibold text-[#211F1A] mb-2">Adgangskode</label>
                     <div className="relative">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8B8471] pointer-events-none" />
                       <input
                         id="signup-password"
                         type={showPassword ? 'text' : 'password'}
@@ -352,13 +360,13 @@ export default function SignupPage() {
                         placeholder="Mindst 6 tegn"
                         required
                         minLength={6}
-                        className="w-full !pl-12 !pr-12 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base"
+                        className="w-full !pl-12 !pr-12 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all text-base"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? 'Skjul adgangskode' : 'Vis adgangskode'}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white transition-colors z-10"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8B8471] hover:text-[#211F1A] transition-colors z-10"
                       >
                         {showPassword ? <EyeOff className="w-5 h-5" aria-hidden="true" /> : <Eye className="w-5 h-5" aria-hidden="true" />}
                       </button>
@@ -368,22 +376,22 @@ export default function SignupPage() {
                   {/* Organization selector for students */}
                   {role === 'student' && (
                     <div>
-                      <label htmlFor="signup-org" className="block text-sm font-semibold text-text-secondary mb-2">
+                      <label htmlFor="signup-org" className="block text-sm font-semibold text-[#211F1A] mb-2">
                         Erhvervscenter / skole
                       </label>
                       <div className="relative">
-                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8B8471] pointer-events-none" />
                         <select
                           id="signup-org"
                           value={organizationId}
                           onChange={(e) => setOrganizationId(e.target.value)}
-                          className="w-full px-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all text-base appearance-none cursor-pointer"
+                          className="w-full px-4 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all text-base appearance-none cursor-pointer"
                         >
-                          <option value="" className="bg-[var(--bg-secondary)]">
+                          <option value="" className="bg-white text-[#211F1A]">
                             Vælg din skole...
                           </option>
                           {organizations.map((org) => (
-                            <option key={org.id} value={org.id} className="bg-[var(--bg-secondary)]">
+                            <option key={org.id} value={org.id} className="bg-white text-[#211F1A]">
                               {org.name}
                             </option>
                           ))}
@@ -399,7 +407,7 @@ export default function SignupPage() {
                         initial={{ opacity: 0, y: -10, height: 0 }}
                         animate={{ opacity: 1, y: 0, height: 'auto' }}
                         exit={{ opacity: 0, y: -10, height: 0 }}
-                        className="flex items-center gap-2 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+                        className="flex items-center gap-2 p-4 rounded-2xl bg-[#FCEAE3] border border-[#F3C9BA] text-[#B3412A] text-sm"
                       >
                         <AlertCircle className="w-4 h-4 shrink-0" />
                         {error}
@@ -414,7 +422,7 @@ export default function SignupPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={goBack}
-                      className="px-5 py-4 rounded-2xl glass text-white font-medium hover:bg-white/10 transition-all flex items-center gap-1"
+                      className="px-5 py-4 rounded-2xl bg-white border border-[#EAE4D8] text-[#211F1A] font-medium hover:bg-[#FAF7F1] transition-all flex items-center gap-1"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       Tilbage
@@ -425,7 +433,7 @@ export default function SignupPage() {
                       disabled={loading}
                       whileHover={{ scale: loading ? 1 : 1.02 }}
                       whileTap={{ scale: loading ? 1 : 0.98 }}
-                      className="flex-1 py-4 rounded-2xl btn-gradient-emerald text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 py-4 rounded-2xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
                     >
                       {loading ? (
                         <>
@@ -433,10 +441,7 @@ export default function SignupPage() {
                           Opretter...
                         </>
                       ) : (
-                        <>
-                          Opret konto
-                          <ArrowRight className="w-4 h-4" />
-                        </>
+                        'Opret konto'
                       )}
                     </motion.button>
                   </div>
