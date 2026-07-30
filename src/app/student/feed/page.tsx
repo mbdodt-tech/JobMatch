@@ -186,7 +186,7 @@ export default function StudentFeed() {
             </p>
           </div>
           <div className="flex items-center gap-1.5 bg-white border border-[#EAE4D8] rounded-full px-3 py-1.5 shrink-0">
-            <Sparkles size={14} className="text-[#0C5B43]" />
+            <Sparkles size={14} className="text-[#0B6B60]" />
             <span className="text-xs font-medium text-[#6E6759]">
               {stores.length - currentIndex} tilbage
             </span>
@@ -199,7 +199,7 @@ export default function StudentFeed() {
         <div className="relative" style={{ height: 'calc(100dvh - 340px)', minHeight: 340 }}>
           {loading ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
-              <Loader2 size={36} className="text-[#0C5B43] animate-spin" />
+              <Loader2 size={36} className="text-[#0B6B60] animate-spin" />
               <p className="text-[#6E6759] text-sm">Henter virksomheder…</p>
             </div>
           ) : isEmpty ? (
@@ -208,8 +208,8 @@ export default function StudentFeed() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center h-full gap-4 text-center px-8"
             >
-              <div className="w-20 h-20 rounded-full bg-[#E5F0EA] flex items-center justify-center">
-                <Sparkles size={32} className="text-[#0C5B43]" />
+              <div className="w-20 h-20 rounded-full bg-[#E1F2EF] flex items-center justify-center">
+                <Sparkles size={32} className="text-[#0B6B60]" />
               </div>
               <h2 className="text-xl font-bold text-[#211F1A]">
                 Ingen flere lige nu
@@ -219,7 +219,7 @@ export default function StudentFeed() {
               </p>
               <button
                 onClick={fetchStores}
-                className="mt-4 px-6 py-3 rounded-2xl bg-[#0C5B43] hover:bg-[#094A36] text-white font-semibold text-sm active:scale-[0.98] transition-colors"
+                className="mt-4 px-6 py-3 rounded-2xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-sm active:scale-[0.98] transition-colors"
               >
                 Opdater listen
               </button>

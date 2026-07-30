@@ -68,7 +68,7 @@ export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }:
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
     >
       {/* Card */}
-      <div className="relative h-full rounded-[28px] overflow-hidden bg-[#0C5B43] varm-card-shadow">
+      <div className="relative h-full rounded-[28px] overflow-hidden bg-[#0E7C86] varm-card-shadow">
         {/* Full-bleed cover */}
         <div className="absolute inset-0">
           {store.cover_image_url ? (
@@ -78,7 +78,7 @@ export default function SwipeCard({ store, onSwipe, isTop, index, onPlayVideo }:
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-b from-[#0E6B4F] to-[#07402E] flex items-center justify-center">
+            <div className="w-full h-full bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-center justify-center">
               {store.logo_url ? (
                 <img
                   src={store.logo_url}

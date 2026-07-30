@@ -121,7 +121,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="din@email.dk"
                   required
-                  className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0C5B43]/40 focus:border-[#0C5B43]/50 transition-all text-base"
+                  className="w-full !pl-12 pr-4 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all text-base"
                 />
               </div>
             </motion.div>
@@ -142,7 +142,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Din adgangskode"
                   required
-                  className="w-full !pl-12 !pr-12 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0C5B43]/40 focus:border-[#0C5B43]/50 transition-all text-base"
+                  className="w-full !pl-12 !pr-12 py-4 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 transition-all text-base"
                 />
                 <button
                   type="button"
@@ -182,7 +182,7 @@ export default function LoginPage() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.97 }}
-                className="w-full py-4 rounded-2xl bg-[#0C5B43] hover:bg-[#094A36] text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-4 rounded-2xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors"
               >
                 {loading ? (
                   <>
@@ -206,7 +206,7 @@ export default function LoginPage() {
             Har du ikke en konto?{' '}
             <Link
               href="/signup"
-              className="font-semibold text-[#0C5B43] hover:opacity-80 transition-opacity"
+              className="font-semibold text-[#0B6B60] hover:opacity-80 transition-opacity"
             >
               Opret dig her
             </Link>

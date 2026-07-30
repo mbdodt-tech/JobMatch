@@ -69,7 +69,7 @@ export default function StudentShell({
                         layoutId="activeTab"
                         className={`absolute inset-0 rounded-full ${
                           varm
-                            ? 'bg-[#0C5B43]'
+                            ? 'bg-[#0E8578]'
                             : 'bg-gradient-to-r from-violet-500 to-blue-500 glow-violet'
                         }`}
                         transition={{ type: 'spring', stiffness: 500, damping: 35 }}

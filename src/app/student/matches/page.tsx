@@ -48,7 +48,7 @@ function StoreCardMedia({ store }: { store: Store | null }) {
     );
   }
   return (
-    <div className="absolute inset-0 bg-gradient-to-b from-[#0E6B4F] to-[#07402E] flex items-center justify-center">
+    <div className="absolute inset-0 bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-center justify-center">
       {store?.logo_url ? (
         <img
           src={store.logo_url}
@@ -169,7 +169,7 @@ export default function StudentMatches() {
   if (loading) {
     return (
       <div className="min-h-dvh bg-[#FAF7F1] flex flex-col items-center justify-center gap-3">
-        <Loader2 size={32} className="text-[#0C5B43] animate-spin" />
+        <Loader2 size={32} className="text-[#0B6B60] animate-spin" />
         <p className="text-sm text-[#6E6759]">Henter dine matches...</p>
       </div>
     );
@@ -199,8 +199,8 @@ export default function StudentMatches() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-20 gap-4 text-center"
           >
-            <div className="w-20 h-20 rounded-full bg-[#E5F0EA] flex items-center justify-center">
-              <Sparkles size={32} className="text-[#0C5B43]" />
+            <div className="w-20 h-20 rounded-full bg-[#E1F2EF] flex items-center justify-center">
+              <Sparkles size={32} className="text-[#0B6B60]" />
             </div>
             <h2 className="text-xl font-bold text-[#211F1A]">
               Ingen matches endnu
@@ -215,8 +215,8 @@ export default function StudentMatches() {
         {matches.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-[#0C5B43]" />
-              <h2 className="text-sm font-bold text-[#0C5B43] uppercase tracking-wider">
+              <div className="w-2 h-2 rounded-full bg-[#0F9B8E]" />
+              <h2 className="text-sm font-bold text-[#0B6B60] uppercase tracking-wider">
                 Matches ({matches.length})
               </h2>
             </div>
@@ -243,8 +243,8 @@ export default function StudentMatches() {
 
                     {/* Match badge */}
                     <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-0.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#0C5B43]" />
-                      <span className="text-[10px] font-semibold text-[#0C5B43] uppercase tracking-wider">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#0F9B8E]" />
+                      <span className="text-[10px] font-semibold text-[#0B6B60] uppercase tracking-wider">
                         Match
                       </span>
                     </div>
@@ -269,7 +269,7 @@ export default function StudentMatches() {
                           href={`/student/chat/${match.id}`}
                           onClick={(e) => e.stopPropagation()}
                           aria-label={`Chat med ${match.store?.name ?? 'butikken'}`}
-                          className="relative w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0C5B43] hover:bg-white transition-colors active:scale-95"
+                          className="relative w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0B6B60] hover:bg-white transition-colors active:scale-95"
                         >
                           <MessageCircle size={13} aria-hidden="true" />
                           {(unreadByMatch[match.id] ?? 0) > 0 && (
@@ -282,7 +282,7 @@ export default function StudentMatches() {
                           <a
                             href={`tel:${match.store.phone}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0C5B43] hover:bg-white transition-colors active:scale-95"
+                            className="w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0B6B60] hover:bg-white transition-colors active:scale-95"
                             title="Ring op"
                           >
                             <Phone size={13} />
@@ -323,8 +323,8 @@ export default function StudentMatches() {
         {liked.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 rounded-full bg-[#EE5B3A]" />
-              <h2 className="text-sm font-bold text-[#C64A2C] uppercase tracking-wider">
+              <div className="w-2 h-2 rounded-full bg-[#5D5FE0]" />
+              <h2 className="text-sm font-bold text-[#4E50C4] uppercase tracking-wider">
                 Interesseret i ({liked.length})
               </h2>
             </div>
@@ -354,8 +354,8 @@ export default function StudentMatches() {
 
                     {/* Awaiting badge */}
                     <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-white/95 rounded-full px-2.5 py-0.5">
-                      <Clock size={10} className="text-[#C64A2C]" />
-                      <span className="text-[10px] font-semibold text-[#C64A2C] uppercase tracking-wider">
+                      <Clock size={10} className="text-[#4E50C4]" />
+                      <span className="text-[10px] font-semibold text-[#4E50C4] uppercase tracking-wider">
                         Afventer
                       </span>
                     </div>
@@ -471,7 +471,7 @@ export default function StudentMatches() {
 
                 {/* Logo + name */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E5F0EA] flex items-center justify-center shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E1F2EF] flex items-center justify-center shrink-0">
                     {selectedStore.store.logo_url ? (
                       <img
                         src={selectedStore.store.logo_url}
@@ -479,7 +479,7 @@ export default function StudentMatches() {
                         className="w-full h-full object-contain bg-white p-2"
                       />
                     ) : (
-                      <Briefcase className="w-8 h-8 text-[#0C5B43]" />
+                      <Briefcase className="w-8 h-8 text-[#0B6B60]" />
                     )}
                   </div>
                   <div className="min-w-0">
@@ -494,9 +494,9 @@ export default function StudentMatches() {
                       </span>
                     </div>
                     {selectedStore.matched && (
-                      <div className="inline-flex items-center gap-1 mt-2 bg-[#E5F0EA] rounded-full px-2.5 py-0.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#0C5B43]" />
-                        <span className="text-[10px] font-semibold text-[#0C5B43] uppercase tracking-wider">
+                      <div className="inline-flex items-center gap-1 mt-2 bg-[#E1F2EF] rounded-full px-2.5 py-0.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#0F9B8E]" />
+                        <span className="text-[10px] font-semibold text-[#0B6B60] uppercase tracking-wider">
                           Match
                         </span>
                       </div>
@@ -512,7 +512,7 @@ export default function StudentMatches() {
                       href={safeExternalHref(selectedStore.store.job_description_url || selectedStore.store.chain?.job_description_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 rounded-xl bg-[#E5F0EA] border border-[#CFE3D8] text-[#0C5B43] hover:bg-[#DBEAE1] transition-colors"
+                      className="flex items-center gap-3 p-4 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors"
                     >
                       <FileText className="w-5 h-5 shrink-0" />
                       <span className="font-semibold text-sm">Se jobopslag fra butikken</span>
@@ -529,8 +529,8 @@ export default function StudentMatches() {
                       onClick={() => setStoreVideoUrl(selectedStore.store.video_url)}
                       className="w-full flex items-center gap-3 p-4 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                     >
-                      <span className="w-9 h-9 rounded-full bg-[#E5F0EA] flex items-center justify-center shrink-0">
-                        <Play className="w-4 h-4 text-[#0C5B43]" aria-hidden="true" />
+                      <span className="w-9 h-9 rounded-full bg-[#E1F2EF] flex items-center justify-center shrink-0">
+                        <Play className="w-4 h-4 text-[#0B6B60]" aria-hidden="true" />
                       </span>
                       <span className="font-medium text-sm">Se &quot;En dag hos os&quot;</span>
                     </button>
@@ -555,7 +555,7 @@ export default function StudentMatches() {
                       {selectedStore.store.education_lines.map((line) => (
                         <span
                           key={line}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-[#E5F0EA] border border-[#CFE3D8] text-[#0C5B43]"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4]"
                         >
                           <GraduationCap size={12} />
                           {EDUCATION_LINE_LABELS[line as EducationLine] || line}
@@ -569,7 +569,7 @@ export default function StudentMatches() {
                 <div className="mb-5">
                   <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Praktikpladser</h3>
                   <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
-                    <Users className="w-4 h-4 text-[#0C5B43] shrink-0" />
+                    <Users className="w-4 h-4 text-[#0B6B60] shrink-0" />
                     <span>
                       {selectedStore.store.internship_slots || 1}{' '}
                       {(selectedStore.store.internship_slots || 1) === 1 ? 'plads' : 'pladser'}
@@ -584,7 +584,7 @@ export default function StudentMatches() {
                     {selectedStore.matchId && (
                       <Link
                         href={`/student/chat/${selectedStore.matchId}`}
-                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0C5B43] hover:bg-[#094A36] text-white transition-colors"
+                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white transition-colors"
                       >
                         <MessageCircle className="w-5 h-5" aria-hidden="true" />
                         <span className="font-semibold text-sm">Skriv til butikken</span>
@@ -593,7 +593,7 @@ export default function StudentMatches() {
                     {selectedStore.store.phone && (
                       <a
                         href={`tel:${selectedStore.store.phone}`}
-                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E5F0EA] border border-[#CFE3D8] text-[#0C5B43] hover:bg-[#DBEAE1] transition-colors"
+                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors"
                       >
                         <Phone className="w-5 h-5" />
                         <span className="font-medium text-sm">Ring: {selectedStore.store.phone}</span>
