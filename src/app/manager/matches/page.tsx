@@ -145,14 +145,14 @@ export default function ManagerMatchesPage() {
 
   if (loading) {
     return (
-      <div className="aurora-bg aurora-bg-subtle flex items-center justify-center min-h-[100dvh]">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+      <div className="bg-[#FAF7F1] flex items-center justify-center min-h-[100dvh]">
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="aurora-bg aurora-bg-subtle min-h-[100dvh]">
+    <div className="bg-[#FAF7F1] min-h-[100dvh]">
     <div className="max-w-md mx-auto px-4 pt-6 pb-8">
       {/* Header */}
       <motion.div
@@ -160,10 +160,10 @@ export default function ManagerMatchesPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6"
       >
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">
-          Dine <span className="gradient-text-emerald">matches</span>
+        <h1 className="text-2xl font-extrabold text-[#211F1A] tracking-tight">
+          Dine matches
         </h1>
-        <p className="text-text-secondary text-sm mt-1">
+        <p className="text-[#6E6759] text-sm mt-1">
           {matches.length} {matches.length === 1 ? 'match' : 'matches'}
         </p>
       </motion.div>
@@ -174,13 +174,13 @@ export default function ManagerMatchesPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <div className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center mb-4">
-            <Heart className="w-8 h-8 text-emerald-400" />
+          <div className="w-16 h-16 rounded-2xl bg-[#E1F2EF] flex items-center justify-center mb-4">
+            <Heart className="w-8 h-8 text-[#0B6B60]" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-2">
+          <h2 className="text-lg font-bold text-[#211F1A] mb-2">
             Ingen matches endnu
           </h2>
-          <p className="text-text-secondary text-sm">
+          <p className="text-[#6E6759] text-sm">
             Swipe på interesserede elever for at oprette matches
           </p>
         </motion.div>
@@ -211,7 +211,7 @@ export default function ManagerMatchesPage() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setSelectedMatch(match)}
-                  className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden border border-white/10 shadow-xl text-left"
+                  className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden varm-card-shadow text-left"
                 >
                   {match.student.avatar_url ? (
                     <img
@@ -220,7 +220,7 @@ export default function ManagerMatchesPage() {
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-violet-600 to-blue-600 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-center justify-center">
                       <span className="text-6xl font-extrabold text-white/25 select-none">
                         {match.student.full_name?.charAt(0)?.toUpperCase() || '?'}
                       </span>
@@ -229,7 +229,7 @@ export default function ManagerMatchesPage() {
 
                   <div className="absolute inset-0 card-scrim" />
 
-                  <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-semibold glow-green">
+                  <div className="absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-full bg-white/95 text-[#0B6B60] text-[10px] font-semibold">
                     <Heart className="w-3 h-3" />
                     Match
                   </div>
@@ -267,12 +267,12 @@ export default function ManagerMatchesPage() {
         onOpenChange={(o) => !o && setSelectedMatch(null)}
         title="Elevprofil"
         variant="sheet"
-        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-white rounded-t-3xl border-t border-[#EAE4D8]"
       >
         {selectedMatch && (
           <>
-              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
-                <div className="w-10 h-1 rounded-full bg-white/20" />
+              <div className="sticky top-0 z-10 bg-white flex justify-center py-3 rounded-t-3xl">
+                <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
               </div>
 
               <div className="px-6 pb-8">
@@ -281,7 +281,7 @@ export default function ManagerMatchesPage() {
                   <button
                     onClick={() => setSelectedMatch(null)}
                     aria-label="Luk"
-                    className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
+                    className="w-11 h-11 rounded-full bg-[#FAF7F1] flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] transition-colors"
                   >
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -289,7 +289,7 @@ export default function ManagerMatchesPage() {
 
                 {/* Avatar + name */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E1F2EF] flex items-center justify-center shrink-0">
                     {selectedMatch.student.avatar_url ? (
                       <img
                         src={selectedMatch.student.avatar_url}
@@ -297,21 +297,21 @@ export default function ManagerMatchesPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-3xl font-bold text-white">
+                      <span className="text-3xl font-bold text-[#0B6B60]">
                         {selectedMatch.student.full_name?.charAt(0)?.toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-xl font-bold text-white truncate">
+                    <h2 className="text-xl font-bold text-[#211F1A] truncate">
                       {selectedMatch.student.full_name}
                       {(() => {
                         const age = calculateAge(selectedMatch.student.date_of_birth);
-                        return age ? <span className="text-base font-normal text-white/60 ml-2">{age} år</span> : null;
+                        return age ? <span className="text-base font-normal text-[#8B8471] ml-2">{age} år</span> : null;
                       })()}
                     </h2>
                     {educationLineLabels(selectedMatch.student) && (
-                      <p className="text-text-secondary text-sm">
+                      <p className="text-[#6E6759] text-sm">
                         {educationLineLabels(selectedMatch.student)}
                       </p>
                     )}
@@ -329,15 +329,15 @@ export default function ManagerMatchesPage() {
                 {/* Youth education */}
                 {(selectedMatch.student.youth_education || selectedMatch.student.youth_education_school) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelse</h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Uddannelse</h3>
+                    <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <GraduationCap className="w-4 h-4 text-[#4E50C4] shrink-0 mt-0.5" />
                       <div>
                         {youthEducationLabels(selectedMatch.student) && (
                           <p>{youthEducationLabels(selectedMatch.student)}</p>
                         )}
                         {selectedMatch.student.youth_education_school && (
-                          <p className="text-text-secondary mt-0.5">{selectedMatch.student.youth_education_school}</p>
+                          <p className="text-[#6E6759] mt-0.5">{selectedMatch.student.youth_education_school}</p>
                         )}
                       </div>
                     </div>
@@ -347,9 +347,9 @@ export default function ManagerMatchesPage() {
                 {/* Address */}
                 {(selectedMatch.student.address || selectedMatch.student.city) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Adresse</h3>
+                    <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <MapPin className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                       <span>
                         {selectedMatch.student.address}
                         {(selectedMatch.student.postal_code || selectedMatch.student.city) && ', '}
@@ -363,9 +363,9 @@ export default function ManagerMatchesPage() {
                 {/* Date of birth */}
                 {selectedMatch.student.date_of_birth && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Fødselsdato</h3>
-                    <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <Calendar className="w-4 h-4 text-violet-400 shrink-0" />
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Fødselsdato</h3>
+                    <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <Calendar className="w-4 h-4 text-[#0B6B60] shrink-0" />
                       <span>
                         {new Date(selectedMatch.student.date_of_birth).toLocaleDateString('da-DK', {
                           day: 'numeric',
@@ -380,9 +380,9 @@ export default function ManagerMatchesPage() {
                 {/* Work experience */}
                 {selectedMatch.student.work_experience && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Erhvervserfaring</h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <Briefcase className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Erhvervserfaring</h3>
+                    <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <Briefcase className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                       <p>{selectedMatch.student.work_experience}</p>
                     </div>
                   </div>
@@ -391,18 +391,18 @@ export default function ManagerMatchesPage() {
                 {/* Video pitch */}
                 {selectedMatch.student.video_pitch_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">Video-pitch</h3>
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">Video-pitch</h3>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => sheetVideoUrl && openVideo(sheetVideoUrl)}
                       aria-label="Afspil video-pitch"
-                      className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
+                      className="w-full relative rounded-xl overflow-hidden bg-[#FAF7F1] border border-[#EAE4D8] aspect-video flex items-center justify-center group"
                     >
                       {selectedMatch.student.video_thumbnail_url ? (
                         <img src={selectedMatch.student.video_thumbnail_url} alt="Video thumbnail" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-violet-900/30 to-blue-900/30" />
+                        <div className="w-full h-full bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)]" />
                       )}
                       <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                         <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
@@ -416,13 +416,13 @@ export default function ManagerMatchesPage() {
                 {/* CV */}
                 {selectedMatch.student.cv_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">CV</h3>
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">CV</h3>
                     <a
                       href={sheetCvUrl ?? undefined}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-disabled={!sheetCvUrl}
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors aria-disabled:opacity-50"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] hover:bg-[#E3E3FA] transition-colors aria-disabled:opacity-50"
                     >
                       <FileText className="w-5 h-5" />
                       <span className="font-medium text-sm">Se elevens CV</span>
@@ -433,10 +433,10 @@ export default function ManagerMatchesPage() {
 
                 {/* Contact */}
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-text-secondary mb-2">Kontaktoplysninger</h3>
+                  <h3 className="text-sm font-medium text-[#6E6759] mb-2">Kontaktoplysninger</h3>
                   <Link
                     href={`/manager/chat/${selectedMatch.id}`}
-                    className="flex items-center gap-3 p-3.5 rounded-xl btn-gradient text-white hover:brightness-110 transition-all"
+                    className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white transition-colors"
                   >
                     <MessageCircle className="w-5 h-5" aria-hidden="true" />
                     <span className="font-semibold text-sm">Skriv til eleven</span>
@@ -444,7 +444,7 @@ export default function ManagerMatchesPage() {
                   {selectedMatch.student.phone && (
                     <a
                       href={`tel:${selectedMatch.student.phone}`}
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors"
                     >
                       <Phone className="w-5 h-5" />
                       <span className="font-medium text-sm">Ring: {selectedMatch.student.phone}</span>
@@ -453,14 +453,14 @@ export default function ManagerMatchesPage() {
                   {selectedMatch.student.email && (
                     <a
                       href={`mailto:${selectedMatch.student.email}`}
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                     >
                       <Mail className="w-5 h-5" />
                       <span className="font-medium text-sm">Email: {selectedMatch.student.email}</span>
                     </a>
                   )}
                   {!selectedMatch.student.phone && !selectedMatch.student.email && (
-                    <p className="text-text-muted text-sm p-3.5 rounded-xl bg-white/5 border border-white/10">
+                    <p className="text-[#8B8471] text-sm p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8]">
                       Eleven har ikke delt kontaktoplysninger endnu
                     </p>
                   )}

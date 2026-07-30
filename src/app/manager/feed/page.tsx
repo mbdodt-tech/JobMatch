@@ -236,20 +236,20 @@ export default function ManagerFeedPage() {
 
   if (loading) {
     return (
-      <div className="aurora-bg aurora-bg-subtle flex items-center justify-center min-h-[100dvh]">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+      <div className="bg-[#FAF7F1] flex items-center justify-center min-h-[100dvh]">
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
       </div>
     );
   }
 
   if (!store) {
     return (
-      <div className="aurora-bg aurora-bg-subtle flex flex-col items-center justify-center min-h-[100dvh] px-6 text-center">
-        <div className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center mb-4">
-          <Users className="w-8 h-8 text-blue-400" />
+      <div className="bg-[#FAF7F1] flex flex-col items-center justify-center min-h-[100dvh] px-6 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-[#E1F2EF] flex items-center justify-center mb-4">
+          <Users className="w-8 h-8 text-[#0B6B60]" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">Ingen butik oprettet</h2>
-        <p className="text-text-secondary text-sm">
+        <h2 className="text-xl font-bold text-[#211F1A] mb-2">Ingen butik oprettet</h2>
+        <p className="text-[#6E6759] text-sm">
           Opret din butiksprofil først for at se interesserede elever
         </p>
       </div>
@@ -257,7 +257,7 @@ export default function ManagerFeedPage() {
   }
 
   return (
-    <div className="aurora-bg aurora-bg-subtle min-h-[100dvh]">
+    <div className="bg-[#FAF7F1] min-h-[100dvh]">
     <div className="max-w-md mx-auto px-4 pt-6 pb-4">
       {/* Header */}
       <motion.div
@@ -265,10 +265,10 @@ export default function ManagerFeedPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-6"
       >
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">
-          Interesserede <span className="gradient-text">elever</span>
+        <h1 className="text-2xl font-extrabold text-[#211F1A] tracking-tight">
+          Interesserede elever
         </h1>
-        <p className="text-text-secondary text-sm mt-1">
+        <p className="text-[#6E6759] text-sm mt-1">
           {currentStudent
             ? `Tryk på kortet for detaljer — swipe for at vælge`
             : `Elever der har swiped højre på ${store.name}`}
@@ -281,15 +281,15 @@ export default function ManagerFeedPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 rounded-[28px] glass-card"
+            className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 rounded-[28px] bg-white border border-[#EAE4D8] varm-card-shadow"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 flex items-center justify-center mb-4">
-              <Users className="w-8 h-8 text-violet-400" />
+            <div className="w-16 h-16 rounded-2xl bg-[#E1F2EF] flex items-center justify-center mb-4">
+              <Users className="w-8 h-8 text-[#0B6B60]" />
             </div>
-            <h2 className="text-lg font-bold text-white mb-2">
+            <h2 className="text-lg font-bold text-[#211F1A] mb-2">
               Ingen interesserede elever endnu
             </h2>
-            <p className="text-text-secondary text-sm leading-relaxed">
+            <p className="text-[#6E6759] text-sm leading-relaxed">
               Din butik vises for relevante elever.
               <br />
               Kom tilbage senere!
@@ -315,19 +315,19 @@ export default function ManagerFeedPage() {
               >
                 {/* Swipe overlays */}
                 <motion.div
-                  className="absolute inset-0 z-10 rounded-[28px] bg-emerald-500/20 border-2 border-emerald-500/40 flex items-center justify-center pointer-events-none"
+                  className="absolute inset-0 z-10 rounded-[28px] bg-[#EE5B3A]/30 flex items-center justify-center pointer-events-none"
                   style={{ opacity: rightOpacity }}
                 >
-                  <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full p-4 glow-green">
-                    <Heart className="w-10 h-10 text-white" />
+                  <div className="bg-white/90 rounded-full p-4">
+                    <Heart className="w-10 h-10 text-[#EE5B3A] fill-[#EE5B3A]/30" />
                   </div>
                 </motion.div>
                 <motion.div
-                  className="absolute inset-0 z-10 rounded-[28px] bg-rose-500/20 border-2 border-rose-500/40 flex items-center justify-center pointer-events-none"
+                  className="absolute inset-0 z-10 rounded-[28px] bg-black/30 flex items-center justify-center pointer-events-none"
                   style={{ opacity: leftOpacity }}
                 >
-                  <div className="bg-rose-500 rounded-full p-4 glow-red">
-                    <X className="w-10 h-10 text-white" />
+                  <div className="bg-white/90 rounded-full p-4">
+                    <X className="w-10 h-10 text-[#211F1A]" />
                   </div>
                 </motion.div>
 
@@ -335,7 +335,7 @@ export default function ManagerFeedPage() {
 
                 {/* Profile button — stops drag propagation so tap always works */}
                 <button
-                  className="absolute top-4 left-4 z-20 flex items-center gap-2 px-4 py-2 rounded-full glass-strong text-white text-xs font-semibold shadow-lg"
+                  className="absolute top-4 left-4 z-20 flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md bg-white/15 border border-white/20 text-white text-xs font-semibold shadow-lg"
                   onPointerDownCapture={(e) => e.stopPropagation()}
                   onClick={() => setSelectedStudent(currentStudent)}
                 >
@@ -362,9 +362,9 @@ export default function ManagerFeedPage() {
             onClick={() => handleSwipe('left')}
             disabled={swiping}
             aria-label="Afvis"
-            className="w-[72px] h-[72px] rounded-full bg-white/5 backdrop-blur-xl border border-rose-500/30 flex items-center justify-center hover:bg-rose-500/10 hover:glow-red transition-all disabled:opacity-50"
+            className="w-[72px] h-[72px] rounded-full bg-white border border-[#EAE4D8] varm-card-shadow flex items-center justify-center hover:bg-[#FAF7F1] transition-all disabled:opacity-50 group"
           >
-            <X className="w-8 h-8 text-rose-400" />
+            <X className="w-8 h-8 text-[#6E6759] group-hover:text-[#211F1A] transition-colors" />
           </motion.button>
 
           <motion.button
@@ -373,9 +373,9 @@ export default function ManagerFeedPage() {
             onClick={() => handleSwipe('right')}
             disabled={swiping}
             aria-label="Synes godt om"
-            className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center glow-green disabled:opacity-50"
+            className="w-20 h-20 rounded-full bg-[#EE5B3A] hover:bg-[#DC4E2E] varm-card-shadow flex items-center justify-center transition-colors disabled:opacity-50"
           >
-            <Heart className="w-9 h-9 text-white" />
+            <Heart className="w-9 h-9 text-white fill-white/30" />
           </motion.button>
         </motion.div>
       )}
@@ -386,12 +386,12 @@ export default function ManagerFeedPage() {
         onOpenChange={(o) => !o && setSelectedStudent(null)}
         title="Elevprofil"
         variant="sheet"
-        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-white rounded-t-3xl border-t border-[#EAE4D8]"
       >
         {selectedStudent && (
           <>
-              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
-                <div className="w-10 h-1 rounded-full bg-white/20" />
+              <div className="sticky top-0 z-10 bg-white flex justify-center py-3 rounded-t-3xl">
+                <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
               </div>
 
               <div className="px-6 pb-10">
@@ -400,7 +400,7 @@ export default function ManagerFeedPage() {
                   <button
                     onClick={() => setSelectedStudent(null)}
                     aria-label="Luk"
-                    className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
+                    className="w-11 h-11 rounded-full bg-[#FAF7F1] flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] transition-colors"
                   >
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -408,7 +408,7 @@ export default function ManagerFeedPage() {
 
                 {/* Avatar + name */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E1F2EF] flex items-center justify-center shrink-0">
                     {selectedStudent.avatar_url ? (
                       <img
                         src={selectedStudent.avatar_url}
@@ -416,21 +416,21 @@ export default function ManagerFeedPage() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-3xl font-bold text-white">
+                      <span className="text-3xl font-bold text-[#0B6B60]">
                         {selectedStudent.full_name?.charAt(0)?.toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div className="min-w-0">
-                    <h2 className="text-xl font-bold text-white truncate">
+                    <h2 className="text-xl font-bold text-[#211F1A] truncate">
                       {selectedStudent.full_name}
                       {(() => {
                         const age = calculateAge(selectedStudent.date_of_birth);
-                        return age ? <span className="text-base font-normal text-white/60 ml-2">{age} år</span> : null;
+                        return age ? <span className="text-base font-normal text-[#8B8471] ml-2">{age} år</span> : null;
                       })()}
                     </h2>
                     {educationLineLabels(selectedStudent) && (
-                      <p className="text-text-secondary text-sm">
+                      <p className="text-[#6E6759] text-sm">
                         {educationLineLabels(selectedStudent)}
                       </p>
                     )}
@@ -448,17 +448,17 @@ export default function ManagerFeedPage() {
                 {/* Education details */}
                 {(selectedStudent.youth_education || selectedStudent.youth_education_school) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">
                       Uddannelse
                     </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                    <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <GraduationCap className="w-4 h-4 text-[#4E50C4] shrink-0 mt-0.5" />
                       <div>
                         {youthEducationLabels(selectedStudent) && (
                           <p>{youthEducationLabels(selectedStudent)}</p>
                         )}
                         {selectedStudent.youth_education_school && (
-                          <p className="text-text-secondary mt-0.5">{selectedStudent.youth_education_school}</p>
+                          <p className="text-[#6E6759] mt-0.5">{selectedStudent.youth_education_school}</p>
                         )}
                       </div>
                     </div>
@@ -468,11 +468,11 @@ export default function ManagerFeedPage() {
                 {/* Address */}
                 {(selectedStudent.address || selectedStudent.city) && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">
                       Adresse
                     </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                    <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <MapPin className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                       <span>
                         {selectedStudent.address}
                         {(selectedStudent.postal_code || selectedStudent.city) && ', '}
@@ -486,11 +486,11 @@ export default function ManagerFeedPage() {
                 {/* Date of birth */}
                 {selectedStudent.date_of_birth && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">
                       Fødselsdato
                     </h3>
-                    <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <Calendar className="w-4 h-4 text-violet-400 shrink-0" />
+                    <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <Calendar className="w-4 h-4 text-[#0B6B60] shrink-0" />
                       <span>
                         {new Date(selectedStudent.date_of_birth).toLocaleDateString('da-DK', {
                           day: 'numeric',
@@ -505,11 +505,11 @@ export default function ManagerFeedPage() {
                 {/* Work experience */}
                 {selectedStudent.work_experience && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">
                       Erhvervserfaring
                     </h3>
-                    <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/10">
-                      <Briefcase className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                    <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                      <Briefcase className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                       <p>{selectedStudent.work_experience}</p>
                     </div>
                   </div>
@@ -518,7 +518,7 @@ export default function ManagerFeedPage() {
                 {/* Video pitch */}
                 {selectedStudent.video_pitch_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">
                       Video-pitch
                     </h3>
                     <motion.button
@@ -526,7 +526,7 @@ export default function ManagerFeedPage() {
                       whileTap={{ scale: 0.98 }}
                       onClick={() => sheetVideoUrl && openVideo(sheetVideoUrl)}
                       aria-label="Afspil video-pitch"
-                      className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
+                      className="w-full relative rounded-xl overflow-hidden bg-[#FAF7F1] border border-[#EAE4D8] aspect-video flex items-center justify-center group"
                     >
                       {selectedStudent.video_thumbnail_url ? (
                         <img
@@ -535,7 +535,7 @@ export default function ManagerFeedPage() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-violet-900/30 to-blue-900/30" />
+                        <div className="w-full h-full bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)]" />
                       )}
                       <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                         <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
@@ -549,7 +549,7 @@ export default function ManagerFeedPage() {
                 {/* CV */}
                 {selectedStudent.cv_url && (
                   <div className="mb-5">
-                    <h3 className="text-sm font-medium text-text-secondary mb-1.5">
+                    <h3 className="text-sm font-medium text-[#6E6759] mb-1.5">
                       CV
                     </h3>
                     <a
@@ -557,7 +557,7 @@ export default function ManagerFeedPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-disabled={!sheetCvUrl}
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors aria-disabled:opacity-50"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] hover:bg-[#E3E3FA] transition-colors aria-disabled:opacity-50"
                     >
                       <FileText className="w-5 h-5" />
                       <span className="font-medium text-sm">Se elevens CV</span>
@@ -568,13 +568,13 @@ export default function ManagerFeedPage() {
 
                 {/* Contact info */}
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-text-secondary mb-2">
+                  <h3 className="text-sm font-medium text-[#6E6759] mb-2">
                     Kontaktoplysninger
                   </h3>
                   {selectedStudent.phone && (
                     <a
                       href={`tel:${selectedStudent.phone}`}
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 hover:bg-green-500/20 transition-colors"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors"
                     >
                       <Phone className="w-5 h-5" />
                       <span className="font-medium text-sm">
@@ -585,7 +585,7 @@ export default function ManagerFeedPage() {
                   {selectedStudent.email && (
                     <a
                       href={`mailto:${selectedStudent.email}`}
-                      className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                      className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                     >
                       <Mail className="w-5 h-5" />
                       <span className="font-medium text-sm">
@@ -594,7 +594,7 @@ export default function ManagerFeedPage() {
                     </a>
                   )}
                   {!selectedStudent.phone && !selectedStudent.email && (
-                    <p className="text-text-muted text-sm p-3.5 rounded-xl bg-white/5 border border-white/10">
+                    <p className="text-[#8B8471] text-sm p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8]">
                       Eleven har ikke delt kontaktoplysninger endnu
                     </p>
                   )}
@@ -634,7 +634,7 @@ export default function ManagerFeedPage() {
         title="Det er et match"
         variant="center"
         overlayClassName="z-[100] bg-black/80 backdrop-blur-sm"
-        contentClassName="w-[calc(100vw-2rem)] max-w-sm bg-gradient-to-br from-violet-900/90 to-blue-900/90 backdrop-blur-xl rounded-3xl p-8 text-center border border-white/20 shadow-2xl glow-violet"
+        contentClassName="w-[calc(100vw-2rem)] max-w-sm bg-white rounded-3xl p-8 text-center border border-[#EAE4D8] varm-card-shadow"
         ariaLive="assertive"
       >
         {matchedStudent && (
@@ -643,12 +643,12 @@ export default function ManagerFeedPage() {
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Sparkles className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+              <Sparkles className="w-16 h-16 text-[#0E8578] mx-auto mb-4" />
             </motion.div>
-            <h2 className="text-3xl font-extrabold text-white mb-2">
+            <h2 className="text-3xl font-extrabold text-[#211F1A] mb-2">
               Det er et match!
             </h2>
-            <p className="text-text-secondary mb-6">
+            <p className="text-[#6E6759] mb-6">
               Du og {matchedStudent.full_name} har matchet! I kan nu se hinandens kontaktoplysninger.
             </p>
             <motion.button
@@ -658,13 +658,13 @@ export default function ManagerFeedPage() {
                 setShowMatch(false);
                 window.location.href = '/manager/matches';
               }}
-              className="w-full py-3 rounded-xl btn-gradient text-white font-semibold"
+              className="w-full py-3 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold transition-colors"
             >
               Se match
             </motion.button>
             <button
               onClick={() => setShowMatch(false)}
-              className="w-full py-3 mt-2 text-text-secondary text-sm font-medium"
+              className="w-full py-3 mt-2 text-[#6E6759] text-sm font-medium"
             >
               Fortsæt med at swipe
             </button>

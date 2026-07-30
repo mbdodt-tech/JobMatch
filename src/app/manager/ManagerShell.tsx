@@ -24,14 +24,14 @@ export default function ManagerShell({
   const isChat = pathname?.startsWith('/manager/chat');
 
   return (
-    <div className="min-h-[100dvh] bg-[#05050A] flex flex-col">
+    <div className="min-h-[100dvh] bg-[#FAF7F1] text-[#211F1A] flex flex-col">
       {/* Page content */}
       <main className={`flex-1 ${isChat ? '' : 'pb-28'}`}>{children}</main>
 
-      {/* Floating glass dock */}
+      {/* Floating dock */}
       {!isChat && (
       <nav className="fixed bottom-4 left-4 right-4 z-50 safe-bottom">
-        <div className="max-w-md mx-auto glass-strong rounded-full shadow-2xl flex items-center justify-around px-2 py-2">
+        <div className="max-w-md mx-auto bg-white border border-[#EAE4D8] varm-dock-shadow rounded-full flex items-center justify-around px-2 py-2">
           {tabs.map((tab) => {
             const isActive =
               pathname === tab.href ||
@@ -46,7 +46,7 @@ export default function ManagerShell({
                 {isActive && (
                   <motion.div
                     layoutId="manager-tab-indicator"
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-600 to-blue-500 glow-violet"
+                    className="absolute inset-0 rounded-full bg-[#0E8578]"
                     transition={{
                       type: 'spring',
                       stiffness: 300,
@@ -56,12 +56,12 @@ export default function ManagerShell({
                 )}
                 <tab.icon
                   className={`relative z-10 w-5 h-5 transition-colors ${
-                    isActive ? 'text-white' : 'text-[#94A3B8]'
+                    isActive ? 'text-white' : 'text-[#8B8471]'
                   }`}
                 />
                 <span
                   className={`relative z-10 text-[10px] font-semibold transition-colors ${
-                    isActive ? 'text-white' : 'text-[#94A3B8]'
+                    isActive ? 'text-white' : 'text-[#8B8471]'
                   }`}
                 >
                   {tab.label}

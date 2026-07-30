@@ -37,7 +37,7 @@ export default function StudentCard({ student }: StudentCardProps) {
   const imageUrl = student.video_thumbnail_url || student.avatar_url;
 
   return (
-    <div className="relative w-full h-full rounded-[28px] overflow-hidden bg-[#0B0B14] border border-white/10 shadow-2xl">
+    <div className="relative w-full h-full rounded-[28px] overflow-hidden bg-[#0E7C86] varm-card-shadow">
       {/* Full-bleed photo or gradient fallback */}
       {imageUrl ? (
         <img
@@ -46,7 +46,7 @@ export default function StudentCard({ student }: StudentCardProps) {
           className="absolute inset-0 w-full h-full object-cover"
         />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-violet-600 to-blue-600 flex items-center justify-center">
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-center justify-center">
           <span className="text-[7rem] leading-none font-extrabold text-white/25 select-none">
             {student.full_name?.charAt(0)?.toUpperCase() || '?'}
           </span>
