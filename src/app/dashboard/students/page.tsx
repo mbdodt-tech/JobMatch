@@ -80,19 +80,19 @@ function getStatusBadge(status: "at_risk" | "matched" | "inactive") {
     case "at_risk":
       return {
         label: "Kræver opmærksomhed",
-        className: "bg-rose-500/15 text-rose-400 border border-rose-500/20",
+        className: "bg-[#FCEAE3] text-[#B3412A] border border-[#F3C9BA]",
         icon: AlertCircle,
       };
     case "matched":
       return {
         label: "Matchet",
-        className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20",
+        className: "bg-[#E1F2EF] text-[#0B6B60] border border-[#C4E4DE]",
         icon: CheckCircle2,
       };
     case "inactive":
       return {
         label: "Inaktiv",
-        className: "bg-amber-500/15 text-amber-400 border border-amber-500/20",
+        className: "bg-amber-50 text-amber-700 border border-amber-200",
         icon: UserX,
       };
   }
@@ -405,7 +405,7 @@ function StudentsContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
       </div>
     );
   }
@@ -417,8 +417,8 @@ function StudentsContent() {
       className="space-y-6"
     >
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-          <span className="gradient-text">Elever</span>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#211F1A]">
+          <span>Elever</span>
         </h1>
         <p className="text-[var(--text-secondary)] mt-1">
           Oversigt over alle elever og deres aktivitet
@@ -429,10 +429,10 @@ function StudentsContent() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20"
+          className="flex items-center gap-3 p-4 rounded-2xl bg-[#FCEAE3] border border-[#F3C9BA]"
         >
-          <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />
-          <p className="text-sm text-rose-300">
+          <AlertCircle className="w-5 h-5 text-[#B3412A] flex-shrink-0" />
+          <p className="text-sm text-[#B3412A]">
             <span className="font-semibold">{atRiskCount} elev{atRiskCount > 1 ? "er" : ""}</span>{" "}
             har mange swipes men ingen matches — de kan have brug for vejledning.
           </p>
@@ -448,7 +448,7 @@ function StudentsContent() {
             placeholder="Søg efter elev eller uddannelse..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 !rounded-xl"
+            className="w-full pl-11 !rounded-xl bg-white border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50"
           />
         </div>
 
@@ -456,7 +456,7 @@ function StudentsContent() {
           <select
             value={educationFilter}
             onChange={(e) => setEducationFilter(e.target.value)}
-            className="appearance-none pr-10 !rounded-xl min-w-[180px] cursor-pointer"
+            className="appearance-none pr-10 !rounded-xl min-w-[180px] cursor-pointer bg-white border border-[#EAE4D8] text-[#211F1A] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50"
           >
             {educationOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -471,8 +471,8 @@ function StudentsContent() {
           onClick={() => setShowFilterPanel(!showFilterPanel)}
           className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all text-sm font-medium ${
             statusFilter !== "all"
-              ? "bg-violet-500/20 border-violet-500/30 text-violet-300"
-              : "bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10"
+              ? "bg-[#E1F2EF] border-[#C4E4DE] text-[#0B6B60]"
+              : "bg-white border-[#EAE4D8] text-[var(--text-secondary)] hover:bg-[#FAF7F1]"
           }`}
         >
           <Filter className="w-4 h-4" />
@@ -501,8 +501,8 @@ function StudentsContent() {
                 onClick={() => setStatusFilter(opt.key)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   statusFilter === opt.key
-                    ? "bg-violet-500/30 text-violet-200 border border-violet-500/30"
-                    : "bg-white/5 text-[var(--text-secondary)] border border-white/10 hover:bg-white/10"
+                    ? "bg-[#E1F2EF] text-[#0B6B60] border border-[#C4E4DE]"
+                    : "bg-white text-[var(--text-secondary)] border border-[#EAE4D8] hover:bg-[#FAF7F1]"
                 }`}
               >
                 {opt.label}
@@ -512,8 +512,8 @@ function StudentsContent() {
         )}
       </AnimatePresence>
 
-      <div className="rounded-2xl glass-card overflow-hidden">
-        <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-4 px-6 py-4 border-b border-white/10 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+      <div className="rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow overflow-hidden">
+        <div className="hidden md:grid grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-4 px-6 py-4 border-b border-[#EAE4D8] text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
           <button
             onClick={() => handleSort("name")}
             className="flex items-center gap-1.5 hover:text-[var(--text-secondary)] transition-colors text-left"
@@ -566,18 +566,18 @@ function StudentsContent() {
                   key={student.id}
                   variants={rowVariants}
                   onClick={() => openStudentDetail(student.id)}
-                  className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-2 md:gap-4 px-6 py-4 border-b border-white/5 hover:bg-white/[0.04] transition-colors cursor-pointer ${
-                    i % 2 === 0 ? "bg-white/[0.01]" : ""
+                  className={`grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1fr_1fr_1.5fr_1.5fr] gap-2 md:gap-4 px-6 py-4 border-b border-[#F3EEE4] hover:bg-[#FAF7F1] transition-colors cursor-pointer ${
+                    i % 2 === 0 ? "bg-[#FAF7F1]/50" : ""
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
                         status === "at_risk"
-                          ? "bg-rose-500/20 text-rose-400"
+                          ? "bg-[#FCEAE3] text-[#B3412A]"
                           : status === "matched"
-                            ? "bg-emerald-500/20 text-emerald-400"
-                            : "bg-white/10 text-[var(--text-muted)]"
+                            ? "bg-[#E1F2EF] text-[#0B6B60]"
+                            : "bg-[#F3EEE4] text-[var(--text-muted)]"
                       }`}
                     >
                       {isAnonymized ? (
@@ -594,7 +594,7 @@ function StudentsContent() {
                         className={`text-sm font-semibold truncate ${
                           isAnonymized
                             ? "text-[var(--text-muted)] blur-sm select-none"
-                            : "text-[var(--text-primary)]"
+                            : "text-[#211F1A]"
                         }`}
                       >
                         {isAnonymized ? "Skjult navn" : student.name}
@@ -604,7 +604,7 @@ function StudentsContent() {
                       </p>
                     </div>
                     {isAnonymized && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20 flex-shrink-0">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
                         Ingen samtykke
                       </span>
                     )}
@@ -620,8 +620,8 @@ function StudentsContent() {
                     <span
                       className={`text-sm font-semibold ${
                         student.swipes >= 50
-                          ? "text-blue-400"
-                          : "text-[var(--text-primary)]"
+                          ? "text-[#4E50C4]"
+                          : "text-[#211F1A]"
                       }`}
                     >
                       {student.swipes}
@@ -632,7 +632,7 @@ function StudentsContent() {
                     <span
                       className={`text-sm font-semibold ${
                         student.matches > 0
-                          ? "text-emerald-400"
+                          ? "text-[#0B6B60]"
                           : "text-[var(--text-muted)]"
                       }`}
                     >
@@ -688,12 +688,12 @@ function StudentsContent() {
         onOpenChange={(o) => !o && closeDetail()}
         title="Elevprofil"
         variant="sheet"
-        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-white rounded-t-3xl border-t border-[#EAE4D8]"
       >
         {selectedStudentId && (
           <>
-              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
-                <div className="w-10 h-1 rounded-full bg-white/20" />
+              <div className="sticky top-0 z-10 bg-white flex justify-center py-3 rounded-t-3xl">
+                <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
               </div>
 
               <div className="px-6 pb-10">
@@ -701,7 +701,7 @@ function StudentsContent() {
                   <button
                     onClick={closeDetail}
                     aria-label="Luk"
-                    className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors"
+                    className="w-11 h-11 rounded-full bg-[#FAF7F1] flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] transition-colors"
                   >
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -709,13 +709,13 @@ function StudentsContent() {
 
                 {profileLoading ? (
                   <div className="flex items-center justify-center py-16">
-                    <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-[#0B6B60] animate-spin" />
                   </div>
                 ) : selectedProfile ? (
                   <>
                     {/* Avatar + name */}
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#0E8578] flex items-center justify-center shrink-0">
                         {selectedProfile.avatar_url ? (
                           <img
                             src={selectedProfile.avatar_url}
@@ -729,7 +729,7 @@ function StudentsContent() {
                         )}
                       </div>
                       <div className="min-w-0">
-                        <h2 className="text-xl font-bold text-white truncate">
+                        <h2 className="text-xl font-bold text-[#211F1A] truncate">
                           {selectedProfile.full_name}
                         </h2>
                         {educationLineLabels(selectedProfile) && (
@@ -752,8 +752,8 @@ function StudentsContent() {
                     {(selectedProfile.youth_education || selectedProfile.youth_education_school) && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelse</h3>
-                        <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                        <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                          <GraduationCap className="w-4 h-4 text-[#4E50C4] shrink-0 mt-0.5" />
                           <div>
                             {youthEducationLabels(selectedProfile) && (
                               <p>{youthEducationLabels(selectedProfile)}</p>
@@ -770,8 +770,8 @@ function StudentsContent() {
                     {(selectedProfile.address || selectedProfile.city) && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
-                        <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                        <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                          <MapPin className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                           <span>
                             {selectedProfile.address}
                             {(selectedProfile.postal_code || selectedProfile.city) && ", "}
@@ -786,8 +786,8 @@ function StudentsContent() {
                     {selectedProfile.date_of_birth && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Fødselsdato</h3>
-                        <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <Calendar className="w-4 h-4 text-violet-400 shrink-0" />
+                        <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                          <Calendar className="w-4 h-4 text-[#0B6B60] shrink-0" />
                           <span>
                             {new Date(selectedProfile.date_of_birth).toLocaleDateString("da-DK", {
                               day: "numeric",
@@ -803,8 +803,8 @@ function StudentsContent() {
                     {selectedProfile.work_experience && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Erhvervserfaring</h3>
-                        <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <Briefcase className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                        <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                          <Briefcase className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                           <p>{selectedProfile.work_experience}</p>
                         </div>
                       </div>
@@ -821,12 +821,12 @@ function StudentsContent() {
                             setVideoUrl(sheetVideoUrl);
                             setShowVideoPlayer(true);
                           }}
-                          className="w-full relative rounded-xl overflow-hidden bg-white/5 border border-white/10 aspect-video flex items-center justify-center group"
+                          className="w-full relative rounded-xl overflow-hidden bg-[#FAF7F1] border border-[#EAE4D8] aspect-video flex items-center justify-center group"
                         >
                           {selectedProfile.video_thumbnail_url ? (
                             <img src={selectedProfile.video_thumbnail_url} alt="Video" className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-violet-900/30 to-blue-900/30" />
+                            <div className="w-full h-full bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)]" />
                           )}
                           <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                             <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center border border-white/20">
@@ -846,7 +846,7 @@ function StudentsContent() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-disabled={!sheetCvUrl}
-                          className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors aria-disabled:opacity-50"
+                          className="flex items-center gap-3 p-3.5 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] hover:bg-[#E3E3FA] transition-colors aria-disabled:opacity-50"
                         >
                           <FileText className="w-5 h-5" />
                           <span className="font-medium text-sm">Se elevens CV</span>
@@ -862,7 +862,7 @@ function StudentsContent() {
                         {selectedProfile.phone && (
                           <a
                             href={`tel:${selectedProfile.phone}`}
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors"
                           >
                             <Phone className="w-5 h-5" />
                             <span className="font-medium text-sm">Ring: {selectedProfile.phone}</span>
@@ -871,7 +871,7 @@ function StudentsContent() {
                         {selectedProfile.email && (
                           <a
                             href={`mailto:${selectedProfile.email}`}
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                           >
                             <Mail className="w-5 h-5" />
                             <span className="font-medium text-sm">Email: {selectedProfile.email}</span>
@@ -883,7 +883,7 @@ function StudentsContent() {
                     {/* ── Admin notes ── */}
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <MessageSquarePlus className="w-4 h-4 text-violet-400" />
+                        <MessageSquarePlus className="w-4 h-4 text-[#0B6B60]" />
                         <h3 className="text-sm font-medium text-text-secondary">
                           Interne noter ({notes.length})
                         </h3>
@@ -896,12 +896,12 @@ function StudentsContent() {
                           onChange={(e) => setNewNote(e.target.value)}
                           onKeyDown={(e) => e.key === "Enter" && saveNote()}
                           placeholder="Skriv en note om eleven..."
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
+                          className="flex-1 px-4 py-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 text-sm"
                         />
                         <button
                           onClick={saveNote}
                           disabled={!newNote.trim() || savingNote}
-                          className="px-4 py-3 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 hover:bg-violet-500/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="px-4 py-3 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                           {savingNote ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -916,9 +916,9 @@ function StudentsContent() {
                           {notes.map((note) => (
                             <div
                               key={note.id}
-                              className="p-3 rounded-xl bg-white/5 border border-white/5 group"
+                              className="p-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] group"
                             >
-                              <p className="text-sm text-white">{note.content}</p>
+                              <p className="text-sm text-[#211F1A]">{note.content}</p>
                               <div className="flex items-center justify-between mt-2">
                                 <span className="text-[11px] text-text-muted">
                                   {note.author} — {new Date(note.created_at).toLocaleDateString("da-DK", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
@@ -926,7 +926,7 @@ function StudentsContent() {
                                 <button
                                   onClick={() => deleteNote(note.id)}
                                   aria-label="Slet note"
-                                  className="text-text-muted hover:text-rose-400 transition-colors opacity-0 group-hover:opacity-100"
+                                  className="text-text-muted hover:text-[#B3412A] transition-colors opacity-0 group-hover:opacity-100"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                                 </button>
@@ -978,7 +978,7 @@ export default function StudentsPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[60dvh]">
-          <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
         </div>
       }
     >

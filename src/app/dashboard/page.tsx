@@ -100,19 +100,19 @@ function KpiCard({
   const card = (
     <motion.div
       variants={itemVariants}
-      className={`relative overflow-hidden rounded-2xl glass-card glass-card-hover p-5 group ${
+      className={`relative overflow-hidden rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow p-5 group ${
         href ? "cursor-pointer" : ""
       } ${glowClass ?? ""}`}
     >
       <div
-        className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-20 ${accentColor}`}
+        className={`absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-10 ${accentColor}`}
       />
       <div className="flex items-start justify-between gap-3 relative z-10">
         <div className="min-w-0">
           <p className="text-sm font-medium text-[var(--text-secondary)] mb-1 truncate">
             {label}
           </p>
-          <p className="text-3xl font-extrabold tracking-tight tabular-nums text-[var(--text-primary)]">
+          <p className="text-3xl font-extrabold tracking-tight tabular-nums text-[#211F1A]">
             {value.toLocaleString("da-DK")}
             {suffix && (
               <span className="text-xl font-bold text-[var(--text-muted)] ml-0.5">
@@ -155,13 +155,13 @@ function SectionCard({
   action?: React.ReactNode;
 }) {
   return (
-    <motion.div variants={itemVariants} className="rounded-2xl glass-card p-6">
+    <motion.div variants={itemVariants} className="rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow p-6">
       <div className="flex items-center justify-between gap-3 mb-5">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconClass}`}>
             <Icon className="w-4 h-4" />
           </div>
-          <h2 className="text-base font-bold tracking-tight text-[var(--text-primary)] truncate">
+          <h2 className="text-base font-bold tracking-tight text-[#211F1A] truncate">
             {title}
           </h2>
         </div>
@@ -373,11 +373,11 @@ export default function DashboardPage() {
       (matchesByStudent.get(s.id) ?? []).some((m) => m.agreement_confirmed_at)
     );
     const funnel = [
-      { label: "Onboardet", count: onboarded.length, cls: "from-violet-600 to-violet-400" },
-      { label: "Aktiv seneste 7 dage", count: onboarded.filter((s) => s.last_active_at && daysBetween(new Date(s.last_active_at), now) < 7).length, cls: "from-violet-500 to-blue-400" },
-      { label: "Har liket butikker", count: withLikes.length, cls: "from-blue-500 to-cyan-400" },
-      { label: "Har match", count: withMatch.length, cls: "from-cyan-500 to-emerald-400" },
-      { label: "Aftale bekræftet", count: withAgreement.length, cls: "from-emerald-500 to-teal-400" },
+      { label: "Onboardet", count: onboarded.length, cls: "bg-[#5D5FE0]" },
+      { label: "Aktiv seneste 7 dage", count: onboarded.filter((s) => s.last_active_at && daysBetween(new Date(s.last_active_at), now) < 7).length, cls: "bg-[#5D5FE0]" },
+      { label: "Har liket butikker", count: withLikes.length, cls: "bg-[#0F9B8E]" },
+      { label: "Har match", count: withMatch.length, cls: "bg-[#0F9B8E]" },
+      { label: "Aftale bekræftet", count: withAgreement.length, cls: "bg-[#0B6B60]" },
     ];
 
     // ── Matches per week, last 8 ISO weeks ──
@@ -542,7 +542,7 @@ export default function DashboardPage() {
         role="status"
         aria-label="Indlæser dashboard"
       >
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" aria-hidden="true" />
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" aria-hidden="true" />
       </div>
     );
   }
@@ -550,9 +550,9 @@ export default function DashboardPage() {
   if (loadError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60dvh] gap-4 text-center px-6">
-        <AlertTriangle className="w-10 h-10 text-rose-400" aria-hidden="true" />
+        <AlertTriangle className="w-10 h-10 text-[#B3412A]" aria-hidden="true" />
         <div>
-          <p className="text-lg font-bold text-[var(--text-primary)]">
+          <p className="text-lg font-bold text-[#211F1A]">
             Kunne ikke hente dashboard-data
           </p>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
@@ -561,7 +561,7 @@ export default function DashboardPage() {
         </div>
         <button
           onClick={() => setReloadKey((k) => k + 1)}
-          className="px-6 py-3 rounded-xl btn-gradient text-white font-semibold text-sm"
+          className="px-6 py-3 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-sm transition-colors"
         >
           Prøv igen
         </button>
@@ -582,8 +582,8 @@ export default function DashboardPage() {
       className="space-y-6"
     >
       <motion.div variants={itemVariants}>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
-          <span className="gradient-text">Overblik</span>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#211F1A]">
+          <span>Overblik</span>
         </h1>
         <p className="text-[var(--text-secondary)] mt-1">
           Fra swipe til praktikaftale — følg fremdriften og grib ind, hvor det kræves
@@ -596,40 +596,39 @@ export default function DashboardPage() {
           label="Elever i alt"
           value={view.kpi.totalStudents}
           icon={Users}
-          accentColor="bg-blue-500"
-          iconClass="bg-blue-500/15 text-blue-400"
+          accentColor="bg-[#5D5FE0]"
+          iconClass="bg-[#EEEEFC] text-[#4E50C4]"
           href="/dashboard/students"
         />
         <KpiCard
           label="Aktive seneste 7 dage"
           value={view.kpi.activeThisWeek}
           icon={Activity}
-          accentColor="bg-emerald-500"
-          iconClass="bg-emerald-500/15 text-emerald-400"
+          accentColor="bg-[#0F9B8E]"
+          iconClass="bg-[#E1F2EF] text-[#0B6B60]"
           href="/dashboard/students"
         />
         <KpiCard
           label="Matches"
           value={view.kpi.totalMatches}
           icon={Heart}
-          accentColor="bg-violet-500"
-          iconClass="bg-violet-500/15 text-violet-400"
+          accentColor="bg-[#EE5B3A]"
+          iconClass="bg-[#FCEAE3] text-[#EE5B3A]"
           href="/dashboard/students?status=matched"
         />
         <KpiCard
           label="Aftaler bekræftet"
           value={view.kpi.agreements}
           icon={FileCheck2}
-          accentColor="bg-teal-500"
-          iconClass="bg-teal-500/15 text-teal-400"
-          glowClass="glow-green"
+          accentColor="bg-[#0F9B8E]"
+          iconClass="bg-[#E1F2EF] text-[#0B6B60]"
         />
         <KpiCard
           label="Match-rate"
           value={view.kpi.matchRate}
           icon={TrendingUp}
-          accentColor="bg-cyan-500"
-          iconClass="bg-cyan-500/15 text-cyan-400"
+          accentColor="bg-[#5D5FE0]"
+          iconClass="bg-[#EEEEFC] text-[#4E50C4]"
           suffix="%"
         />
       </div>
@@ -639,18 +638,18 @@ export default function DashboardPage() {
         <SectionCard
           title="Kræver opfølgning"
           icon={AlertTriangle}
-          iconClass="bg-rose-500/15 text-rose-400"
+          iconClass="bg-[#FCEAE3] text-[#B3412A]"
           action={
             <Link
               href="/dashboard/follow-up"
-              className="text-xs font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1 shrink-0"
+              className="text-xs font-medium text-[#0B6B60] hover:text-[#0E8578] flex items-center gap-1 shrink-0"
             >
               Se alle <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           }
         >
           {view.followUp.length === 0 ? (
-            <p className="text-sm text-emerald-400/90 py-4 flex items-center gap-2">
+            <p className="text-sm text-[#0B6B60] py-4 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" /> Ingen elever kræver opfølgning lige nu
             </p>
           ) : (
@@ -659,13 +658,13 @@ export default function DashboardPage() {
                 <Link
                   key={s.id}
                   href="/dashboard/follow-up"
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors"
+                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#FAF7F1] transition-colors"
                 >
-                  <div className="w-9 h-9 rounded-full bg-rose-500/15 border border-rose-500/25 flex items-center justify-center text-xs font-bold text-rose-300 shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[#FCEAE3] border border-[#F3C9BA] flex items-center justify-center text-xs font-bold text-[#B3412A] shrink-0">
                     {initials(s.full_name)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                    <p className="text-sm font-semibold text-[#211F1A] truncate">
                       {s.full_name}
                     </p>
                     <p className="text-xs text-[var(--text-muted)] truncate">
@@ -673,7 +672,7 @@ export default function DashboardPage() {
                       {inactiveDays < 999 && ` · inaktiv ${inactiveDays} d.`}
                     </p>
                   </div>
-                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/25 shrink-0">
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#FCEAE3] text-[#B3412A] border border-[#F3C9BA] shrink-0">
                     {inactiveDays >= 7 ? "Inaktiv" : "0 matches"}
                   </span>
                 </Link>
@@ -685,10 +684,10 @@ export default function DashboardPage() {
         <SectionCard
           title="Butikker der ikke svarer"
           icon={BellOff}
-          iconClass="bg-amber-500/15 text-amber-400"
+          iconClass="bg-amber-50 text-amber-600"
         >
           {view.unanswered.length === 0 ? (
-            <p className="text-sm text-emerald-400/90 py-4 flex items-center gap-2">
+            <p className="text-sm text-[#0B6B60] py-4 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" /> Alle likes er besvaret inden for 3 dage
             </p>
           ) : (
@@ -697,20 +696,20 @@ export default function DashboardPage() {
                 <Link
                   key={r.store!.id}
                   href={`/dashboard/stores?search=${encodeURIComponent(r.store!.name)}`}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors"
+                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#FAF7F1] transition-colors"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0">
-                    <Store className="w-4 h-4 text-amber-400" />
+                  <div className="w-9 h-9 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+                    <Store className="w-4 h-4 text-amber-600" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                    <p className="text-sm font-semibold text-[#211F1A] truncate">
                       {r.store!.name}
                     </p>
                     <p className="text-xs text-[var(--text-muted)]">
                       {r.count} ventende {r.count === 1 ? "elev" : "elever"}
                     </p>
                   </div>
-                  <span className="text-xs font-semibold text-amber-400 tabular-nums shrink-0">
+                  <span className="text-xs font-semibold text-amber-600 tabular-nums shrink-0">
                     {r.waitDays} d.
                   </span>
                 </Link>
@@ -722,7 +721,7 @@ export default function DashboardPage() {
         <SectionCard
           title="Elever vs. pladser pr. retning"
           icon={Scale}
-          iconClass="bg-blue-500/15 text-blue-400"
+          iconClass="bg-[#EEEEFC] text-[#4E50C4]"
         >
           <div className="space-y-3">
             {view.gap.map((g) => {
@@ -731,30 +730,30 @@ export default function DashboardPage() {
               return (
                 <div key={g.line} className="space-y-1">
                   <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="font-medium text-[var(--text-primary)] truncate">
+                    <span className="font-medium text-[#211F1A] truncate">
                       {g.label}
                     </span>
                     <span
                       className={`shrink-0 tabular-nums font-semibold ${
-                        shortage ? "text-amber-400" : "text-emerald-400"
+                        shortage ? "text-[#B3412A]" : "text-[#0B6B60]"
                       }`}
                     >
                       {g.seekers} elever · {g.slots} pladser
                     </span>
                   </div>
                   <div className="space-y-1">
-                    <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                    <div className="h-2 rounded-full bg-[#F3EEE4] overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-violet-600 to-blue-400"
+                        className="h-full rounded-full bg-[#5D5FE0]"
                         style={{ width: `${(g.seekers / max) * 100}%` }}
                       />
                     </div>
-                    <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                    <div className="h-2 rounded-full bg-[#F3EEE4] overflow-hidden">
                       <div
-                        className={`h-full rounded-full bg-gradient-to-r ${
+                        className={`h-full rounded-full ${
                           shortage
-                            ? "from-amber-600 to-amber-400"
-                            : "from-emerald-600 to-teal-400"
+                            ? "bg-[#EE5B3A]"
+                            : "bg-[#0F9B8E]"
                         }`}
                         style={{ width: `${(g.slots / max) * 100}%` }}
                       />
@@ -774,10 +773,10 @@ export default function DashboardPage() {
         <SectionCard
           title="Aldrig kommet i gang"
           icon={UserX}
-          iconClass="bg-slate-500/15 text-slate-300"
+          iconClass="bg-[#F3EEE4] text-[#6E6759]"
         >
           {view.neverStarted.length === 0 ? (
-            <p className="text-sm text-emerald-400/90 py-4 flex items-center gap-2">
+            <p className="text-sm text-[#0B6B60] py-4 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" /> Alle onboardede elever er i gang med at swipe
             </p>
           ) : (
@@ -786,13 +785,13 @@ export default function DashboardPage() {
                 <Link
                   key={s.id}
                   href={`/dashboard/students?search=${encodeURIComponent(s.full_name ?? "")}`}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors"
+                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#FAF7F1] transition-colors"
                 >
-                  <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-xs font-bold text-[var(--text-secondary)] shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[#FAF7F1] border border-[#EAE4D8] flex items-center justify-center text-xs font-bold text-[var(--text-secondary)] shrink-0">
                     {initials(s.full_name)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                    <p className="text-sm font-semibold text-[#211F1A] truncate">
                       {s.full_name}
                     </p>
                     <p className="text-xs text-[var(--text-muted)]">
@@ -813,8 +812,8 @@ export default function DashboardPage() {
 
       {/* Funnel + weekly matches */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <motion.div variants={itemVariants} className="rounded-2xl glass-card p-6 lg:col-span-3">
-          <h2 className="text-base font-bold tracking-tight text-[var(--text-primary)] mb-1">
+        <motion.div variants={itemVariants} className="rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow p-6 lg:col-span-3">
+          <h2 className="text-base font-bold tracking-tight text-[#211F1A] mb-1">
             Vejen til praktikaftale
           </h2>
           <p className="text-xs text-[var(--text-muted)] mb-5">
@@ -826,15 +825,15 @@ export default function DashboardPage() {
                 <span className="w-40 shrink-0 text-xs font-medium text-[var(--text-secondary)] truncate">
                   {f.label}
                 </span>
-                <div className="flex-1 h-6 rounded-lg bg-white/5 overflow-hidden">
+                <div className="flex-1 h-6 rounded-lg bg-[#F3EEE4] overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(f.count / funnelMax) * 100}%` }}
                     transition={{ duration: 0.7, delay: i * 0.08, ease: "easeOut" }}
-                    className={`h-full rounded-lg bg-gradient-to-r ${f.cls} min-w-[2px]`}
+                    className={`h-full rounded-lg ${f.cls} min-w-[2px]`}
                   />
                 </div>
-                <span className="w-16 shrink-0 text-right text-sm font-bold tabular-nums text-[var(--text-primary)]">
+                <span className="w-16 shrink-0 text-right text-sm font-bold tabular-nums text-[#211F1A]">
                   {f.count}
                   <span className="text-[10px] font-medium text-[var(--text-muted)] ml-1">
                     {funnelMax > 0 ? Math.round((f.count / funnelMax) * 100) : 0}%
@@ -845,8 +844,8 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        <motion.div variants={itemVariants} className="rounded-2xl glass-card p-6 lg:col-span-2">
-          <h2 className="text-base font-bold tracking-tight text-[var(--text-primary)] mb-1">
+        <motion.div variants={itemVariants} className="rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow p-6 lg:col-span-2">
+          <h2 className="text-base font-bold tracking-tight text-[#211F1A] mb-1">
             Nye matches pr. uge
           </h2>
           <p className="text-xs text-[var(--text-muted)] mb-5">
@@ -866,8 +865,8 @@ export default function DashboardPage() {
                   transition={{ duration: 0.6, delay: i * 0.05, ease: "easeOut" }}
                   className={`w-full rounded-t-md ${
                     w.count > 0
-                      ? "bg-gradient-to-t from-violet-600 to-blue-400"
-                      : "bg-white/5"
+                      ? "bg-[#0F9B8E]"
+                      : "bg-[#EAE4D8]"
                   }`}
                 />
                 <span className="text-[9px] text-[var(--text-muted)] truncate max-w-full">
@@ -883,10 +882,10 @@ export default function DashboardPage() {
       <SectionCard
         title="Praktikaftaler"
         icon={FileCheck2}
-        iconClass="bg-teal-500/15 text-teal-400"
+        iconClass="bg-[#E1F2EF] text-[#0B6B60]"
       >
         {agreementError && (
-          <div className="mb-3 flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+          <div className="mb-3 flex items-center gap-2 px-4 py-3 rounded-xl bg-[#FCEAE3] border border-[#F3C9BA] text-[#B3412A] text-sm" role="alert">
             <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" />
             {agreementError}
           </div>
@@ -900,23 +899,23 @@ export default function DashboardPage() {
             {[...unconfirmed, ...confirmed].map((m) => (
               <div
                 key={m.id}
-                className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.03] transition-colors"
+                className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#FAF7F1] transition-colors"
               >
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 border ${
                     m.agreement_confirmed_at
-                      ? "bg-emerald-500/15 border-emerald-500/30"
-                      : "bg-violet-500/15 border-violet-500/25"
+                      ? "bg-[#E1F2EF] border-[#C4E4DE]"
+                      : "bg-[#FCEAE3] border-[#F3C9BA]"
                   }`}
                 >
                   {m.agreement_confirmed_at ? (
-                    <FileCheck2 className="w-4 h-4 text-emerald-400" />
+                    <FileCheck2 className="w-4 h-4 text-[#0B6B60]" />
                   ) : (
-                    <Heart className="w-4 h-4 text-violet-400" />
+                    <Heart className="w-4 h-4 text-[#EE5B3A]" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                  <p className="text-sm font-semibold text-[#211F1A] truncate">
                     {m.studentName}{" "}
                     <span className="text-[var(--text-muted)] font-normal">↔</span>{" "}
                     {m.storeName}
@@ -924,7 +923,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-[var(--text-muted)] flex items-center gap-1">
                     <Clock className="w-3 h-3" /> Matchet {timeAgo(m.matched_at)}
                     {m.agreement_confirmed_at && (
-                      <span className="text-emerald-400 ml-1">
+                      <span className="text-[#0B6B60] ml-1">
                         · aftale {timeAgo(m.agreement_confirmed_at)}
                       </span>
                     )}
@@ -936,7 +935,7 @@ export default function DashboardPage() {
                     disabled={confirming.has(m.id)}
                     aria-label="Fortryd bekræftelse"
                     title="Fortryd bekræftelse"
-                    className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-[var(--text-muted)] hover:text-amber-400 transition-colors shrink-0 disabled:opacity-50"
+                    className="w-9 h-9 rounded-lg bg-[#FAF7F1] flex items-center justify-center text-[var(--text-muted)] hover:text-amber-600 transition-colors shrink-0 disabled:opacity-50"
                   >
                     <RotateCcw className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -944,7 +943,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => confirmAgreement(m.id, false)}
                     disabled={confirming.has(m.id)}
-                    className="px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-colors shrink-0 disabled:opacity-50"
+                    className="px-3 py-2 rounded-lg bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] text-xs font-semibold hover:bg-[#D3EAE5] transition-colors shrink-0 disabled:opacity-50"
                   >
                     {confirming.has(m.id) ? "Gemmer…" : "Bekræft aftale"}
                   </button>
@@ -960,7 +959,7 @@ export default function DashboardPage() {
         <SectionCard
           title="Mest populære butikker"
           icon={Store}
-          iconClass="bg-violet-500/15 text-violet-400"
+          iconClass="bg-[#EEEEFC] text-[#4E50C4]"
         >
           <div className="space-y-2">
             {view.popular.length === 0 ? (
@@ -972,33 +971,33 @@ export default function DashboardPage() {
                 <Link
                   key={store.id}
                   href={`/dashboard/stores?search=${encodeURIComponent(store.name)}`}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group"
+                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#FAF7F1] transition-colors group"
                 >
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
                       i === 0
-                        ? "bg-amber-500/20 text-amber-400"
+                        ? "bg-amber-100 text-amber-700"
                         : i === 1
-                          ? "bg-gray-400/20 text-gray-300"
+                          ? "bg-[#F3EEE4] text-[#6E6759]"
                           : i === 2
-                            ? "bg-amber-700/20 text-amber-600"
-                            : "bg-white/5 text-[var(--text-muted)]"
+                            ? "bg-orange-100 text-orange-700"
+                            : "bg-[#FAF7F1] text-[var(--text-muted)]"
                     }`}
                   >
                     {i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                    <p className="text-sm font-semibold text-[#211F1A] truncate">
                       {store.name}
                     </p>
                     <p className="text-xs text-[var(--text-muted)]">{store.city}</p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-semibold text-blue-400 tabular-nums">
+                    <p className="text-sm font-semibold text-[#EE5B3A] tabular-nums">
                       {store.likes}{" "}
                       <span className="text-xs text-[var(--text-muted)] font-normal">likes</span>
                     </p>
-                    <p className="text-xs text-emerald-400 tabular-nums">
+                    <p className="text-xs text-[#0B6B60] tabular-nums">
                       {store.matches} matches
                     </p>
                   </div>
@@ -1011,7 +1010,7 @@ export default function DashboardPage() {
         <SectionCard
           title="Datakvalitet"
           icon={FileText}
-          iconClass="bg-slate-500/15 text-slate-300"
+          iconClass="bg-[#F3EEE4] text-[#6E6759]"
         >
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -1025,15 +1024,15 @@ export default function DashboardPage() {
             ].map((q) => (
               <div
                 key={q.label}
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5"
+                className="flex items-center gap-3 p-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8]"
               >
                 <q.icon
                   className={`w-4 h-4 shrink-0 ${
-                    q.value > 0 ? "text-amber-400" : "text-emerald-400"
+                    q.value > 0 ? "text-amber-600" : "text-[#0B6B60]"
                   }`}
                 />
                 <div className="min-w-0">
-                  <p className="text-lg font-bold tabular-nums text-[var(--text-primary)] leading-none">
+                  <p className="text-lg font-bold tabular-nums text-[#211F1A] leading-none">
                     {q.value}
                   </p>
                   <p className="text-[11px] text-[var(--text-muted)] truncate mt-0.5">

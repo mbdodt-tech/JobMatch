@@ -159,15 +159,15 @@ export default function FollowUpPage() {
   };
 
   const urgencyColors = {
-    critical: { bg: 'bg-rose-500/15', border: 'border-rose-500/30', text: 'text-rose-400', label: 'Kritisk' },
-    high: { bg: 'bg-orange-500/15', border: 'border-orange-500/30', text: 'text-orange-400', label: 'Høj' },
-    medium: { bg: 'bg-amber-500/15', border: 'border-amber-500/30', text: 'text-amber-400', label: 'Medium' },
+    critical: { bg: 'bg-[#FCEAE3]', border: 'border-[#F3C9BA]', text: 'text-[#B3412A]', label: 'Kritisk' },
+    high: { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', label: 'Høj' },
+    medium: { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', label: 'Medium' },
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
       </div>
     );
   }
@@ -177,25 +177,25 @@ export default function FollowUpPage() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       <motion.div variants={itemVariants}>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]"><span className="gradient-text">Opfølgning</span></h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#211F1A]"><span>Opfølgning</span></h1>
         <p className="text-[var(--text-secondary)] mt-1">Elever der kan have brug for vejledning</p>
       </motion.div>
 
       {students.length === 0 ? (
-        <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+        <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-[#E1F2EF] border border-[#C4E4DE]">
+          <CheckCircle2 className="w-5 h-5 text-[#0B6B60] shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-emerald-300">Alle elever klarer sig godt!</p>
-            <p className="text-xs text-emerald-400/70 mt-0.5">Der er ingen elever der kræver opfølgning lige nu</p>
+            <p className="text-sm font-semibold text-[#0B6B60]">Alle elever klarer sig godt!</p>
+            <p className="text-xs text-[#0B6B60]/80 mt-0.5">Der er ingen elever der kræver opfølgning lige nu</p>
           </div>
         </motion.div>
       ) : (
         <>
-          <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20">
-            <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+          <motion.div variants={itemVariants} className="flex items-start gap-3 p-4 rounded-2xl bg-[#FCEAE3] border border-[#F3C9BA]">
+            <AlertTriangle className="w-5 h-5 text-[#B3412A] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-rose-300">{notContacted} elev{notContacted !== 1 ? 'er' : ''} kræver opmærksomhed</p>
-              <p className="text-xs text-rose-400/70 mt-0.5">Disse elever har mange swipes men ingen matches, eller er blevet inaktive</p>
+              <p className="text-sm font-semibold text-[#B3412A]">{notContacted} elev{notContacted !== 1 ? 'er' : ''} kræver opmærksomhed</p>
+              <p className="text-xs text-[#B3412A]/80 mt-0.5">Disse elever har mange swipes men ingen matches, eller er blevet inaktive</p>
             </div>
           </motion.div>
 
@@ -206,15 +206,15 @@ export default function FollowUpPage() {
               const isExpanded = expandedId === student.id;
 
               return (
-                <motion.div key={student.id} variants={itemVariants} className={`rounded-2xl glass-card transition-all overflow-hidden ${student.contacted ? '!border-emerald-500/20 opacity-60' : ''}`}>
+                <motion.div key={student.id} variants={itemVariants} className={`rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow transition-all overflow-hidden ${student.contacted ? '!border-[#C4E4DE] opacity-60' : ''}`}>
                   <button onClick={() => setExpandedId(isExpanded ? null : student.id)} className="w-full flex items-center gap-4 p-4 text-left">
                     <div className={`w-10 h-10 rounded-xl ${colors.bg} border ${colors.border} flex items-center justify-center shrink-0`}>
-                      {student.contacted ? <CheckCircle2 size={18} className="text-emerald-400" /> : <AlertTriangle size={18} className={colors.text} />}
+                      {student.contacted ? <CheckCircle2 size={18} className="text-[#0B6B60]" /> : <AlertTriangle size={18} className={colors.text} />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="font-semibold text-[var(--text-primary)] text-sm truncate">{student.name}</p>
-                        {student.contacted && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">Kontaktet</span>}
+                        <p className="font-semibold text-[#211F1A] text-sm truncate">{student.name}</p>
+                        {student.contacted && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#E1F2EF] text-[#0B6B60]">Kontaktet</span>}
                       </div>
                       <p className="text-xs text-[var(--text-muted)]">{student.education_line} · {student.primary_style}</p>
                     </div>
@@ -227,22 +227,22 @@ export default function FollowUpPage() {
                   <AnimatePresence>
                     {isExpanded && (
                       <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
-                        <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
+                        <div className="px-4 pb-4 space-y-3 border-t border-[#F3EEE4] pt-3">
                           <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
                             <TrendingDown size={14} className={colors.text} />
                             <span>{student.risk_reason}</span>
                           </div>
                           <div className="grid grid-cols-3 gap-3">
-                            <div className="p-2.5 rounded-xl bg-white/5 text-center">
-                              <p className="text-sm font-bold text-blue-400">{student.swipes}</p>
+                            <div className="p-2.5 rounded-xl bg-[#FAF7F1] text-center">
+                              <p className="text-sm font-bold text-[#EE5B3A]">{student.swipes}</p>
                               <p className="text-[10px] text-[var(--text-muted)]">Swipes</p>
                             </div>
-                            <div className="p-2.5 rounded-xl bg-white/5 text-center">
-                              <p className="text-sm font-bold text-rose-400">{student.matches}</p>
+                            <div className="p-2.5 rounded-xl bg-[#FAF7F1] text-center">
+                              <p className="text-sm font-bold text-[#B3412A]">{student.matches}</p>
                               <p className="text-[10px] text-[var(--text-muted)]">Matches</p>
                             </div>
-                            <div className="p-2.5 rounded-xl bg-white/5 text-center">
-                              <p className="text-sm font-bold text-amber-400">{student.days_inactive}d</p>
+                            <div className="p-2.5 rounded-xl bg-[#FAF7F1] text-center">
+                              <p className="text-sm font-bold text-amber-600">{student.days_inactive}d</p>
                               <p className="text-[10px] text-[var(--text-muted)]">Inaktiv</p>
                             </div>
                           </div>
@@ -251,11 +251,11 @@ export default function FollowUpPage() {
                               <a
                                 href={student.email ? `mailto:${student.email}?subject=${encodeURIComponent('Opfølgning på din praktiksøgning')}` : undefined}
                                 aria-disabled={!student.email}
-                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium hover:bg-blue-500/20 transition-colors aria-disabled:opacity-50 aria-disabled:pointer-events-none"
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] text-sm font-medium hover:bg-[#E3E3FA] transition-colors aria-disabled:opacity-50 aria-disabled:pointer-events-none"
                               >
                                 <Mail size={14} /> Send besked
                               </a>
-                              <button onClick={() => markContacted(student.id)} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium hover:bg-emerald-500/20 transition-colors">
+                              <button onClick={() => markContacted(student.id)} className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] text-sm font-medium hover:bg-[#D3EAE5] transition-colors">
                                 <CheckCircle2 size={14} /> Markér kontaktet
                               </button>
                             </div>

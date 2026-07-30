@@ -595,7 +595,7 @@ function StoresContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60dvh]">
-        <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
       </div>
     );
   }
@@ -624,18 +624,18 @@ function StoresContent() {
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
       <motion.div variants={itemVariants}>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]"><span className="gradient-text">Butikker</span></h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#211F1A]"><span>Butikker</span></h1>
         <p className="text-[var(--text-secondary)] mt-1">Oversigt over alle tilknyttede butikker og kæder</p>
       </motion.div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Aktive butikker', value: activeCount, color: 'text-emerald-400' },
-          { label: 'Praktik­pladser', value: totalSlots, color: 'text-blue-400' },
-          { label: 'Matches', value: totalMatches, color: 'text-violet-400' },
+          { label: 'Aktive butikker', value: activeCount, color: 'text-[#0B6B60]' },
+          { label: 'Praktik­pladser', value: totalSlots, color: 'text-[#4E50C4]' },
+          { label: 'Matches', value: totalMatches, color: 'text-[#EE5B3A]' },
         ].map(stat => (
-          <motion.div key={stat.label} variants={itemVariants} className="p-3 sm:p-4 rounded-2xl glass-card glass-card-hover text-center min-w-0 overflow-hidden">
+          <motion.div key={stat.label} variants={itemVariants} className="p-3 sm:p-4 rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow text-center min-w-0 overflow-hidden">
             <p className={`text-2xl font-extrabold tabular-nums ${stat.color}`}>{stat.value}</p>
             <p className="text-xs text-[var(--text-muted)] mt-1 break-words">{stat.label}</p>
           </motion.div>
@@ -651,12 +651,12 @@ function StoresContent() {
             placeholder="Søg efter butik, kæde, by eller ansvarlig..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-11 !rounded-xl"
+            className="w-full pl-11 !rounded-xl bg-white border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50"
           />
         </div>
         <button
           onClick={openImportModal}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl btn-gradient text-white text-sm font-medium shrink-0"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white text-sm font-medium shrink-0 transition-colors"
         >
           <Upload className="w-4 h-4" />
           Importér butikker
@@ -684,7 +684,7 @@ function StoresContent() {
             }}
           />
           {chainAdError && (
-            <motion.div variants={itemVariants} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+            <motion.div variants={itemVariants} className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#FCEAE3] border border-[#F3C9BA] text-[#B3412A] text-sm" role="alert">
               <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
               {chainAdError}
             </motion.div>
@@ -692,21 +692,21 @@ function StoresContent() {
 
           {/* Chain sections */}
           {filteredChains.map(chain => (
-            <motion.div key={chain.id} variants={itemVariants} className="rounded-2xl glass-card overflow-hidden">
-              <div className="w-full flex items-center gap-2 pr-5 hover:bg-white/[0.04] transition-colors">
+            <motion.div key={chain.id} variants={itemVariants} className="rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow overflow-hidden">
+              <div className="w-full flex items-center gap-2 pr-5 hover:bg-[#FAF7F1] transition-colors">
                 <button
                   onClick={() => toggleChain(chain.id)}
                   className="flex-1 min-w-0 flex items-center gap-4 p-5 text-left"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] flex items-center justify-center shrink-0 overflow-hidden">
                     {chain.logo_url ? (
                       <img src={chain.logo_url} alt={chain.name} className="w-full h-full object-cover" />
                     ) : (
-                      <Building2 className="w-5 h-5 text-violet-400" />
+                      <Building2 className="w-5 h-5 text-[#4E50C4]" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-[var(--text-primary)] text-lg truncate">{chain.name}</h3>
+                    <h3 className="font-bold text-[#211F1A] text-lg truncate">{chain.name}</h3>
                     <p className="text-sm text-[var(--text-secondary)]">
                       {chain.stores.length} butik{chain.stores.length !== 1 ? 'ker' : ''} · {chain.totalSlots} pladser · {chain.totalMatches} matches
                     </p>
@@ -723,7 +723,7 @@ function StoresContent() {
                       href={safeExternalHref(chain.job_description_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-violet-500/10 border border-violet-500/25 text-violet-300 text-xs font-semibold hover:bg-violet-500/20 transition-colors"
+                      className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] text-xs font-semibold hover:bg-[#E3E3FA] transition-colors"
                     >
                       <FileText className="w-3.5 h-3.5" aria-hidden="true" />
                       Kædens jobopslag
@@ -735,7 +735,7 @@ function StoresContent() {
                       chainAdInputRef.current?.click();
                     }}
                     disabled={uploadingChainAd === chain.id}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-[var(--text-secondary)] text-xs font-semibold hover:bg-white/10 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#FAF7F1] border border-[#EAE4D8] text-[var(--text-secondary)] text-xs font-semibold hover:bg-[#F3EEE4] transition-colors disabled:opacity-50"
                   >
                     {uploadingChainAd === chain.id ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
@@ -772,7 +772,7 @@ function StoresContent() {
             <>
               {filteredChains.length > 0 && (
                 <motion.div variants={itemVariants}>
-                  <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)] mb-3">Øvrige butikker</h2>
+                  <h2 className="text-lg font-bold tracking-tight text-[#211F1A] mb-3">Øvrige butikker</h2>
                 </motion.div>
               )}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -799,29 +799,29 @@ function StoresContent() {
         onOpenChange={(o) => !o && closeDetail()}
         title="Butiksdetaljer"
         variant="sheet"
-        contentClassName="max-h-[90dvh] overflow-y-auto bg-[#0E0E18] rounded-t-3xl border-t border-white/10"
+        contentClassName="max-h-[90dvh] overflow-y-auto bg-white rounded-t-3xl border-t border-[#EAE4D8]"
       >
         {selectedStoreId && (
           <>
-              <div className="sticky top-0 z-10 bg-[#0E0E18] flex justify-center py-3 rounded-t-3xl">
-                <div className="w-10 h-1 rounded-full bg-white/20" />
+              <div className="sticky top-0 z-10 bg-white flex justify-center py-3 rounded-t-3xl">
+                <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
               </div>
 
               <div className="px-6 pb-10">
                 <div className="flex justify-end mb-2">
-                  <button onClick={closeDetail} aria-label="Luk" className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors">
+                  <button onClick={closeDetail} aria-label="Luk" className="w-11 h-11 rounded-full bg-[#FAF7F1] flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] transition-colors">
                     <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
 
                 {storeLoading ? (
                   <div className="flex items-center justify-center py-16">
-                    <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-[#0B6B60] animate-spin" />
                   </div>
                 ) : selectedStore ? (
                   <>
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[linear-gradient(135deg,#14A899_0%,#0E7C86_55%,#5D5FA8_100%)] flex items-center justify-center shrink-0">
                         {selectedStore.logo_url ? (
                           <img src={selectedStore.logo_url} alt={selectedStore.name} className="w-full h-full object-cover" />
                         ) : (
@@ -830,13 +830,13 @@ function StoresContent() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h2 className="text-xl font-bold text-white truncate">{selectedStore.name}</h2>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${selectedStore.is_active ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'}`}>
+                          <h2 className="text-xl font-bold text-[#211F1A] truncate">{selectedStore.name}</h2>
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${selectedStore.is_active ? 'bg-[#E1F2EF] text-[#0B6B60] border border-[#C4E4DE]' : 'bg-[#FCEAE3] text-[#B3412A] border border-[#F3C9BA]'}`}>
                             {selectedStore.is_active ? 'Aktiv' : 'Inaktiv'}
                           </span>
                         </div>
                         {selectedStore.chain_name && (
-                          <p className="text-violet-400 text-sm mt-0.5 flex items-center gap-1.5">
+                          <p className="text-[#4E50C4] text-sm mt-0.5 flex items-center gap-1.5">
                             <Building2 className="w-3.5 h-3.5" />
                             {selectedStore.chain_name}
                           </p>
@@ -848,16 +848,16 @@ function StoresContent() {
                     </div>
 
                     <div className="grid grid-cols-3 gap-3 mb-6">
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-                        <p className="text-lg font-bold text-[var(--text-primary)]">{selectedStore.internship_slots}</p>
+                      <div className="p-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-center">
+                        <p className="text-lg font-bold text-[#211F1A]">{selectedStore.internship_slots}</p>
                         <p className="text-[10px] text-[var(--text-muted)]">Pladser</p>
                       </div>
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-                        <p className="text-lg font-bold text-blue-400">{selectedStore.swipes_received}</p>
+                      <div className="p-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-center">
+                        <p className="text-lg font-bold text-[#EE5B3A]">{selectedStore.swipes_received}</p>
                         <p className="text-[10px] text-[var(--text-muted)]">Swipes</p>
                       </div>
-                      <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-center">
-                        <p className="text-lg font-bold text-emerald-400">{selectedStore.matches}</p>
+                      <div className="p-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-center">
+                        <p className="text-lg font-bold text-[#0B6B60]">{selectedStore.matches}</p>
                         <p className="text-[10px] text-[var(--text-muted)]">Matches</p>
                       </div>
                     </div>
@@ -865,7 +865,7 @@ function StoresContent() {
                     {selectedStore.description && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Beskrivelse</h3>
-                        <div className="text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
+                        <div className="text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
                           <p>{selectedStore.description}</p>
                         </div>
                       </div>
@@ -873,8 +873,8 @@ function StoresContent() {
 
                     <div className="mb-5">
                       <h3 className="text-sm font-medium text-text-secondary mb-1.5">Adresse</h3>
-                      <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                        <MapPin className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                      <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                        <MapPin className="w-4 h-4 text-[#0B6B60] shrink-0 mt-0.5" />
                         <span>{selectedStore.address}, {selectedStore.postal_code} {selectedStore.city}</span>
                       </div>
                     </div>
@@ -882,11 +882,11 @@ function StoresContent() {
                     {selectedStore.education_lines.length > 0 && (
                       <div className="mb-5">
                         <h3 className="text-sm font-medium text-text-secondary mb-1.5">Uddannelseslinjer</h3>
-                        <div className="flex items-start gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                          <GraduationCap className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                        <div className="flex items-start gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                          <GraduationCap className="w-4 h-4 text-[#4E50C4] shrink-0 mt-0.5" />
                           <div className="flex flex-wrap gap-1.5">
                             {selectedStore.education_lines.map(line => (
-                              <span key={line} className="px-2.5 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-xs font-medium text-violet-300">
+                              <span key={line} className="px-2.5 py-1 rounded-full bg-[#EEEEFC] border border-[#DBDBF8] text-xs font-medium text-[#4E50C4]">
                                 {EDUCATION_LINE_LABELS[line] || line}
                               </span>
                             ))}
@@ -897,16 +897,16 @@ function StoresContent() {
 
                     <div className="mb-5">
                       <h3 className="text-sm font-medium text-text-secondary mb-1.5">Praktikpladser</h3>
-                      <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                        <Briefcase className="w-4 h-4 text-blue-400 shrink-0" />
+                      <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                        <Briefcase className="w-4 h-4 text-[#0B6B60] shrink-0" />
                         <span>{selectedStore.internship_slots} {selectedStore.internship_slots === 1 ? 'plads' : 'pladser'} tilgængelig{selectedStore.internship_slots === 1 ? '' : 'e'}</span>
                       </div>
                     </div>
 
                     <div className="mb-5">
                       <h3 className="text-sm font-medium text-text-secondary mb-1.5">Ansvarlig</h3>
-                      <div className="flex items-center gap-3 text-white text-sm bg-white/5 rounded-xl p-4 border border-white/5">
-                        <Building2 className="w-4 h-4 text-violet-400 shrink-0" />
+                      <div className="flex items-center gap-3 text-[#211F1A] text-sm bg-[#FAF7F1] rounded-xl p-4 border border-[#EAE4D8]">
+                        <Building2 className="w-4 h-4 text-[#0B6B60] shrink-0" />
                         <span>{selectedStore.manager_name}</span>
                       </div>
                     </div>
@@ -918,7 +918,7 @@ function StoresContent() {
                           href={safeExternalHref(selectedStore.job_description_url || selectedStore.chain_job_description_url)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
+                          className="flex items-center gap-3 p-3.5 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] hover:bg-[#E3E3FA] transition-colors"
                         >
                           <FileText className="w-5 h-5" />
                           <span className="font-medium text-sm">
@@ -938,7 +938,7 @@ function StoresContent() {
                         {(selectedStore.phone || selectedStore.manager_phone) && (
                           <a
                             href={`tel:${selectedStore.phone || selectedStore.manager_phone}`}
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors"
                           >
                             <Phone className="w-5 h-5" />
                             <span className="font-medium text-sm">Ring: {selectedStore.phone || selectedStore.manager_phone}</span>
@@ -947,7 +947,7 @@ function StoresContent() {
                         {(selectedStore.email || selectedStore.manager_email) && (
                           <a
                             href={`mailto:${selectedStore.email || selectedStore.manager_email}`}
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                           >
                             <Mail className="w-5 h-5" />
                             <span className="font-medium text-sm break-all">Email: {selectedStore.email || selectedStore.manager_email}</span>
@@ -958,7 +958,7 @@ function StoresContent() {
                             href={safeExternalHref(selectedStore.website)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 hover:bg-violet-500/20 transition-colors"
+                            className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
                           >
                             <Globe className="w-5 h-5" />
                             <span className="font-medium text-sm break-all">{selectedStore.website}</span>
@@ -992,17 +992,17 @@ function StoresContent() {
               role="dialog"
               aria-modal="true"
               aria-label="Importér butikker"
-              className="w-full sm:max-w-lg bg-[#0E0E18] rounded-t-3xl sm:rounded-3xl border border-white/10 max-h-[90dvh] overflow-y-auto"
+              className="w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-3xl border border-[#EAE4D8] max-h-[90dvh] overflow-y-auto"
               onClick={e => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 bg-[#0E0E18] rounded-t-3xl sm:rounded-t-3xl">
+              <div className="sticky top-0 z-10 bg-white rounded-t-3xl sm:rounded-t-3xl">
                 <div className="flex justify-center py-3 sm:hidden">
-                  <div className="w-10 h-1 rounded-full bg-white/20" />
+                  <div className="w-10 h-1 rounded-full bg-[#EAE4D8]" />
                 </div>
                 <div className="flex items-center justify-between px-6 pb-4 pt-2 sm:pt-6">
                   <div>
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                      <FileSpreadsheet className="w-5 h-5 text-violet-400" />
+                    <h2 className="text-lg font-bold text-[#211F1A] flex items-center gap-2">
+                      <FileSpreadsheet className="w-5 h-5 text-[#0B6B60]" />
                       Importér butikker
                     </h2>
                     <p className="text-xs text-text-secondary mt-0.5">
@@ -1012,7 +1012,7 @@ function StoresContent() {
                     </p>
                   </div>
                   {!importing && (
-                    <button onClick={() => setShowImportModal(false)} className="w-11 h-11 rounded-full bg-white/5 flex items-center justify-center text-text-muted hover:text-white transition-colors">
+                    <button onClick={() => setShowImportModal(false)} className="w-11 h-11 rounded-full bg-[#FAF7F1] flex items-center justify-center text-[#6E6759] hover:text-[#211F1A] transition-colors">
                       <X className="w-4 h-4" />
                     </button>
                   )}
@@ -1023,13 +1023,13 @@ function StoresContent() {
                   {[1, 2, 3].map(step => (
                     <div key={step} className={`flex items-center ${step > 1 ? 'flex-1' : ''}`}>
                       {step > 1 && (
-                        <div className={`h-px flex-1 mx-2 transition-colors ${step <= importStep ? 'bg-gradient-to-r from-violet-500 to-blue-500' : 'bg-white/10'}`} />
+                        <div className={`h-px flex-1 mx-2 transition-colors ${step <= importStep ? 'bg-[#0F9B8E]' : 'bg-[#EAE4D8]'}`} />
                       )}
                       <div
                         className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
                           step <= importStep
-                            ? `bg-gradient-to-br from-violet-500 to-blue-500 text-white ${step === importStep ? 'glow-violet' : ''}`
-                            : 'bg-white/10 text-[var(--text-muted)]'
+                            ? 'bg-[#0E8578] text-white'
+                            : 'bg-[#F3EEE4] text-[var(--text-muted)]'
                         }`}
                       >
                         {step}
@@ -1052,8 +1052,8 @@ function StoresContent() {
                             onClick={() => setImportChainId(chain.id)}
                             className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all text-left ${
                               importChainId === chain.id
-                                ? 'bg-violet-500/20 border-violet-500/30 text-violet-300'
-                                : 'bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10'
+                                ? 'bg-[#E1F2EF] border-[#C4E4DE] text-[#0B6B60]'
+                                : 'bg-[#FAF7F1] border-[#EAE4D8] text-[var(--text-secondary)] hover:bg-[#F3EEE4]'
                             }`}
                           >
                             <Building2 className="w-4 h-4 shrink-0" />
@@ -1065,9 +1065,9 @@ function StoresContent() {
                     </div>
 
                     <div className="relative flex items-center gap-3 py-2">
-                      <div className="flex-1 h-px bg-white/10" />
+                      <div className="flex-1 h-px bg-[#EAE4D8]" />
                       <span className="text-xs text-text-muted">eller</span>
-                      <div className="flex-1 h-px bg-white/10" />
+                      <div className="flex-1 h-px bg-[#EAE4D8]" />
                     </div>
 
                     <div>
@@ -1079,12 +1079,12 @@ function StoresContent() {
                           onChange={e => setNewChainName(e.target.value)}
                           onKeyDown={e => e.key === 'Enter' && createNewChain()}
                           placeholder="F.eks. Matas, Magasin, IKEA..."
-                          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-violet-500/50 text-sm"
+                          className="flex-1 px-4 py-3 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50 text-sm"
                         />
                         <button
                           onClick={createNewChain}
                           disabled={!newChainName.trim() || creatingChain}
-                          className="px-4 py-3 rounded-xl bg-violet-500/20 border border-violet-500/30 text-violet-400 hover:bg-violet-500/30 transition-colors disabled:opacity-40"
+                          className="px-4 py-3 rounded-xl bg-[#E1F2EF] border border-[#C4E4DE] text-[#0B6B60] hover:bg-[#D3EAE5] transition-colors disabled:opacity-40"
                         >
                           {creatingChain ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                         </button>
@@ -1094,7 +1094,7 @@ function StoresContent() {
                     <button
                       onClick={() => setImportStep(2)}
                       disabled={!importChainId}
-                      className="w-full py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed mt-4"
+                      className="w-full py-3.5 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed mt-4 transition-colors"
                     >
                       Næste
                     </button>
@@ -1106,7 +1106,7 @@ function StoresContent() {
                   <div className="space-y-4">
                     <button
                       onClick={downloadTemplate}
-                      className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors text-sm font-medium"
+                      className="w-full flex items-center justify-center gap-2 p-3.5 rounded-xl bg-[#EEEEFC] border border-[#DBDBF8] text-[#4E50C4] hover:bg-[#E3E3FA] transition-colors text-sm font-medium"
                     >
                       <Download className="w-4 h-4" />
                       Download Excel-skabelon
@@ -1119,7 +1119,7 @@ function StoresContent() {
 
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer"
+                      className="border-2 border-dashed border-[#D8D2C6] rounded-xl p-8 text-center hover:border-[#0E8578]/50 hover:bg-[#E1F2EF]/40 transition-all cursor-pointer"
                     >
                       <Upload className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-3" />
                       <p className="text-sm text-[var(--text-secondary)]">Klik for at vælge en Excel-fil</p>
@@ -1137,16 +1137,16 @@ function StoresContent() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <p className="text-sm text-text-secondary">
-                            {importRows.length} rækker fundet · <span className="text-emerald-400">{validImportCount} gyldige</span>
+                            {importRows.length} rækker fundet · <span className="text-[#0B6B60]">{validImportCount} gyldige</span>
                             {importRows.length - validImportCount > 0 && (
-                              <> · <span className="text-rose-400">{importRows.length - validImportCount} fejl</span></>
+                              <> · <span className="text-[#B3412A]">{importRows.length - validImportCount} fejl</span></>
                             )}
                           </p>
                         </div>
-                        <div className="max-h-52 overflow-y-auto rounded-xl border border-white/10">
+                        <div className="max-h-52 overflow-y-auto rounded-xl border border-[#EAE4D8]">
                           <table className="w-full text-xs">
                             <thead>
-                              <tr className="bg-white/5 text-text-muted">
+                              <tr className="bg-[#FAF7F1] text-text-muted">
                                 <th className="px-3 py-2 text-left">Butiksnavn</th>
                                 <th className="px-3 py-2 text-left">Adresse</th>
                                 <th className="px-3 py-2 text-left">Butikschef</th>
@@ -1155,8 +1155,8 @@ function StoresContent() {
                             </thead>
                             <tbody>
                               {importRows.map((row, i) => (
-                                <tr key={i} className={`border-t border-white/5 ${row.valid ? '' : 'bg-rose-500/5'}`}>
-                                  <td className="px-3 py-2 text-white truncate max-w-[120px]">{row.name || '—'}</td>
+                                <tr key={i} className={`border-t border-[#F3EEE4] ${row.valid ? '' : 'bg-[#FCEAE3]/50'}`}>
+                                  <td className="px-3 py-2 text-[#211F1A] truncate max-w-[120px]">{row.name || '—'}</td>
                                   <td className="px-3 py-2 text-text-secondary truncate max-w-[120px]">{row.address || '—'}</td>
                                   <td className="px-3 py-2 text-text-secondary truncate max-w-[140px]">
                                     {row.manager_name || '—'}
@@ -1166,9 +1166,9 @@ function StoresContent() {
                                   </td>
                                   <td className="px-3 py-2">
                                     {row.valid ? (
-                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-[#0B6B60]" />
                                     ) : (
-                                      <span className="text-rose-400" title={row.error}>
+                                      <span className="text-[#B3412A]" title={row.error}>
                                         <AlertCircle className="w-3.5 h-3.5 inline" /> {row.error}
                                       </span>
                                     )}
@@ -1192,7 +1192,7 @@ function StoresContent() {
                           value={importTempPassword}
                           onChange={e => setImportTempPassword(e.target.value)}
                           placeholder="Min. 8 tegn — fx Kaede2026!"
-                          className="w-full !py-3 !rounded-xl text-sm"
+                          className="w-full !py-3 !rounded-xl text-sm bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] placeholder:text-[#8B8471] focus:outline-none focus:ring-2 focus:ring-[#0E8578]/40 focus:border-[#0E8578]/50"
                         />
                         <p className="text-[11px] text-text-muted mt-1">
                           Bruges kun til chefer, der ikke findes i forvejen. Giv dem emailen + koden, så kan de logge ind.
@@ -1203,14 +1203,14 @@ function StoresContent() {
                     <div className="flex gap-3 mt-4">
                       <button
                         onClick={() => setImportStep(1)}
-                        className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-[var(--text-secondary)] font-medium text-sm hover:bg-white/10 transition-colors"
+                        className="flex-1 py-3.5 rounded-xl bg-white border border-[#EAE4D8] text-[var(--text-secondary)] font-medium text-sm hover:bg-[#FAF7F1] transition-colors"
                       >
                         Tilbage
                       </button>
                       <button
                         onClick={() => setImportStep(3)}
                         disabled={validImportCount === 0}
-                        className="flex-1 py-3.5 rounded-xl btn-gradient text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-3.5 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                       >
                         Næste
                       </button>
@@ -1221,33 +1221,33 @@ function StoresContent() {
                 {/* Step 3: Confirm */}
                 {importStep === 3 && !importResult && (
                   <div className="space-y-4">
-                    <div className="rounded-xl bg-white/5 border border-white/10 p-5 space-y-3">
+                    <div className="rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] p-5 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-text-secondary">Kæde</span>
-                        <span className="text-sm text-white font-medium">
+                        <span className="text-sm text-[#211F1A] font-medium">
                           {chains.find(c => c.id === importChainId)?.name || '—'}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-text-secondary">Butikschefer i arket</span>
-                        <span className="text-sm text-white font-medium">
+                        <span className="text-sm text-[#211F1A] font-medium">
                           {new Set(importRows.filter(r => r.valid).map(r => r.manager_email.toLowerCase())).size}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-text-secondary">Butikker der oprettes</span>
-                        <span className="text-sm text-emerald-400 font-bold">{validImportCount}</span>
+                        <span className="text-sm text-[#0B6B60] font-bold">{validImportCount}</span>
                       </div>
                       {importRows.length - validImportCount > 0 && (
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-text-secondary">Springes over (fejl)</span>
-                          <span className="text-sm text-rose-400 font-medium">{importRows.length - validImportCount}</span>
+                          <span className="text-sm text-[#B3412A] font-medium">{importRows.length - validImportCount}</span>
                         </div>
                       )}
                     </div>
 
                     {importError && (
-                      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm" role="alert">
+                      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#FCEAE3] border border-[#F3C9BA] text-[#B3412A] text-sm" role="alert">
                         <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
                         {importError}
                       </div>
@@ -1257,14 +1257,14 @@ function StoresContent() {
                       <button
                         onClick={() => setImportStep(2)}
                         disabled={importing}
-                        className="flex-1 py-3.5 rounded-xl bg-white/5 border border-white/10 text-[var(--text-secondary)] font-medium text-sm hover:bg-white/10 transition-colors disabled:opacity-40"
+                        className="flex-1 py-3.5 rounded-xl bg-white border border-[#EAE4D8] text-[var(--text-secondary)] font-medium text-sm hover:bg-[#FAF7F1] transition-colors disabled:opacity-40"
                       >
                         Tilbage
                       </button>
                       <button
                         onClick={executeImport}
                         disabled={importing}
-                        className="flex-1 py-3.5 rounded-xl btn-gradient-emerald text-white font-medium text-sm disabled:opacity-40 flex items-center justify-center gap-2"
+                        className="flex-1 py-3.5 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-medium text-sm disabled:opacity-40 flex items-center justify-center gap-2 transition-colors"
                       >
                         {importing ? (
                           <>
@@ -1285,16 +1285,16 @@ function StoresContent() {
                 {/* Import result */}
                 {importResult && (
                   <div className="space-y-4 text-center py-4">
-                    <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
+                    <CheckCircle2 className="w-12 h-12 text-[#0B6B60] mx-auto" />
                     <div>
-                      <h3 className="text-lg font-bold text-white">Import fuldført</h3>
+                      <h3 className="text-lg font-bold text-[#211F1A]">Import fuldført</h3>
                       <p className="text-sm text-text-secondary mt-1">
-                        <span className="text-emerald-400 font-semibold">{importResult.success}</span> butikker oprettet
+                        <span className="text-[#0B6B60] font-semibold">{importResult.success}</span> butikker oprettet
                         {importResult.createdManagers > 0 && (
-                          <> · <span className="text-violet-300 font-semibold">{importResult.createdManagers}</span> nye butikschef-konti</>
+                          <> · <span className="text-[#4E50C4] font-semibold">{importResult.createdManagers}</span> nye butikschef-konti</>
                         )}
                         {importResult.failed > 0 && (
-                          <> · <span className="text-rose-400 font-semibold">{importResult.failed}</span> fejlede</>
+                          <> · <span className="text-[#B3412A] font-semibold">{importResult.failed}</span> fejlede</>
                         )}
                       </p>
                       {importResult.createdManagers > 0 && (
@@ -1306,7 +1306,7 @@ function StoresContent() {
                     </div>
                     <button
                       onClick={() => setShowImportModal(false)}
-                      className="w-full py-3.5 rounded-xl btn-gradient text-white font-medium text-sm"
+                      className="w-full py-3.5 rounded-xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-medium text-sm transition-colors"
                     >
                       Luk
                     </button>
@@ -1325,18 +1325,18 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
   return (
     <div
       onClick={onClick}
-      className={`group relative p-5 rounded-2xl glass-card glass-card-hover cursor-pointer ${store.is_active ? '' : '!border-rose-500/10 opacity-60'}`}
+      className={`group relative p-5 rounded-2xl bg-white border border-[#EAE4D8] varm-card-shadow cursor-pointer ${store.is_active ? '' : '!border-[#F3C9BA] opacity-60'}`}
     >
-      {store.is_active && <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-violet-500 to-blue-500 opacity-50 rounded-t-2xl" />}
+      {store.is_active && <div className="absolute top-0 left-0 w-full h-0.5 bg-[#0F9B8E] opacity-60 rounded-t-2xl" />}
       <div className="flex items-start justify-between mb-3">
         <div className="min-w-0 flex-1 mr-3">
-          <h3 className="font-semibold text-[var(--text-primary)] text-lg truncate">{store.name}</h3>
+          <h3 className="font-semibold text-[#211F1A] text-lg truncate">{store.name}</h3>
           <div className="flex items-center gap-1.5 mt-0.5 text-xs text-[var(--text-secondary)]">
             <MapPin size={12} className="shrink-0" />
             <span className="truncate">{store.address}, {store.postal_code} {store.city}</span>
           </div>
         </div>
-        <div className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${store.is_active ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/15 text-rose-400 border border-rose-500/20'}`}>
+        <div className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium shrink-0 ${store.is_active ? 'bg-[#E1F2EF] text-[#0B6B60] border border-[#C4E4DE]' : 'bg-[#FCEAE3] text-[#B3412A] border border-[#F3C9BA]'}`}>
           {store.is_active ? 'Aktiv' : 'Inaktiv'}
         </div>
       </div>
@@ -1345,20 +1345,20 @@ function StoreCard({ store, onClick }: { store: StoreDisplay; onClick: () => voi
       </div>
       <div className="flex flex-wrap gap-1.5 mb-3">
         {store.education_lines.map(line => (
-          <span key={line} className="px-2 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-[10px] font-medium text-violet-300">{line}</span>
+          <span key={line} className="px-2 py-0.5 rounded-full bg-[#EEEEFC] border border-[#DBDBF8] text-[10px] font-medium text-[#4E50C4]">{line}</span>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5">
+      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#F3EEE4]">
         <div className="text-center min-w-0">
-          <p className="text-sm font-bold text-[var(--text-primary)]">{store.internship_slots}</p>
+          <p className="text-sm font-bold text-[#211F1A]">{store.internship_slots}</p>
           <p className="text-[10px] text-[var(--text-muted)] truncate">Pladser</p>
         </div>
         <div className="text-center min-w-0">
-          <p className="text-sm font-bold text-blue-400">{store.swipes_received}</p>
+          <p className="text-sm font-bold text-[#EE5B3A]">{store.swipes_received}</p>
           <p className="text-[10px] text-[var(--text-muted)] truncate">Swipes</p>
         </div>
         <div className="text-center min-w-0">
-          <p className="text-sm font-bold text-emerald-400">{store.matches}</p>
+          <p className="text-sm font-bold text-[#0B6B60]">{store.matches}</p>
           <p className="text-[10px] text-[var(--text-muted)] truncate">Matches</p>
         </div>
       </div>
@@ -1371,7 +1371,7 @@ export default function DashboardStores() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center min-h-[60dvh]">
-          <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#0B6B60] animate-spin" />
         </div>
       }
     >
