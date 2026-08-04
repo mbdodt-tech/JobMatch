@@ -102,7 +102,7 @@ export default function DashboardShell({
     return pathname.startsWith(href);
   };
 
-  const SidebarContent = () => (
+  const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="p-6 pb-8">
@@ -188,7 +188,7 @@ export default function DashboardShell({
     <div className="min-h-dvh bg-[#FAF7F1]">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:fixed lg:inset-y-0 lg:left-0 lg:w-[280px] lg:flex-col bg-white border-r border-[#EAE4D8] z-40">
-        <SidebarContent />
+        {sidebarContent}
       </aside>
 
       {/* Mobile Header */}
@@ -238,7 +238,7 @@ export default function DashboardShell({
                   <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
-              <SidebarContent />
+              {sidebarContent}
             </motion.aside>
           </>
         )}

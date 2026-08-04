@@ -59,31 +59,35 @@ export default function ManagerStorePage() {
   const [videoError, setVideoError] = useState('');
   const videoInputRef = useRef<HTMLInputElement>(null);
 
+  async function loadStore() {
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) { window.location.href = '/login'; return; }
+
+      const { data } = await supabase
+        .from('stores')
+        .select('*')
+        .eq('manager_id', user.id)
+        .order('created_at')
+        .limit(1)
+        .maybeSingle();
+
+      if (data) {
+        setStore(data);
+        setIsNew(false);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     loadStore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function loadStore() {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); window.location.href = '/login'; return; }
-
-    const { data } = await supabase
-      .from('stores')
-      .select('*')
-      .eq('manager_id', user.id)
-      .order('created_at')
-      .limit(1)
-      .maybeSingle();
-
-    if (data) {
-      setStore(data);
-      setIsNew(false);
-    }
-    setLoading(false);
-  }
 
   function toggleEducationLine(line: EducationLine) {
     const current = store.education_lines || [];

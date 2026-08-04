@@ -91,12 +91,7 @@ export default function ManagerFeedPage() {
   const rightOpacity = useTransform(x, [0, 25, 90], [0, 0.3, 1]);
   const leftOpacity = useTransform(x, [-90, -25, 0], [1, 0.3, 0]);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
   async function loadData() {
-    setLoading(true);
     try {
       const supabase = createClient();
       const {
@@ -151,6 +146,11 @@ export default function ManagerFeedPage() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSwipe = useCallback(
     async (direction: 'left' | 'right') => {

@@ -71,65 +71,66 @@ export default function ManagerMatchesPage() {
   const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
   const [unreadByMatch, setUnreadByMatch] = useState<Record<string, number>>({});
 
+  async function loadMatches() {
+    try {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) { window.location.href = '/login'; return; }
+
+      // Get the store first
+      const { data: store } = await supabase
+        .from('stores')
+        .select('id')
+        .eq('manager_id', user.id)
+        .order('created_at')
+        .limit(1)
+        .maybeSingle();
+
+      if (!store) return;
+
+      // Get matches with student profiles
+      const { data: matchData } = await supabase
+        .from('matches')
+        .select(`*, student:profiles!matches_student_id_fkey(*)`)
+        .eq('store_id', store.id)
+        .eq('status', 'active')
+        .order('matched_at', { ascending: false });
+
+      if (matchData) {
+        setMatches(
+          matchData
+            .filter((m) => m.student)
+            .map((m) => ({
+              ...m,
+              student: m.student as unknown as Profile,
+            }))
+        );
+
+        if (matchData.length > 0) {
+          const { data: unread } = await supabase
+            .from('messages')
+            .select('match_id')
+            .in('match_id', matchData.map((m) => m.id))
+            .neq('sender_id', user.id)
+            .is('read_at', null);
+          const counts: Record<string, number> = {};
+          for (const row of (unread as { match_id: string }[]) ?? []) {
+            counts[row.match_id] = (counts[row.match_id] ?? 0) + 1;
+          }
+          setUnreadByMatch(counts);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     loadMatches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  async function loadMatches() {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); window.location.href = '/login'; return; }
-
-    // Get the store first
-    const { data: store } = await supabase
-      .from('stores')
-      .select('id')
-      .eq('manager_id', user.id)
-      .order('created_at')
-      .limit(1)
-      .maybeSingle();
-
-    if (!store) {
-      setLoading(false);
-      return;
-    }
-
-    // Get matches with student profiles
-    const { data: matchData } = await supabase
-      .from('matches')
-      .select(`*, student:profiles!matches_student_id_fkey(*)`)
-      .eq('store_id', store.id)
-      .eq('status', 'active')
-      .order('matched_at', { ascending: false });
-
-    if (matchData) {
-      setMatches(
-        matchData
-          .filter((m) => m.student)
-          .map((m) => ({
-            ...m,
-            student: m.student as unknown as Profile,
-          }))
-      );
-
-      if (matchData.length > 0) {
-        const { data: unread } = await supabase
-          .from('messages')
-          .select('match_id')
-          .in('match_id', matchData.map((m) => m.id))
-          .neq('sender_id', user.id)
-          .is('read_at', null);
-        const counts: Record<string, number> = {};
-        for (const row of (unread as { match_id: string }[]) ?? []) {
-          counts[row.match_id] = (counts[row.match_id] ?? 0) + 1;
-        }
-        setUnreadByMatch(counts);
-      }
-    }
-    setLoading(false);
-  }
 
   function openVideo(url: string) {
     setVideoUrl(url);

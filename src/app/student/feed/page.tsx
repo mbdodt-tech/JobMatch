@@ -45,7 +45,6 @@ export default function StudentFeed() {
 
   // Fetch stores that haven't been swiped yet
   const fetchStores = useCallback(async () => {
-    setLoading(true);
     try {
       const {
         data: { user },
@@ -101,6 +100,13 @@ export default function StudentFeed() {
   useEffect(() => {
     fetchStores();
   }, [fetchStores]);
+
+  // Wrapper for the refresh button — setLoading(true) must not run synchronously
+  // inside the mount effect (react-hooks/set-state-in-effect)
+  const refetchStores = () => {
+    setLoading(true);
+    fetchStores();
+  };
 
   const handleSwipe = async (direction: 'left' | 'right') => {
     if (swiping) return;
@@ -278,7 +284,7 @@ export default function StudentFeed() {
                 Du har set alle tilgængelige virksomheder. Kom tilbage senere for nye muligheder!
               </p>
               <button
-                onClick={fetchStores}
+                onClick={refetchStores}
                 className="mt-4 px-6 py-3 rounded-2xl bg-[#0E8578] hover:bg-[#0B6B60] text-white font-semibold text-sm active:scale-[0.98] transition-colors"
               >
                 Opdater listen

@@ -452,7 +452,7 @@ function StoresContent() {
       const data = new Uint8Array(evt.target?.result as ArrayBuffer);
       const workbook = XLSX.read(data, { type: 'array' });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const raw = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
+      const raw = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet);
 
       const parsed: ImportRow[] = raw.map(row => {
         const name = String(row['Butiksnavn'] || row['Navn'] || row['name'] || '').trim();

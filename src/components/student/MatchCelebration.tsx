@@ -2,7 +2,6 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 import { Briefcase, Phone, ArrowRight } from 'lucide-react';
 import type { Store } from '@/lib/types/database';
 
@@ -25,30 +24,27 @@ interface Particle {
   driftX: number;
 }
 
+const CONFETTI_COLORS = ['#0F9B8E', '#5D5FE0', '#EE5B3A', '#FFFFFF'];
+
+// Generated once at module load — keeps Math.random() out of render
+// (react-hooks/purity) so positions don't jump on re-render.
+const PARTICLES: Particle[] = Array.from({ length: 50 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 100,
+  y: -10 - Math.random() * 20,
+  color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+  size: 4 + Math.random() * 8,
+  delay: Math.random() * 0.5,
+  duration: 1.5 + Math.random() * 2,
+  rotate: Math.random() > 0.5 ? 720 : -720,
+  driftX: (Math.random() - 0.5) * 200,
+}));
+
 function ConfettiParticles() {
   const reduceMotion = useReducedMotion();
-  const [particles, setParticles] = useState<Particle[]>([]);
+  const particles = PARTICLES;
 
-  // Generate the randomised particles once, after mount — keeps Math.random()
-  // out of render (react-hooks/purity) so positions don't jump on re-render.
-  useEffect(() => {
-    const colors = ['#0F9B8E', '#5D5FE0', '#EE5B3A', '#FFFFFF'];
-    setParticles(
-      Array.from({ length: 50 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: -10 - Math.random() * 20,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: 4 + Math.random() * 8,
-        delay: Math.random() * 0.5,
-        duration: 1.5 + Math.random() * 2,
-        rotate: Math.random() > 0.5 ? 720 : -720,
-        driftX: (Math.random() - 0.5) * 200,
-      }))
-    );
-  }, []);
-
-  if (reduceMotion || particles.length === 0) return null;
+  if (reduceMotion) return null;
 
   return (
     <div className="fixed inset-0 z-[100] overflow-hidden pointer-events-none">
