@@ -53,6 +53,7 @@ export default function UnmatchDialog({
       title={`Ophæv match med ${counterpartName}`}
       variant="center"
       overlayClassName="z-[70] bg-black/60 backdrop-blur-sm"
+      contentZClassName="z-[71]"
       contentClassName="w-[calc(100%-2.5rem)] max-w-sm bg-white rounded-3xl border border-[#EAE4D8] varm-card-shadow p-6 max-h-[85dvh] overflow-y-auto"
     >
       <div className="flex items-center gap-3 mb-1">

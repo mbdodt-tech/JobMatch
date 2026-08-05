@@ -70,7 +70,12 @@ export default function StudentMatches() {
   const [liked, setLiked] = useState<LikedStore[]>([]);
   const [disliked, setDisliked] = useState<LikedStore[]>([]);
   const [showDisliked, setShowDisliked] = useState(false);
-  const [selectedStore, setSelectedStore] = useState<{ store: Store; matched: boolean; matchId?: string } | null>(null);
+  const [selectedStore, setSelectedStore] = useState<{
+    store: Store;
+    matched: boolean;
+    matchId?: string;
+    origin?: 'liked' | 'disliked';
+  } | null>(null);
   const [unreadByMatch, setUnreadByMatch] = useState<Record<string, number>>({});
   const [storeVideoUrl, setStoreVideoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -408,7 +413,7 @@ export default function StudentMatches() {
                       hidden: { opacity: 0, y: 16, scale: 0.95 },
                       visible: { opacity: 1, y: 0, scale: 1 },
                     }}
-                    onClick={() => setSelectedStore({ store: item.store, matched: false })}
+                    onClick={() => setSelectedStore({ store: item.store, matched: false, origin: 'liked' })}
                     className="relative aspect-[3/4] rounded-3xl overflow-hidden varm-card-shadow cursor-pointer active:scale-[0.98] transition-transform"
                   >
                     <StoreCardMedia store={item.store} />
@@ -488,7 +493,7 @@ export default function StudentMatches() {
                 {disliked.map((item) => (
                   <div
                     key={item.swipe_id}
-                    onClick={() => setSelectedStore({ store: item.store, matched: false })}
+                    onClick={() => setSelectedStore({ store: item.store, matched: false, origin: 'disliked' })}
                     className="relative aspect-[3/4] rounded-3xl overflow-hidden varm-card-shadow cursor-pointer active:scale-[0.98] transition-transform opacity-60 hover:opacity-100 saturate-50 hover:saturate-100"
                   >
                     <StoreCardMedia store={item.store} />
@@ -721,20 +726,46 @@ export default function StudentMatches() {
                     )}
                   </div>
                 ) : (
-                  selectedStore.store.website && (
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-medium text-[#6E6759] mb-2">Links</h3>
-                      <a
-                        href={safeExternalHref(selectedStore.store.website)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
+                  <>
+                    {selectedStore.store.website && (
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-medium text-[#6E6759] mb-2">Links</h3>
+                        <a
+                          href={safeExternalHref(selectedStore.store.website)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-3.5 rounded-xl bg-[#FAF7F1] border border-[#EAE4D8] text-[#211F1A] hover:bg-[#F3EEE4] transition-colors"
+                        >
+                          <ExternalLink className="w-5 h-5" />
+                          <span className="font-medium text-sm">Besøg website</span>
+                        </a>
+                      </div>
+                    )}
+
+                    {selectedStore.origin && (
+                      <button
+                        onClick={async () => {
+                          await removeSwipe(selectedStore.store.id);
+                          setSelectedStore(null);
+                        }}
+                        disabled={removingStoreId === selectedStore.store.id}
+                        className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-white border border-[#EAE4D8] text-[#8B8471] hover:text-[#B3412A] hover:border-[#B3412A]/30 transition-colors mt-4 disabled:opacity-50"
                       >
-                        <ExternalLink className="w-5 h-5" />
-                        <span className="font-medium text-sm">Besøg website</span>
-                      </a>
-                    </div>
-                  )
+                        {removingStoreId === selectedStore.store.id ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : selectedStore.origin === 'liked' ? (
+                          <HeartOff className="w-5 h-5" />
+                        ) : (
+                          <RotateCcw className="w-5 h-5" />
+                        )}
+                        <span className="font-medium text-sm">
+                          {selectedStore.origin === 'liked'
+                            ? 'Fortryd like — fjern fra listen'
+                            : 'Fortryd fravalg — vis i feedet igen'}
+                        </span>
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
           </>
@@ -757,6 +788,7 @@ export default function StudentMatches() {
         title="Butiksvideo"
         variant="center"
         overlayClassName="z-[70] bg-black/90"
+        contentZClassName="z-[71]"
         contentClassName="w-full max-w-md aspect-[9/16]"
       >
         {storeVideoUrl && (

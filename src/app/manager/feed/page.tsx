@@ -729,6 +729,7 @@ export default function ManagerFeedPage() {
         title="Video-pitch"
         variant="center"
         overlayClassName="z-[70] bg-black/90"
+        contentZClassName="z-[71]"
         contentClassName="w-full max-w-md aspect-[9/16]"
       >
         {showVideoPlayer && videoUrl && (
@@ -752,6 +753,7 @@ export default function ManagerFeedPage() {
         title="Det er et match"
         variant="center"
         overlayClassName="z-[100] bg-black/80 backdrop-blur-sm"
+        contentZClassName="z-[101]"
         contentClassName="w-[calc(100vw-2rem)] max-w-sm bg-white rounded-3xl p-8 text-center border border-[#EAE4D8] varm-card-shadow"
         ariaLive="assertive"
       >

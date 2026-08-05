@@ -15,6 +15,9 @@ interface ModalProps {
   overlayClassName?: string;
   /** Styling for the animated content box (background, radius, size, scroll). */
   contentClassName?: string;
+  /** z-index for the content box — MUST exceed the overlay's z-index, or the
+   *  backdrop covers the dialog and the user sees only a dimmed screen. */
+  contentZClassName?: string;
   /** Announce urgently for celebratory dialogs. */
   ariaLive?: 'off' | 'polite' | 'assertive';
 }
@@ -38,6 +41,7 @@ export default function Modal({
   children,
   overlayClassName = 'z-[60] bg-black/60 backdrop-blur-sm',
   contentClassName = '',
+  contentZClassName = 'z-[61]',
   ariaLive,
 }: ModalProps) {
   const isSheet = variant === 'sheet';
@@ -65,8 +69,8 @@ export default function Modal({
             }
             className={
               isSheet
-                ? `fixed inset-x-0 bottom-0 z-[61] outline-none ${contentClassName}`
-                : `fixed left-1/2 top-1/2 z-[61] -translate-x-1/2 -translate-y-1/2 outline-none ${contentClassName}`
+                ? `fixed inset-x-0 bottom-0 ${contentZClassName} outline-none ${contentClassName}`
+                : `fixed left-1/2 top-1/2 ${contentZClassName} -translate-x-1/2 -translate-y-1/2 outline-none ${contentClassName}`
             }
           >
             <Dialog.Title className="sr-only">{title}</Dialog.Title>

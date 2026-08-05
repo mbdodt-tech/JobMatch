@@ -358,6 +358,7 @@ export default function StudentFeed() {
         title="Butiksvideo"
         variant="center"
         overlayClassName="z-[70] bg-black/90"
+        contentZClassName="z-[71]"
         contentClassName="w-full max-w-md aspect-[9/16]"
       >
         {storeVideoUrl && (
