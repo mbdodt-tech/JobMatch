@@ -7,6 +7,7 @@ import {
   Mail, Smartphone, MonitorSmartphone, Globe, Info, ToggleLeft, ToggleRight
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { enablePush, disablePush } from '@/lib/push';
 import { useRouter } from 'next/navigation';
 
 interface SettingToggle {
@@ -23,6 +24,7 @@ export default function StudentSettings() {
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [notifyInApp, setNotifyInApp] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pushHint, setPushHint] = useState('');
   const router = useRouter();
   const supabase = createClient();
 
@@ -60,9 +62,35 @@ export default function StudentSettings() {
     { key: 'notify_in_app', label: 'In-app notifikationer', description: 'Vis bannere inde i appen', icon: Bell, value: notifyInApp, color: 'text-[#0B6B60]' },
   ];
 
-  const handleToggle = (t: SettingToggle) => {
+  const handleToggle = async (t: SettingToggle) => {
     const newVal = !t.value;
-    if (t.key === 'notify_push') setNotifyPush(newVal);
+
+    // Push needs a real browser subscription, not just the DB flag — and the
+    // permission prompt must come from this tap (iOS requirement)
+    if (t.key === 'notify_push') {
+      setPushHint('');
+      if (newVal) {
+        const result = await enablePush(supabase);
+        if (result === 'denied') {
+          setPushHint('Du har blokeret notifikationer — tillad dem i telefonens indstillinger for Jobmatch.');
+          return;
+        }
+        if (result === 'unsupported') {
+          setPushHint('Push kræver at appen er føjet til hjemmeskærmen (iOS 16.4+).');
+          return;
+        }
+        if (result === 'error') {
+          setPushHint('Kunne ikke aktivere push — prøv igen.');
+          return;
+        }
+      } else {
+        await disablePush(supabase);
+      }
+      setNotifyPush(newVal);
+      updateSetting(t.key, newVal);
+      return;
+    }
+
     if (t.key === 'notify_email') setNotifyEmail(newVal);
     if (t.key === 'notify_in_app') setNotifyInApp(newVal);
     updateSetting(t.key, newVal);
@@ -86,17 +114,22 @@ export default function StudentSettings() {
             </h2>
           </div>
           {toggles.map((t, i) => (
-            <div key={t.key} className={`flex items-center justify-between px-4 py-4 ${i < toggles.length - 1 ? 'border-b border-[#EAE4D8]' : ''}`}>
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <t.icon size={18} className={t.color} />
-                <div>
-                  <p className="text-sm font-medium text-[#211F1A]">{t.label}</p>
-                  <p className="text-xs text-[#6E6759]">{t.description}</p>
+            <div key={t.key} className={`${i < toggles.length - 1 ? 'border-b border-[#EAE4D8]' : ''}`}>
+              <div className="flex items-center justify-between px-4 py-4">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <t.icon size={18} className={t.color} />
+                  <div>
+                    <p className="text-sm font-medium text-[#211F1A]">{t.label}</p>
+                    <p className="text-xs text-[#6E6759]">{t.description}</p>
+                  </div>
                 </div>
+                <button onClick={() => handleToggle(t)} className="ml-3 shrink-0" aria-label={`${t.value ? 'Slå fra' : 'Slå til'}: ${t.label}`}>
+                  {t.value ? <ToggleRight size={32} className="text-[#0E8578]" /> : <ToggleLeft size={32} className="text-[#8B8471]" />}
+                </button>
               </div>
-              <button onClick={() => handleToggle(t)} className="ml-3 shrink-0">
-                {t.value ? <ToggleRight size={32} className="text-[#0E8578]" /> : <ToggleLeft size={32} className="text-[#8B8471]" />}
-              </button>
+              {t.key === 'notify_push' && pushHint && (
+                <p className="px-4 pb-3 -mt-1 text-xs text-[#B3412A]">{pushHint}</p>
+              )}
             </div>
           ))}
         </motion.div>
