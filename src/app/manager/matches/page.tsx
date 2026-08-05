@@ -16,11 +16,13 @@ import {
   Briefcase,
   Calendar,
   MessageCircle,
+  HeartOff,
 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { resolveMediaUrl } from '@/lib/storage';
 import Modal from '@/components/Modal';
+import UnmatchDialog from '@/components/UnmatchDialog';
 import type { Match, Profile, BehavioralStyle } from '@/lib/types/database';
 import {
   BEHAVIORAL_STYLE_LABELS,
@@ -28,6 +30,7 @@ import {
   BEHAVIORAL_STYLE_ICONS,
   educationLineLabels,
   youthEducationLabels,
+  MANAGER_UNMATCH_REASONS,
 } from '@/lib/types/database';
 
 function StyleBadge({ style }: { style: BehavioralStyle }) {
@@ -138,6 +141,36 @@ export default function ManagerMatchesPage() {
   }
 
   // Scroll-lock, Escape and focus handled by Modal (Radix Dialog).
+
+  const [unmatchTarget, setUnmatchTarget] = useState<{ matchId: string; studentName: string } | null>(null);
+
+  const performUnmatch = async (reason: string, note: string | null) => {
+    if (!unmatchTarget) return;
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('matches')
+      .update({
+        status: 'unmatched',
+        unmatched_at: new Date().toISOString(),
+        unmatched_by: user.id,
+        unmatch_reason: reason,
+        unmatch_note: note,
+      })
+      .eq('id', unmatchTarget.matchId);
+    if (error) {
+      console.error('Kunne ikke ophæve match:', error);
+      return;
+    }
+
+    setMatches((prev) => prev.filter((m) => m.id !== unmatchTarget.matchId));
+    setUnmatchTarget(null);
+    setSelectedMatch(null);
+  };
 
   useEffect(() => {
     resolveMediaUrl(selectedMatch?.student.cv_url, 'cv').then(setSheetCvUrl);
@@ -465,11 +498,33 @@ export default function ManagerMatchesPage() {
                       Eleven har ikke delt kontaktoplysninger endnu
                     </p>
                   )}
+
+                  <button
+                    onClick={() =>
+                      setUnmatchTarget({
+                        matchId: selectedMatch.id,
+                        studentName: selectedMatch.student.full_name || 'eleven',
+                      })
+                    }
+                    className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-white border border-[#EAE4D8] text-[#8B8471] hover:text-[#B3412A] hover:border-[#B3412A]/30 transition-colors mt-4"
+                  >
+                    <HeartOff className="w-5 h-5" />
+                    <span className="font-medium text-sm">Ophæv match</span>
+                  </button>
                 </div>
               </div>
           </>
         )}
       </Modal>
+
+      {/* Unmatch dialog */}
+      <UnmatchDialog
+        open={!!unmatchTarget}
+        onOpenChange={(o) => !o && setUnmatchTarget(null)}
+        counterpartName={unmatchTarget?.studentName ?? 'eleven'}
+        reasons={MANAGER_UNMATCH_REASONS}
+        onConfirm={performUnmatch}
+      />
 
       {/* Video player overlay */}
       <Modal

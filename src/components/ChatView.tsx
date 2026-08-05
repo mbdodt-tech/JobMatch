@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Loader2, Send, Store as StoreIcon, AlertCircle } from 'lucide-react';
+import { ChevronLeft, Loader2, Send, Store as StoreIcon, AlertCircle, HeartOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 interface MessageRow {
@@ -45,6 +45,11 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
   const [notFound, setNotFound] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [counterpart, setCounterpart] = useState<Counterpart | null>(null);
+  const [closedInfo, setClosedInfo] = useState<{
+    byMe: boolean;
+    reason: string | null;
+    note: string | null;
+  } | null>(null);
   const [messages, setMessages] = useState<MessageRow[]>([]);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
@@ -88,7 +93,7 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
       const { data: match } = await supabase
         .from('matches')
         .select(
-          'id, student_id, store:stores(id, name, logo_url, manager_id), student:profiles!matches_student_id_fkey(id, full_name, avatar_url)'
+          'id, student_id, status, unmatched_by, unmatch_reason, unmatch_note, store:stores(id, name, logo_url, manager_id), student:profiles!matches_student_id_fkey(id, full_name, avatar_url)'
         )
         .eq('id', matchId)
         .maybeSingle();
@@ -102,6 +107,10 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
 
       type MatchJoin = {
         student_id: string;
+        status: string;
+        unmatched_by: string | null;
+        unmatch_reason: string | null;
+        unmatch_note: string | null;
         store: { name: string; logo_url: string | null; manager_id: string } | null;
         student: { full_name: string | null; avatar_url: string | null } | null;
       };
@@ -112,6 +121,13 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
           ? { name: m.store?.name ?? 'Butik', imageUrl: m.store?.logo_url ?? null, isStore: true }
           : { name: m.student?.full_name ?? 'Elev', imageUrl: m.student?.avatar_url ?? null, isStore: false }
       );
+      if (m.status === 'unmatched') {
+        setClosedInfo({
+          byMe: m.unmatched_by === user.id,
+          reason: m.unmatch_reason,
+          note: m.unmatch_note,
+        });
+      }
 
       const { data: rows } = await supabase
         .from('messages')
@@ -156,7 +172,7 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
 
   async function handleSend() {
     const content = draft.trim();
-    if (!content || sending || !userId) return;
+    if (!content || sending || !userId || closedInfo) return;
     setSending(true);
     setSendError('');
     try {
@@ -232,7 +248,9 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
           </div>
           <div className="min-w-0">
             <h1 className="text-[#211F1A] font-bold truncate">{counterpart?.name}</h1>
-            <p className="text-[11px] text-[#6E6759]">I har matchet — sig hej! 👋</p>
+            <p className="text-[11px] text-[#6E6759]">
+              {closedInfo ? 'Matchet er ophævet' : 'I har matchet — sig hej! 👋'}
+            </p>
           </div>
         </div>
       </div>
@@ -284,7 +302,27 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
         </div>
       </div>
 
-      {/* Composer */}
+      {/* Closed banner replaces the composer once the match is dissolved */}
+      {closedInfo ? (
+        <div className="shrink-0 bg-white border-t border-[#EAE4D8] safe-bottom">
+          <div className="max-w-md mx-auto px-4 py-4">
+            <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-[#FAF7F1] border border-[#EAE4D8]">
+              <HeartOff className="w-5 h-5 text-[#B3412A] shrink-0 mt-0.5" aria-hidden="true" />
+              <div className="min-w-0 text-sm text-[#211F1A]">
+                <p className="font-semibold">
+                  Denne samtale er afsluttet — {closedInfo.byMe ? 'du' : counterpart?.name ?? 'modparten'} har ophævet matchet.
+                </p>
+                {closedInfo.reason && (
+                  <p className="text-[#6E6759] mt-1">
+                    Årsag: {closedInfo.reason}
+                    {closedInfo.note ? ` — "${closedInfo.note}"` : ''}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className="shrink-0 bg-white border-t border-[#EAE4D8] safe-bottom">
         {sendError && (
           <p className="max-w-md mx-auto px-4 pt-2 text-xs text-[#B3412A] flex items-center gap-1.5" role="alert">
@@ -321,6 +359,7 @@ export default function ChatView({ matchId, backHref }: ChatViewProps) {
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 }

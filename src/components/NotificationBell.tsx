@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, CheckCheck, Heart, Loader2, MessageCircle } from 'lucide-react';
+import { Bell, CheckCheck, Heart, HeartOff, Loader2, MessageCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import Modal from '@/components/Modal';
 
@@ -176,11 +176,15 @@ export default function NotificationBell() {
                     className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 border ${
                       n.type === 'match'
                         ? 'bg-[#E1F2EF] border-[#C4E4DE]'
-                        : 'bg-[#EEEEFC] border-[#DBDBF8]'
+                        : n.type === 'unmatch'
+                          ? 'bg-[#FCEAE3] border-[#F5C9BC]'
+                          : 'bg-[#EEEEFC] border-[#DBDBF8]'
                     }`}
                   >
                     {n.type === 'match' ? (
                       <Heart className="w-4 h-4 text-[#0B6B60]" aria-hidden="true" />
+                    ) : n.type === 'unmatch' ? (
+                      <HeartOff className="w-4 h-4 text-[#B3412A]" aria-hidden="true" />
                     ) : (
                       <MessageCircle className="w-4 h-4 text-[#4E50C4]" aria-hidden="true" />
                     )}

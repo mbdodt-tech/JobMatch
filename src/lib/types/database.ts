@@ -18,7 +18,27 @@ export type BehavioralStyle = 'analytical' | 'action_oriented' | 'social' | 'sta
 
 export type SwipeDirection = 'left' | 'right';
 
-export type MatchStatus = 'active' | 'archived' | 'reported';
+export type MatchStatus = 'active' | 'archived' | 'reported' | 'unmatched';
+
+// Unmatch reasons are stored as their Danish label (open — shown to the other
+// party) plus an optional free-text note when "Andet" is chosen.
+export const STUDENT_UNMATCH_REASONS = [
+  'Jeg har fået praktikplads et andet sted',
+  'Butikken svarede ikke / dialogen gik i stå',
+  'Jeg er ikke længere interesseret i denne type stilling',
+  'Der er for langt til butikken',
+  'Jeg matchede ved en fejl',
+  'Andet',
+] as const;
+
+export const MANAGER_UNMATCH_REASONS = [
+  'Pladsen er blevet besat',
+  'Eleven svarede ikke / dialogen gik i stå',
+  'Profilen matchede alligevel ikke vores behov',
+  'Vi har ikke behov for en elev lige nu',
+  'Jeg matchede ved en fejl',
+  'Andet',
+] as const;
 
 // ----- Label maps for UI display -----
 
@@ -208,6 +228,10 @@ export interface Match {
   store_swipe_id: string;
   status: MatchStatus;
   matched_at: string;
+  unmatched_at: string | null;
+  unmatched_by: string | null;
+  unmatch_reason: string | null;
+  unmatch_note: string | null;
   // Joined fields (optional)
   store?: Store;
   student?: Profile;

@@ -20,13 +20,15 @@ import {
   ChevronDown,
   MessageCircle,
   RotateCcw,
+  HeartOff,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { safeExternalHref } from '@/lib/url';
 import Modal from '@/components/Modal';
+import UnmatchDialog from '@/components/UnmatchDialog';
 import { Play } from 'lucide-react';
 import type { Match, Store, EducationLine } from '@/lib/types/database';
-import { EDUCATION_LINE_LABELS } from '@/lib/types/database';
+import { EDUCATION_LINE_LABELS, STUDENT_UNMATCH_REASONS } from '@/lib/types/database';
 
 interface MatchWithStore extends Match {
   store: Store;
@@ -183,6 +185,35 @@ export default function StudentMatches() {
     } finally {
       setRemovingStoreId(null);
     }
+  };
+
+  const [unmatchTarget, setUnmatchTarget] = useState<{ matchId: string; storeName: string } | null>(null);
+
+  const performUnmatch = async (reason: string, note: string | null) => {
+    if (!unmatchTarget) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('matches')
+      .update({
+        status: 'unmatched',
+        unmatched_at: new Date().toISOString(),
+        unmatched_by: user.id,
+        unmatch_reason: reason,
+        unmatch_note: note,
+      })
+      .eq('id', unmatchTarget.matchId);
+    if (error) {
+      console.error('Kunne ikke ophæve match:', error);
+      return;
+    }
+
+    setMatches((prev) => prev.filter((m) => m.id !== unmatchTarget.matchId));
+    setUnmatchTarget(null);
+    setSelectedStore(null);
   };
 
   const formatDate = (dateStr: string) => {
@@ -673,6 +704,21 @@ export default function StudentMatches() {
                         <span className="font-medium text-sm">Email: {selectedStore.store.email}</span>
                       </a>
                     )}
+
+                    {selectedStore.matchId && (
+                      <button
+                        onClick={() =>
+                          setUnmatchTarget({
+                            matchId: selectedStore.matchId!,
+                            storeName: selectedStore.store.name,
+                          })
+                        }
+                        className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-white border border-[#EAE4D8] text-[#8B8471] hover:text-[#B3412A] hover:border-[#B3412A]/30 transition-colors mt-4"
+                      >
+                        <HeartOff className="w-5 h-5" />
+                        <span className="font-medium text-sm">Ophæv match</span>
+                      </button>
+                    )}
                   </div>
                 ) : (
                   selectedStore.store.website && (
@@ -694,6 +740,15 @@ export default function StudentMatches() {
           </>
         )}
       </Modal>
+
+      {/* Unmatch dialog */}
+      <UnmatchDialog
+        open={!!unmatchTarget}
+        onOpenChange={(o) => !o && setUnmatchTarget(null)}
+        counterpartName={unmatchTarget?.storeName ?? 'butikken'}
+        reasons={STUDENT_UNMATCH_REASONS}
+        onConfirm={performUnmatch}
+      />
 
       {/* Store intro video player */}
       <Modal
