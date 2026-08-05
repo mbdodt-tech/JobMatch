@@ -7,7 +7,7 @@ import {
   Mail, Smartphone, MonitorSmartphone, Globe, Info, ToggleLeft, ToggleRight
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { enablePush, disablePush } from '@/lib/push';
+import { enablePush, disablePush, isDeviceSubscribed } from '@/lib/push';
 import { useRouter } from 'next/navigation';
 
 interface SettingToggle {
@@ -32,14 +32,20 @@ export default function StudentSettings() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase.from('profiles').select('notify_push, notify_email, notify_in_app').eq('id', user.id).single();
+      const [{ data }, deviceSubscribed] = await Promise.all([
+        supabase.from('profiles').select('notify_push, notify_email, notify_in_app').eq('id', user.id).single(),
+        isDeviceSubscribed(),
+      ]);
       if (data) {
-        setNotifyPush(data.notify_push);
+        // The push toggle reflects THIS device — the DB flag alone says nothing
+        // about whether this phone is actually registered for push
+        setNotifyPush(data.notify_push && deviceSubscribed);
         setNotifyEmail(data.notify_email);
         setNotifyInApp(data.notify_in_app);
       }
     }
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateSetting = async (field: string, value: boolean) => {
@@ -57,7 +63,7 @@ export default function StudentSettings() {
   };
 
   const toggles: SettingToggle[] = [
-    { key: 'notify_push', label: 'Push-notifikationer', description: 'Modtag push-beskeder ved nyt match', icon: Smartphone, value: notifyPush, color: 'text-[#0B6B60]' },
+    { key: 'notify_push', label: 'Push-notifikationer', description: 'Beskeder på låseskærmen — også når appen er lukket', icon: Smartphone, value: notifyPush, color: 'text-[#0B6B60]' },
     { key: 'notify_email', label: 'Email-notifikationer', description: 'Modtag en email når du matcher', icon: Mail, value: notifyEmail, color: 'text-[#4E50C4]' },
     { key: 'notify_in_app', label: 'In-app notifikationer', description: 'Vis bannere inde i appen', icon: Bell, value: notifyInApp, color: 'text-[#0B6B60]' },
   ];

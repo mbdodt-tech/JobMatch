@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, Mail, Smartphone, LogOut, Moon, Globe, ToggleLeft, ToggleRight, MonitorSmartphone } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { enablePush, disablePush } from '@/lib/push';
+import { enablePush, disablePush, isDeviceSubscribed } from '@/lib/push';
 import { useRouter } from 'next/navigation';
 
 export default function ManagerSettings() {
@@ -19,9 +19,14 @@ export default function ManagerSettings() {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase.from('profiles').select('notify_push, notify_email, notify_in_app').eq('id', user.id).single();
+      const [{ data }, deviceSubscribed] = await Promise.all([
+        supabase.from('profiles').select('notify_push, notify_email, notify_in_app').eq('id', user.id).single(),
+        isDeviceSubscribed(),
+      ]);
       if (data) {
-        setNotifyPush(data.notify_push);
+        // The push toggle reflects THIS device — the DB flag alone says nothing
+        // about whether this phone is actually registered for push
+        setNotifyPush(data.notify_push && deviceSubscribed);
         setNotifyEmail(data.notify_email);
         setNotifyInApp(data.notify_in_app);
       }
@@ -43,7 +48,7 @@ export default function ManagerSettings() {
   };
 
   const toggles = [
-    { key: 'notify_push', label: 'Push-notifikationer', desc: 'Besked på telefonen ved match og chat', icon: Smartphone, value: notifyPush, set: setNotifyPush, color: 'text-[#0B6B60]' },
+    { key: 'notify_push', label: 'Push-notifikationer', desc: 'Beskeder på låseskærmen — også når appen er lukket', icon: Smartphone, value: notifyPush, set: setNotifyPush, color: 'text-[#0B6B60]' },
     { key: 'notify_email', label: 'Email-notifikationer', desc: 'Daglig opsummering af nye matches', icon: Mail, value: notifyEmail, set: setNotifyEmail, color: 'text-[#0B6B60]' },
     { key: 'notify_in_app', label: 'In-app notifikationer', desc: 'Vis badges og bannere', icon: Bell, value: notifyInApp, set: setNotifyInApp, color: 'text-[#0B6B60]' },
   ];

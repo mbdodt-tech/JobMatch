@@ -67,7 +67,12 @@ Deno.serve(async (req) => {
             endpoint: sub.endpoint,
             keys: { p256dh: sub.p256dh, auth: sub.auth },
           });
-          await subscriber.pushTextMessage(payload, {});
+          // ttl 0 (the library default) means "deliver instantly or drop" —
+          // pushes to idle/closed devices were silently discarded by APNs
+          await subscriber.pushTextMessage(payload, {
+            ttl: 24 * 60 * 60,
+            urgency: webpush.Urgency.High,
+          });
           sent++;
         } catch (err) {
           // Expired/revoked subscriptions are pruned so we stop retrying them

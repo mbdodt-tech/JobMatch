@@ -22,6 +22,18 @@ export function isPushSupported(): boolean {
 
 export type EnablePushResult = 'ok' | 'denied' | 'unsupported' | 'error';
 
+/** Whether THIS device/browser currently holds an active push subscription. */
+export async function isDeviceSubscribed(): Promise<boolean> {
+  if (!isPushSupported()) return false;
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    const subscription = await registration?.pushManager.getSubscription();
+    return !!subscription;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Registers the service worker, asks for notification permission (must be
  * called from a user gesture — iOS requirement) and stores the subscription.
