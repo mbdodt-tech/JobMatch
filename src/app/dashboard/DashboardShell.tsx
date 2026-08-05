@@ -192,7 +192,7 @@ export default function DashboardShell({
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 inset-x-0 z-50 h-16 bg-white/90 backdrop-blur-xl border-b border-[#EAE4D8] flex items-center px-4 safe-top">
+      <div className="lg:hidden fixed top-0 inset-x-0 z-50 h-[calc(4rem+env(safe-area-inset-top,0px))] bg-white/90 backdrop-blur-xl border-b border-[#EAE4D8] flex items-center px-4 safe-top">
         <button
           onClick={() => setSidebarOpen(true)}
           aria-label="Åbn menu"
@@ -227,9 +227,9 @@ export default function DashboardShell({
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="lg:hidden fixed inset-y-0 left-0 w-[280px] bg-white border-r border-[#EAE4D8] z-50 flex flex-col"
+              className="lg:hidden fixed inset-y-0 left-0 w-[280px] bg-white border-r border-[#EAE4D8] z-50 flex flex-col safe-top"
             >
-              <div className="absolute top-4 right-4">
+              <div className="absolute right-4 top-[calc(1rem+env(safe-area-inset-top,0px))]">
                 <button
                   onClick={() => setSidebarOpen(false)}
                   aria-label="Luk menu"
@@ -245,7 +245,7 @@ export default function DashboardShell({
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="lg:pl-[280px] pt-16 lg:pt-0 min-h-dvh bg-[#FAF7F1]">
+      <main className="lg:pl-[280px] pt-[calc(4rem+env(safe-area-inset-top,0px))] lg:pt-0 min-h-dvh bg-[#FAF7F1]">
         <div className="p-4 md:p-6 lg:p-8">{children}</div>
       </main>
     </div>
