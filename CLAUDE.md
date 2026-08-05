@@ -45,7 +45,8 @@
 - **Secondary violet** (from the logo's violet card): text `#4E50C4`, tint `#EEEEFC` + border `#DBDBF8`, solid `#5D5FE0` sparingly — used for "awaiting/info" states and education chips
 - **Coral accent** `#EE5B3A` — hearts/likes only; unread badges stay `rose-500`
 - **Cards** — `bg-white border border-[#EAE4D8] varm-card-shadow`; inner boxes `bg-[#FAF7F1] border-[#EAE4D8]`
-- **NO gradients, glow, glassmorphism or gradient-text.** Single exception: photo-less cover fallback `linear-gradient(135deg,#14A899,#0E7C86,#5D5FA8)` (the logo's own sweep)
+- **NO gradients, glow, glassmorphism or gradient-text.** Exceptions: photo-less cover fallback `linear-gradient(135deg,#14A899,#0E7C86,#5D5FA8)` (the logo's own sweep), and the student dock + settings button which are frosted glass (`bg-white/60 backdrop-blur-xl border-white/70`) — product decision aug. 2026
+- **Student dock (bottom nav):** order is Hjem · Inspiration · Matches · Aktiviteter (NotificationBell) · Profil. Settings lives as a floating glass button top-right, NOT in the dock. Icons are monochrome (`#8B8471` inactive, `#211F1A` active, neutral `#211F1A]/[0.07]` active pill) — no colored active states
 - **No emoji in headings** (fine in body/notification text)
 - Photos keep `card-scrim` + white text on top; video lightboxes stay black
 - **Mobile-first** — max-w-md for phone screens, responsive breakpoints for dashboard
@@ -64,6 +65,7 @@
 ### App routes (`src/app/`)
 - `/login` and `/signup` — auth pages
 - `/student/feed` — swipe card stack (Tinder-style)
+- `/student/inspiration` — Pinterest-style tile wall of chains; `/student/inspiration/[chainId]` — branded chain page with search in the chain's elevpladser (demo data in `lib/data/inspiration-chains.ts` until wired to `store_chains`)
 - `/student/matches` — matches + liked stores (awaiting match)
 - `/student/chat/[matchId]` + `/manager/chat/[matchId]` — in-app chat per match (messages table, realtime)
 - `/student/profile` — editable profile page

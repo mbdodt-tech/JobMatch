@@ -119,7 +119,7 @@ export default function NotificationBell() {
         className="relative flex flex-col items-center justify-center gap-0.5 px-4 py-2 rounded-full min-w-0"
       >
         <Bell size={20} className="text-[#8B8471] hover:text-[#211F1A] transition-colors" aria-hidden="true" />
-        <span className="text-[10px] font-medium text-[#8B8471]">Aktivitet</span>
+        <span className="text-[10px] font-medium text-[#8B8471]">Aktiviteter</span>
         {unread > 0 && (
           <span className="absolute top-0.5 right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
             {unread > 9 ? '9+' : unread}
