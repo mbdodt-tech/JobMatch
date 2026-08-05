@@ -26,7 +26,7 @@ export default function ManagerSettings() {
 
   return (
     <div className="min-h-[100dvh] bg-[#FAF7F1] pb-8">
-      <div className="px-4 pt-6 pb-4 max-w-md mx-auto">
+      <div className="px-4 pt-6 pb-4 max-w-md mx-auto safe-top">
         <h1 className="text-2xl font-extrabold tracking-tight text-[#211F1A]">Indstillinger</h1>
       </div>
       <div className="max-w-md mx-auto px-4 space-y-4">

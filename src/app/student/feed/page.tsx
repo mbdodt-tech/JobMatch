@@ -241,7 +241,7 @@ export default function StudentFeed() {
       </div>
 
       {/* Header */}
-      <div className="relative z-10 px-4 pt-6 pb-3 max-w-md mx-auto">
+      <div className="relative z-10 px-4 pt-6 pb-3 max-w-md mx-auto safe-top">
         <div className="flex items-center justify-between">
           <div className="min-w-0">
             <h1 className="text-2xl font-extrabold tracking-tight text-[#211F1A]">

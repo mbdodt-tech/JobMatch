@@ -307,7 +307,7 @@ export default function ManagerFeedPage() {
         )}
       </AnimatePresence>
     </div>
-    <div className="max-w-md mx-auto px-4 pt-6 pb-4">
+    <div className="max-w-md mx-auto px-4 pt-6 pb-4 safe-top">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

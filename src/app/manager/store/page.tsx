@@ -250,7 +250,7 @@ export default function ManagerStorePage() {
 
   return (
     <div className="bg-[#FAF7F1] min-h-[100dvh]">
-    <div className="max-w-md mx-auto px-4 pt-6 pb-8">
+    <div className="max-w-md mx-auto px-4 pt-6 pb-8 safe-top">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}

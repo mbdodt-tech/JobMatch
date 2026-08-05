@@ -180,7 +180,7 @@ export default function StudentMatches() {
   return (
     <div className="min-h-dvh bg-[#FAF7F1] pb-32">
       {/* Header */}
-      <div className="px-4 pt-6 pb-4 max-w-md mx-auto">
+      <div className="px-4 pt-6 pb-4 max-w-md mx-auto safe-top">
         <h1 className="text-2xl font-extrabold tracking-tight text-[#211F1A]">
           Matches
         </h1>
