@@ -19,6 +19,7 @@ import {
   Users,
   ChevronDown,
   MessageCircle,
+  RotateCcw,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { safeExternalHref } from '@/lib/url';
@@ -153,6 +154,36 @@ export default function StudentMatches() {
   }, []);
 
   // Body scroll-lock, Escape and focus handling are provided by the Modal (Radix Dialog).
+
+  // Removes ALL of the student's swipes on the store (there can be several old
+  // left-swipes) so it reappears in the feed and can be swiped again.
+  const [removingStoreId, setRemovingStoreId] = useState<string | null>(null);
+  const removeSwipe = async (storeId: string) => {
+    if (removingStoreId) return;
+    setRemovingStoreId(storeId);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('swipes')
+        .delete()
+        .eq('profile_id', user.id)
+        .eq('swiper_role', 'student')
+        .eq('store_id', storeId);
+      if (error) {
+        console.error('Kunne ikke fortryde swipe:', error);
+        return;
+      }
+
+      setLiked((prev) => prev.filter((l) => l.store.id !== storeId));
+      setDisliked((prev) => prev.filter((d) => d.store.id !== storeId));
+    } finally {
+      setRemovingStoreId(null);
+    }
+  };
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -360,6 +391,23 @@ export default function StudentMatches() {
                       </span>
                     </div>
 
+                    {/* Remove like */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeSwipe(item.store.id);
+                      }}
+                      disabled={removingStoreId === item.store.id}
+                      aria-label={`Fjern like af ${item.store?.name || 'butik'}`}
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#6E6759] hover:text-[#B3412A] hover:bg-white transition-colors disabled:opacity-50"
+                    >
+                      {removingStoreId === item.store.id ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <X size={14} />
+                      )}
+                    </button>
+
                     {/* Bottom info */}
                     <div className="absolute inset-x-0 bottom-0 p-3 space-y-1.5">
                       <h3 className="font-bold text-white text-sm leading-snug truncate">
@@ -421,6 +469,23 @@ export default function StudentMatches() {
                         Fravalgt
                       </span>
                     </div>
+
+                    {/* Undo dislike — store goes back into the feed */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeSwipe(item.store.id);
+                      }}
+                      disabled={removingStoreId === item.store.id}
+                      aria-label={`Fortryd fravalg af ${item.store?.name || 'butik'}`}
+                      className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-[#0B6B60] hover:bg-[#E1F2EF] transition-colors disabled:opacity-50"
+                    >
+                      {removingStoreId === item.store.id ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <RotateCcw size={14} />
+                      )}
+                    </button>
 
                     <div className="absolute inset-x-0 bottom-0 p-3 space-y-1.5">
                       <h3 className="font-bold text-white text-sm leading-snug truncate">

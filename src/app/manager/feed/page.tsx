@@ -24,6 +24,7 @@ import {
   Briefcase,
   Calendar,
   Info,
+  RotateCcw,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { resolveMediaUrl } from '@/lib/storage';
@@ -78,7 +79,13 @@ export default function ManagerFeedPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const [sheetCvUrl, setSheetCvUrl] = useState<string | null>(null);
   const [sheetVideoUrl, setSheetVideoUrl] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ id: number; kind: 'like' | 'pass'; name: string } | null>(null);
+  const [toast, setToast] = useState<{ id: number; kind: 'like' | 'pass' | 'undo'; name: string } | null>(null);
+  const [lastSwipe, setLastSwipe] = useState<{
+    swipeId: string;
+    index: number;
+    studentId: string;
+    matched: boolean;
+  } | null>(null);
 
   useEffect(() => {
     if (!toast) return;
@@ -167,12 +174,21 @@ export default function ManagerFeedPage() {
         return;
       }
 
-      await supabase.from('swipes').insert({
-        profile_id: student.id,
-        store_id: store.id,
-        swiper_role: 'store_manager',
-        direction,
-      });
+      const { data: swipeData, error: swipeError } = await supabase
+        .from('swipes')
+        .insert({
+          profile_id: student.id,
+          store_id: store.id,
+          swiper_role: 'store_manager',
+          direction,
+        })
+        .select('id')
+        .single();
+      if (swipeError || !swipeData) {
+        console.error('Kunne ikke gemme swipe:', swipeError);
+        setSwiping(false);
+        return;
+      }
 
       let matched = false;
       if (direction === 'right') {
@@ -219,12 +235,45 @@ export default function ManagerFeedPage() {
           name: student.full_name ?? 'eleven',
         });
       }
+      setLastSwipe({ swipeId: swipeData.id, index: currentIndex, studentId: student.id, matched });
       setCurrentIndex((prev) => prev + 1);
       x.set(0);
       setSwiping(false);
     },
     [currentIndex, students, store, swiping, x]
   );
+
+  const handleUndo = useCallback(async () => {
+    if (swiping || !lastSwipe || !store) return;
+    setSwiping(true);
+    try {
+      const supabase = createClient();
+
+      if (lastSwipe.matched) {
+        await supabase
+          .from('matches')
+          .delete()
+          .eq('student_id', lastSwipe.studentId)
+          .eq('store_id', store.id);
+      }
+      const { error: delError } = await supabase
+        .from('swipes')
+        .delete()
+        .eq('id', lastSwipe.swipeId);
+      if (delError) { console.error('Kunne ikke fortryde swipe:', delError); return; }
+
+      setShowMatch(false);
+      setCurrentIndex(lastSwipe.index);
+      setToast({
+        id: Date.now(),
+        kind: 'undo',
+        name: students[lastSwipe.index]?.full_name ?? 'eleven',
+      });
+      setLastSwipe(null);
+    } finally {
+      setSwiping(false);
+    }
+  }, [swiping, lastSwipe, store, students]);
 
   function handleDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
     const threshold = 80;
@@ -291,6 +340,10 @@ export default function ManagerFeedPage() {
               <span className="w-7 h-7 rounded-full bg-[#FCEAE3] flex items-center justify-center shrink-0">
                 <Heart size={14} className="text-[#EE5B3A] fill-[#EE5B3A]/40" />
               </span>
+            ) : toast.kind === 'undo' ? (
+              <span className="w-7 h-7 rounded-full bg-[#E1F2EF] flex items-center justify-center shrink-0">
+                <RotateCcw size={14} className="text-[#0B6B60]" />
+              </span>
             ) : (
               <span className="w-7 h-7 rounded-full bg-[#FAF7F1] border border-[#EAE4D8] flex items-center justify-center shrink-0">
                 <X size={14} className="text-[#6E6759]" />
@@ -299,6 +352,8 @@ export default function ManagerFeedPage() {
             <span className="text-sm font-medium text-[#211F1A] truncate">
               {toast.kind === 'like' ? (
                 <>Du likede <span className="font-bold">{toast.name}</span></>
+              ) : toast.kind === 'undo' ? (
+                <>Fortrudt — <span className="font-bold">{toast.name}</span> er tilbage</>
               ) : (
                 <>Du fravalgte <span className="font-bold">{toast.name}</span></>
               )}
@@ -403,8 +458,22 @@ export default function ManagerFeedPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="flex items-center justify-center gap-6 mt-6"
+          className="flex items-center justify-center gap-5 mt-6"
         >
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleUndo}
+            disabled={swiping || !lastSwipe}
+            aria-label="Fortryd sidste swipe"
+            className="w-12 h-12 rounded-full bg-white border border-[#EAE4D8] varm-card-shadow flex items-center justify-center hover:bg-[#FAF7F1] transition-colors group disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <RotateCcw
+              size={20}
+              className="text-[#8B8471] group-hover:text-[#6E6759] transition-colors"
+            />
+          </motion.button>
+
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
