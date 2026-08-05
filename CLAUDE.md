@@ -138,6 +138,20 @@ Password for all: `Test1234!`
 - Managers/stores: mette@bilka.dk (Bilka One Fields), jonas@normal.dk (NORMAL Nørrebrogade), sara@elgiganten.dk (Elgiganten Fields), thomas@dsv.dk (DSV Air & Sea Kastrup), camilla@bestseller.dk (BESTSELLER Showroom København)
 - Built-in story: Noah×NORMAL, William×DSV, Ella×BESTSELLER are matched; Alma + Karla await manager swipes (visible in manager feeds); Lucas is at-risk (6 right-swipes, 0 matches, inactive 10 days, rejected by Bilka)
 
+## Git workflow (multiple parallel sessions push to this repo!)
+Cloud and local Claude sessions often run simultaneously. Local `main` is
+frequently stale, and pushes race. Therefore:
+- **Before starting any work or review:** `git fetch origin` and compare with
+  `git log HEAD..origin/main --oneline`. Never review or "verify" code without
+  confirming HEAD matches origin/main — you may be auditing outdated files.
+- **Before pushing:** fetch again. If remote moved, rebase onto `origin/main`
+  and re-run the checks before pushing. Never force-push to `main`.
+- **Verification is 3 commands, not 1:** `npx tsc --noEmit` + `npx eslint` +
+  `npx next build`. The build alone is NOT enough — Turbopack skips type
+  validation, so a green build can hide type errors (CI now runs all three).
+- Long-running or parallel sessions should work on a feature branch and merge
+  to `main` only when done.
+
 ## Do / Don't
 - ✅ Always merge to `main` and push when changes are done (Vercel deploys automatically)
 - ✅ Check `types/database.ts` before writing new queries — types must match the DB schema
